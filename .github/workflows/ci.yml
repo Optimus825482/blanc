@@ -1,0 +1,88 @@
+# CI (plan 3.7): lint, build (PostgreSQL servis konteyneri ile), isteğe bağlı SSH dağıtımı.
+# Uygulama platform/ klasöründe; tüm adımlar oraya göre çalışır.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+defaults:
+  run:
+    working-directory: platform
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: beyza
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # Yalnızca derleme ve testler için; gerçek değerler sunucu ortamında (.env) tutulur.
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: beyza
+      ADMIN_PASSWORD: ci-only-password-0123456789
+      SESSION_SECRET: ci-only-session-secret-0123456789abcdef
+      NEXT_TELEMETRY_DISABLED: 1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: platform/package-lock.json
+
+      - name: Bağımlılıklar
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Şema ve tohum (derleme sırasında içerik okunur)
+        run: |
+          psql -v ON_ERROR_STOP=1 -f db/schema.sql
+          npm run db:seed
+
+      - name: Derleme
+        run: npm run build
+
+  # Dağıtım yalnızca main dalında ve sunucu bilgileri secret olarak tanımlıysa çalışır.
+  deploy:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+    steps:
+      - name: SSH ile dağıt (sunucu secret'ı yoksa atlanır)
+        if: ${{ env.DEPLOY_HOST != '' && env.DEPLOY_KEY != '' }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          # Sunucudaki dizin ve komut VPS kurulumuna (plan 0.6) göre güncellenecek.
+          ssh -o StrictHostKeyChecking=accept-new -i ~/.ssh/id_deploy "$DEPLOY_USER@$DEPLOY_HOST" \
+            "cd /opt/beyza && git pull --ff-only && docker compose up -d --build"
