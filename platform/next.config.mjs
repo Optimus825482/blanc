@@ -3,7 +3,6 @@ const config = {
   experimental: { serverActions: { bodySizeLimit: '6mb' } },
   async rewrites() {
     return [
-      { source: '/studyo', destination: '/studyo.html' },
       { source: '/sss', destination: '/sss.html' },
       { source: '/urun', destination: '/urun.html' },
     ];

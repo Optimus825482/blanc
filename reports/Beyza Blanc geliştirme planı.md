@@ -145,7 +145,7 @@ Her iş paketi tek oturumda bitecek büyüklükte, bağımlılığı yazılı. S
 
 | No | İş | Bağımlılık | Kabul ölçütü |
 |---|---|---|---|
-| 2.1 | Stüdyoyu Next istemci bileşenine taşı; seçenekler `/api/studio-options` veya sunucu props | 1.1 | `data.js` bağımlılığı yok, eski davranış korunur |
+| 2.1 | Stüdyoyu Next istemci bileşenine taşı; seçenekler `/api/studio-options` veya sunucu props | 1.1 | `data.js` bağımlılığı yok, eski davranış korunur — ✅ 9 Kasım: `/studyo` artık Next rotası (`app/(public)/studyo`); veri `lib/studio-data.js` ile tablolardan (özel gün, ürün tipi, stüdyo seçenekleri, tasarımlar, ayarlar) üretilip betiğe `BEYZA_DATA` olarak verilir; panelden yüklenen ürün tipi altlığı gerçek görselde kullanılır; `public/studyo.html` kaldırıldı. Gövde markup'ı hâlâ HTML dosyası, çizim kodu `studyo.js` — tam React bileşenine ayrıştırma 2.2 ile |
 | 2.2 | Fiyat aralığı hesaplayıcı (sunucu ve istemci aynı fonksiyon) | 1.1 | Panelde kural değişince stüdyo günceller |
 | 2.3 | Katmanlı gerçek fotoğraf önizlemesi (ürün başına altlık + maske) | 2.1 | 4 ürün tipi için fotoğraflı önizleme — ◐ 9 Kasım: altlık sistemi (`altliklar.json` + render edilmiş kutu/bar/tepsi sahneleri) ve gerçekçi çizim katmanı statik stüdyoda canlı; 9 Kasım (2): "Gerçek görsel / Taslak çizim" geçişi — özel güne ve ürün tipine göre atölyenin gerçek fotoğrafı altlık olur, isim/tarih/kurdele/kart/fotoğraf üstüne işlenir (`altliklar.json` → `gercek` eşlemesi, 16 özel gün); kalan: panelden altlık ve gerçek görsel yükleme (1.3 ile) |
 | 2.4 | Teslim adımı: tarih seçici, son sipariş eşiği, hazırlık bandı uyarıları | 2.1 | Geçmiş veya eşik dışı tarih engellenir |

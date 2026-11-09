@@ -757,11 +757,12 @@
   var gercekImg = {};
 
   function gercekYol(tema, tip) {
-    var harita = altlikGeo && altlikGeo.gercek;
-    if (!harita) return null;
+    var harita = (altlikGeo && altlikGeo.gercek) || {};
     var kayit = (tema && harita[tema.id]) || {};
     var varsayilan = harita.varsayilan || {};
-    return kayit[tip] || varsayilan[tip] || kayit.kutu || varsayilan.kutu || null;
+    var urunTipi = D.studyo.urunTipleri.filter(function (u) { return u.id === durum.urun; })[0];
+    var panelAltlik = urunTipi && urunTipi.altlik ? urunTipi.altlik : null;
+    return kayit[tip] || panelAltlik || varsayilan[tip] || kayit.kutu || varsayilan.kutu || null;
   }
 
   function gercekGorsel(tema, tip) {
