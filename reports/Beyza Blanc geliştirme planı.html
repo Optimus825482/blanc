@@ -164,7 +164,7 @@ tbody tr:nth-child(even) { background: #fffaf5; }
 <li><a href="#5-veri-modeli-ozeti">5. Veri modeli özeti</a></li>
 <li><a href="#6-fazlar-ve-is-paketleri">6. Fazlar ve iş paketleri</a></li>
 <li><a href="#7-calisma-duzeni-haftalik-kullanim-siniri-icin">7. Çalışma düzeni (haftalık kullanım sınırı için)</a></li>
-<li><a href="#8-sahibinden-gerekenler">8. Sahibinden gerekenler</a></li>
+<li><a href="#sahipten-beklenenler">Sahipten beklenenler</a></li>
 <li><a href="#9-riskler">9. Riskler</a></li></ol>
     <p class="yazdirma-notu">
       Yazdırmak için <strong>Ctrl+P</strong> (Mac: ⌘+P). Yazdırma düzeninde menü ve
@@ -429,7 +429,7 @@ tbody tr:nth-child(even) { background: #fffaf5; }
 <td>0.6</td>
 <td>Docker Compose + Caddy + yedek betiği; VPS'e ilk dağıtım</td>
 <td><code>Dockerfile</code>, <code>compose.yml</code>, <code>deploy/</code></td>
-<td>HTTPS'te açılır, yedek dosyası oluşur — ◐ 9 Kasım: Dockerfile (çok aşamalı, standalone), compose.yml (app, db, caddy; migrate profili), Caddyfile (SITE_DOMAIN), .env.example, deploy/yedek.sh (pg_dump, gzip, 14 gün), deploy/README.md. Yerelde docker olmadığı için yalnızca YAML ve betik sözdizimi doğrulandı; VPS ve alan adı bekleniyor</td>
+<td>HTTPS'te açılır, yedek dosyası oluşur — ◐ 9 Kasım: Dockerfile (çok aşamalı, standalone), compose.yml (app, db, caddy; migrate profili), Caddyfile (SITE_DOMAIN), .env.example, deploy/yedek.sh (pg_dump, gzip, 14 gün), deploy/README.md. Yerelde docker olmadığı için yalnızca YAML ve betik sözdizimi doğrulandı; VPS ve alan adı bekleniyor · 9 Kasım: uzak depo <code>github.com/Optimus825482/blanc</code> bağlandı, <code>main</code> push edildi; Coolify için <code>docker-compose.coolify.yml</code> (app+db+günlük yedek, <code>pgdata</code>/<code>uploads</code>/<code>backups</code> hacimleri), açılışta şema+tohum uygulayan <code>docker-entrypoint.sh</code>, kılavuz <code>deploy/COOLIFY.md</code>. Kalan: Coolify'da kaynağı oluşturup alan adı vermek</td>
 </tr>
 </tbody></table></div>
 <h3>Faz 1: Katalog veritabanına (5–7 gün)</h3>
@@ -549,7 +549,7 @@ tbody tr:nth-child(even) { background: #fffaf5; }
 <td>2.10</td>
 <td>Playwright uçtan uca: ana sayfa → tasarım → stüdyo → onay → kod</td>
 <td>2.7</td>
-<td>Mobil ve masaüstünde yeşil</td>
+<td>Mobil ve masaüstünde yeşil — ✅ 9 Kasım: tests/akis.spec.js (masaüstü ve mobil projeler, npm run test:e2e); ana sayfa → koleksiyon → tasarım → stüdyo → isim → onay → gönder → takip sayfasında kod; test kaydı sonunda silinir; PLAYWRIGHT_BASE_URL ile çalışan sunucu kullanılır</td>
 </tr>
 </tbody></table></div>
 <h3>Faz 3: Kurumsal, güven ve büyüme (5–7 gün)</h3>
@@ -610,8 +610,9 @@ tbody tr:nth-child(even) { background: #fffaf5; }
 <li>Her paket sonunda: lint, ilgili test, kısa tarayıcı doğrulaması, commit. Uzun açıklama yok, değişiklik listesi var.</li>
 <li>Uygulama oturumları Sonnet gibi daha ucuz bir modelle yürütülebilir; tasarım kararı gerektiren paketler (2.3 önizleme, 4.1 niyet seçici) bu modelde kalır.</li>
 </ul>
-<h2 id="8-sahibinden-gerekenler">8. Sahibinden gerekenler</h2>
-<p>1. Gerçek işletme bilgileri: telefon, WhatsApp hattı, tam adres, çalışma saatleri, alan adı. 2. Fiyat kademeleri: 4 ürün tipi × adet aralıkları için başlangıç fiyatları ve ekstra ücretler (fotoğraf baskı, logo, kurdele). 3. Ürün başına yüksek çözünürlüklü altlık fotoğrafları (kare, krem zemin) stüdyo önizlemesi için. 4. VPS erişimi ve alan adı DNS yetkisi; Instagram Login erişim anahtarı. 5. Kurumsal kademe tablosu ve numune politikası.</p>
+<h2 id="sahipten-beklenenler">Sahipten beklenenler</h2>
+<p>Kodla kapatılamayan ve sahibin girdisini bekleyen işler (3.3, 3.6, 0.3 dahil):</p>
+<p>1. WhatsApp numarası ve gerçek işletme bilgileri: telefon, tam adres, çalışma saatleri (panel → Ayarlar). 2. Gerçek fiyat kuralları: 4 ürün tipi × adet aralıkları ve ekstra ücretler (panel → Fiyat kuralları). 3. Ürün başına yüksek çözünürlüklü altlık fotoğrafları (kare, krem zemin) ve özel gün fotoğrafları (geçmiş olsun, öğretmenler günü, bayram). 4. VPS erişimi, alan adı ve DNS yetkisi (0.6 ve 3.7 dağıtımı buna bağlı). 5. GitHub uzak deposu adresi (CI'nin çalışması ve secret'lar için). 6. E-posta sağlayıcısı ve anahtarı (3.3 özel gün hatırlatıcısı). 7. Analitik tercihi ve hesabı: Plausible veya Umami, ya da GA4 kimliği (3.6 ölçüm). 8. Yazı tipi kararı (0.3): Great Vibes ya da Pinyon Script; şu an Pinyon Script kullanılıyor. 9. Instagram Login erişim anahtarı (anahtar yenileme işi için). 10. Kurumsal kademe tablosu ve numune politikası.</p>
 <h2 id="9-riskler">9. Riskler</h2>
 <div class="tablo-sarmal"><table>
 <thead><tr>

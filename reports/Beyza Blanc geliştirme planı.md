@@ -154,7 +154,7 @@ Her iş paketi tek oturumda bitecek büyüklükte, bağımlılığı yazılı. S
 | 2.7 | `/takip/[kod]` sayfası, ICS indirme | 2.5 | Kod ile durum görülür, kişisel veri maskeli — ✅ 9 Kasım: takip sayfası /teklif/[kod] (/takip/[kod] yerine, plan notu); takvim dosyası /teklif/[kod]/takvim.ics?t= (kod+anahtar zorunlu, yalnızca teslim tarihi varsa; tüm gün etkinliği, bir gün önce hatırlatma); takip sayfasında 'Takvime ekle' yalnızca teslim tarihi varsa; alıcı ve yetkili adı maskeli. Kod testinde 200/404 doğrulandı |
 | 2.8 | Paylaşılabilir tasarım bağlantısı `/t/[kod]` ve Open Graph görseli | 2.5 | Bağlantı WhatsApp'ta önizlemeli açılır — ✅ 9 Kasım: ayrı /t/[kod] rotası açılmadı, takip sayfası generateMetadata ile OG başlık/açıklama veriyor (genel metin, kişisel alan yok, noindex kalıyor); görsel (/media/<image_id> ya da <logo_id>) yalnızca geçerli kod+anahtarla eklenir; WhatsApp kart önizlemesi gerçek cihazda doğrulanmadı (test kaydında görsel yoktu) |
 | 2.9 | Panel: talep listesi, durum, not, tek tık yanıt | 2.5 | Durum değişince takip sayfası güncellenir — ✅ 9 Kasım: panelde her talepte takip bağlantısı kopyalama; kurumsal talepte WhatsApp (firma telefonu) ve e-posta; bireysel talepte müşteri telefonu/e-postası toplanmadığı için WhatsApp/e-posta düğmesi gizli (müşteri kanalı kendisi seçiyor). Kopyalama ve düğmeler tarayıcıda doğrulandı |
-| 2.10 | Playwright uçtan uca: ana sayfa → tasarım → stüdyo → onay → kod | 2.7 | Mobil ve masaüstünde yeşil |
+| 2.10 | Playwright uçtan uca: ana sayfa → tasarım → stüdyo → onay → kod | 2.7 | Mobil ve masaüstünde yeşil — ✅ 9 Kasım: tests/akis.spec.js (masaüstü ve mobil projeler, npm run test:e2e); ana sayfa → koleksiyon → tasarım → stüdyo → isim → onay → gönder → takip sayfasında kod; test kaydı sonunda silinir; PLAYWRIGHT_BASE_URL ile çalışan sunucu kullanılır |
 
 ### Faz 3: Kurumsal, güven ve büyüme (5–7 gün)
 
@@ -175,13 +175,20 @@ Her iş paketi tek oturumda bitecek büyüklükte, bağımlılığı yazılı. S
 - Her paket sonunda: lint, ilgili test, kısa tarayıcı doğrulaması, commit. Uzun açıklama yok, değişiklik listesi var.
 - Uygulama oturumları Sonnet gibi daha ucuz bir modelle yürütülebilir; tasarım kararı gerektiren paketler (2.3 önizleme, 4.1 niyet seçici) bu modelde kalır.
 
-## 8. Sahibinden gerekenler
+## Sahipten beklenenler
 
-1. Gerçek işletme bilgileri: telefon, WhatsApp hattı, tam adres, çalışma saatleri, alan adı.
-2. Fiyat kademeleri: 4 ürün tipi × adet aralıkları için başlangıç fiyatları ve ekstra ücretler (fotoğraf baskı, logo, kurdele).
-3. Ürün başına yüksek çözünürlüklü altlık fotoğrafları (kare, krem zemin) stüdyo önizlemesi için.
-4. VPS erişimi ve alan adı DNS yetkisi; Instagram Login erişim anahtarı.
-5. Kurumsal kademe tablosu ve numune politikası.
+Kodla kapatılamayan ve sahibin girdisini bekleyen işler (3.3, 3.6, 0.3 dahil):
+
+1. WhatsApp numarası ve gerçek işletme bilgileri: telefon, tam adres, çalışma saatleri (panel → Ayarlar).
+2. Gerçek fiyat kuralları: 4 ürün tipi × adet aralıkları ve ekstra ücretler (panel → Fiyat kuralları).
+3. Ürün başına yüksek çözünürlüklü altlık fotoğrafları (kare, krem zemin) ve özel gün fotoğrafları (geçmiş olsun, öğretmenler günü, bayram).
+4. VPS erişimi, alan adı ve DNS yetkisi (0.6 ve 3.7 dağıtımı buna bağlı).
+5. GitHub uzak deposu adresi (CI'nin çalışması ve secret'lar için).
+6. E-posta sağlayıcısı ve anahtarı (3.3 özel gün hatırlatıcısı).
+7. Analitik tercihi ve hesabı: Plausible veya Umami, ya da GA4 kimliği (3.6 ölçüm).
+8. Yazı tipi kararı (0.3): Great Vibes ya da Pinyon Script; şu an Pinyon Script kullanılıyor.
+9. Instagram Login erişim anahtarı (anahtar yenileme işi için).
+10. Kurumsal kademe tablosu ve numune politikası.
 
 ## 9. Riskler
 
