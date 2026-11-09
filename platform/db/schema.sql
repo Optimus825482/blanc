@@ -190,3 +190,15 @@ ALTER TABLE bb_quotes ADD COLUMN IF NOT EXISTS logo_id uuid REFERENCES bb_media(
 ALTER TABLE bb_quotes ADD COLUMN IF NOT EXISTS company jsonb NOT NULL DEFAULT '{}'::jsonb;
 CREATE INDEX IF NOT EXISTS bb_quotes_status_idx ON bb_quotes (status, created_at DESC);
 CREATE INDEX IF NOT EXISTS bb_quotes_client_idx ON bb_quotes (client_hash, created_at DESC);
+
+-- Müşteri yorumları (plan 3.2): onaysız yorum yayınlanmaz.
+CREATE TABLE IF NOT EXISTS bb_reviews (
+  id serial PRIMARY KEY,
+  name text NOT NULL,
+  text text NOT NULL,
+  rating smallint NOT NULL CHECK (rating BETWEEN 1 AND 5),
+  occasion_slug text NOT NULL DEFAULT '',
+  approved boolean NOT NULL DEFAULT false,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS bb_reviews_approved_idx ON bb_reviews (approved, created_at DESC);

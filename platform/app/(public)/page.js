@@ -6,6 +6,7 @@ import Cards from './cards';
 import InstagramFeed from './instagram-feed';
 import { getInstagram } from '../../lib/instagram';
 import { deliveryBands, getSettings, hoursSchema, postalAddress } from '../../lib/settings';
+import { getReviews, kisaAd } from '../../lib/yorum';
 import './home.css';
 
 export const revalidate = 60;
@@ -25,6 +26,7 @@ export default async function Home() {
     getContent('home'), getContent('about'), getContent('corporate'), getOccasions(), getRecipients(), getInstagram(), getSettings()
   ]);
   const bantlar = deliveryBands(settings);
+  const yorumlar = await getReviews(6); // yalnızca onaylananlar; boşsa bölüm görünmez
   // Vitrinde görseli olan ilk 6 özel gün; kişisel günler önce.
   const categories = occasions.filter((o) => o.card_image).sort((a, b) => (a.root === 'kurumsal') - (b.root === 'kurumsal')).slice(0, 6)
     .map((o) => ({ slug: o.slug, title: o.title, body: o.body, image: o.card_image, alt: o.card_alt, icon: o.icon, count: Number(o.design_count) }));
@@ -82,6 +84,16 @@ export default async function Home() {
       <Cards categories={categories} />
       {!categories.length && <p>Yeni koleksiyonlarımız hazırlanıyor.</p>}
     </section>
+    {yorumlar.length > 0 && <section className="v-kabuk bb-yorumlar" aria-labelledby="yorumlar-baslik">
+      <p className="v-etiket">Müşterilerimiz</p>
+      <h2 id="yorumlar-baslik">Sizden gelenler</h2>
+      <div className="bb-yorumlar__izgara">{yorumlar.map((y) => <figure key={y.id} className="bb-yorum">
+        <p className="bb-yorum__puan" aria-label={y.rating + ' yıldız'}>{'★'.repeat(y.rating)}{'☆'.repeat(5 - y.rating)}</p>
+        <blockquote>{y.text}</blockquote>
+        <figcaption>{kisaAd(y.name)}{y.occasion_title ? ' · ' + y.occasion_title : ''}</figcaption>
+      </figure>)}</div>
+      <p><Link className="v-metin-link" href="/yorum">Siz de deneyiminizi yazın</Link></p>
+    </section>}
     <section className="bb-process" id="tasarim" aria-labelledby="process-title">
       <div className="v-kabuk bb-process-grid">
         <div data-reveal="">

@@ -323,3 +323,23 @@ export async function saveQuote(data) {
   await query('UPDATE bb_quotes SET status=$2, admin_note=$3, updated_at=now() WHERE id=$1', [id, status, note.trim()]);
   redirect('/admin?bolum=talepler&durum=kaydedildi');
 }
+
+/* ---------------------------------- Yorumlar (plan 3.2) ---------------------------------- */
+export async function moderateReview(data) {
+  await requireAdmin();
+  const id = Number(data.get('id'));
+  const op = data.get('op');
+  if (!Number.isInteger(id) || id < 1 || !['onayla', 'gizle'].includes(op)) redirect('/admin?bolum=yorumlar&durum=gecersiz');
+  await query('UPDATE bb_reviews SET approved=$2 WHERE id=$1', [id, op === 'onayla']);
+  revalidatePath('/', 'layout');
+  redirect('/admin?bolum=yorumlar&durum=kaydedildi');
+}
+
+export async function deleteReview(data) {
+  await requireAdmin();
+  const id = Number(data.get('id'));
+  if (!Number.isInteger(id) || id < 1) redirect('/admin?bolum=yorumlar&durum=gecersiz');
+  await query('DELETE FROM bb_reviews WHERE id=$1', [id]);
+  revalidatePath('/', 'layout');
+  redirect('/admin?bolum=yorumlar&durum=silindi');
+}

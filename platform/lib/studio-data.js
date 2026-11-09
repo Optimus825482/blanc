@@ -1,6 +1,7 @@
 import 'server-only';
 import { cache } from 'react';
 import { query } from './db';
+import { getReviews, kisaAd } from './yorum';
 import { deliveryBands, getSettings, whatsappLink } from './settings';
 
 // Stüdyo ve vitrin betiklerinin beklediği BEYZA_DATA biçimini (eski data.js) tablolardan üretir.
@@ -56,6 +57,6 @@ export const getStudioData = cache(async () => {
       tur: k.kind, urun: k.product_type_slug, boyut: k.size, secenek: k.option_slug ? camel(k.option_slug) : null,
       minAdet: k.min_qty, maxAdet: k.max_qty, tutar: Number(k.amount), mod: k.mode, para: k.currency,
     })),
-    yorumlar: [],
+    yorumlar: (await getReviews(12)).map((y) => ({ ad: kisaAd(y.name), metin: y.text, puan: y.rating })),
   };
 });

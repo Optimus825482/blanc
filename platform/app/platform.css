@@ -246,3 +246,14 @@
 .bb-admin form:has(select[name="option_group"] option[value="extra"]:checked) .bb-veri[data-grup="extra"],
 .bb-admin form:has(select[name="option_group"] option[value="delivery"]:checked) .bb-veri[data-grup="delivery"],
 .bb-admin form:has(select[name="option_group"] option[value="quantity"]:checked) .bb-veri[data-grup="quantity"] { display: block; }
+
+/* Yorumlar (plan 3.2) */
+.bb-yorum__form { margin-top: 1rem; }
+.bb-yorumlar { padding-block: clamp(2rem, 5vw, 3.5rem); }
+.bb-yorumlar__izgara { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem; margin-top: 1.25rem; }
+.bb-yorum { margin: 0; padding: 1.25rem; border: 1px solid var(--v-cizgi); background: #fffdf9; display: grid; gap: .6rem; }
+.bb-yorum__puan { margin: 0; color: var(--v-bordo); letter-spacing: .12em; }
+.bb-yorum blockquote { margin: 0; font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.1rem; line-height: 1.5; }
+.bb-yorum figcaption { font-size: .85rem; color: var(--v-soluk); }
+.bb-admin .bb-yorum-satir { padding: .9rem 0; border-bottom: 1px solid var(--v-cizgi); }
+.bb-admin .bb-yorum-satir p { margin: 0 0 .5rem; }

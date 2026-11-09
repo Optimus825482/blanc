@@ -2,6 +2,7 @@
 // Aksiyonlar kayıttan sonra ilgili bölüme döner (panelBolumu).
 export const BOLUMLER = [
   { id: 'talepler', ad: 'Talepler', simge: '✉', aciklama: 'Kurumsal ve bireysel teklif talepleri' },
+  { id: 'yorumlar', ad: 'Yorumlar', simge: '★', aciklama: 'Müşteri yorumları; onaylananlar ana sayfada “Sizden gelenler” bölümünde görünür' },
   { id: 'katalog', ad: 'Katalog', simge: '◫', kinds: ['occasion', 'recipient', 'segment', 'product_type'], aciklama: 'Özel günler, alıcılar, segmentler, ürün tipleri' },
   { id: 'tasarimlar', ad: 'Tasarımlar', simge: '✿', kinds: ['design'], aciklama: 'Hazır tasarımlar; vitrin kartları ve detay sayfaları buradan beslenir' },
   { id: 'studyo', ad: 'Stüdyo seçenekleri', simge: '✎', kinds: ['studio_option'], aciklama: 'Çikolata, ambalaj, kurdele, kart, yazı tipi, ekstra, teslim ve adet seçenekleri' },

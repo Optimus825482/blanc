@@ -81,6 +81,7 @@ export default async function Teklif({ params, searchParams }) {
         <div className="v-eylemler">
           {wa && <a className="v-dugme" href={wa}>WhatsApp’tan yaz</a>}
           {q.delivery_date && <a className="v-metin-link" href={'/teklif/' + q.code + '/takvim.ics?t=' + encodeURIComponent(t)} download>Takvime ekle</a>}
+          {q.status === 'done' && <Link className="v-metin-link" href="/yorum">Deneyiminizi yazın</Link>}
           <a className={wa ? 'v-metin-link' : 'v-dugme'} href={contact}>Instagram’dan yaz <span aria-hidden="true">↗</span></a>
           <Link className="v-metin-link" href="/studyo">Yeni tasarım</Link>
         </div>

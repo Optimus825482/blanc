@@ -6,6 +6,7 @@ import { getSettings } from '../../lib/settings';
 import { getInstagram } from '../../lib/instagram';
 import KatalogBolumleri from './katalog';
 import Teklifler from './teklifler';
+import Yorumlar from './yorumlar';
 import { BOLUMLER, bolumBul } from './bolumler';
 
 export const metadata = { title: 'Yönetim', robots: { index: false, follow: false } };
@@ -143,6 +144,7 @@ function Bolum({ bolum }) {
   if (bolum.kinds) return <KatalogBolumleri kinds={bolum.kinds} />;
   switch (bolum.id) {
     case 'talepler': return <Teklifler />;
+    case 'yorumlar': return <Yorumlar />;
     case 'icerik': return <Icerik />;
     case 'ayarlar': return <Ayarlar />;
     case 'instagram': return <Instagram />;
