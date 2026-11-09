@@ -144,7 +144,7 @@ tbody tr:nth-child(even) { background: #fffaf5; }
   <div class="kapak__ic">
     <p class="kapak__marka">Beyza Blanc — Araştırma dosyası</p>
     <h1>Beyza Blanc geliştirme planı</h1>
-    <p class="kapak__alt">Güncel durum</p>
+    <p class="kapak__alt"></p>
     <div class="kapak__etiketler">
       <span class="etiket">Türkçe</span>
       <span class="etiket">Kaynaklı</span>
@@ -429,7 +429,7 @@ tbody tr:nth-child(even) { background: #fffaf5; }
 <td>0.6</td>
 <td>Docker Compose + Caddy + yedek betiği; VPS'e ilk dağıtım</td>
 <td><code>Dockerfile</code>, <code>compose.yml</code>, <code>deploy/</code></td>
-<td>HTTPS'te açılır, yedek dosyası oluşur — ◐ 9 Kasım: Dockerfile (çok aşamalı, standalone), compose.yml (app, db, caddy; migrate profili), Caddyfile (SITE_DOMAIN), .env.example, deploy/yedek.sh (pg_dump, gzip, 14 gün), deploy/README.md. Yerelde docker olmadığı için yalnızca YAML ve betik sözdizimi doğrulandı; VPS ve alan adı bekleniyor · 9 Kasım: uzak depo <code>github.com/Optimus825482/blanc</code> bağlandı, <code>main</code> push edildi; Coolify için <code>docker-compose.coolify.yml</code> (app+db+günlük yedek, <code>pgdata</code>/<code>uploads</code>/<code>backups</code> hacimleri), açılışta şema+tohum uygulayan <code>docker-entrypoint.sh</code>, kılavuz <code>deploy/COOLIFY.md</code>. Kalan: Coolify'da kaynağı oluşturup alan adı vermek</td>
+<td>HTTPS'te açılır, yedek dosyası oluşur — ✅ 9 Kasım: Dockerfile (çok aşamalı, standalone), compose.yml (app, db, caddy; migrate profili), Caddyfile (SITE_DOMAIN), .env.example, deploy/yedek.sh (pg_dump, gzip, 14 gün), deploy/README.md. Yerelde docker olmadığı için yalnızca YAML ve betik sözdizimi doğrulandı; VPS ve alan adı bekleniyor · 9 Kasım: uzak depo <code>github.com/Optimus825482/blanc</code> bağlandı, <code>main</code> push edildi; Coolify için <code>docker-compose.coolify.yml</code> (app+db+günlük yedek, <code>pgdata</code>/<code>uploads</code>/<code>backups</code> hacimleri), açılışta şema+tohum uygulayan <code>docker-entrypoint.sh</code>, kılavuz <code>deploy/COOLIFY.md</code>. 9 Kasım (3): derleme veritabanı istemesin diye vitrin istek anında üretiliyor; <code>compose.yml</code> Coolify sürümü oldu (VPS: <code>compose.vps.yml</code>); Coolify'da ilk dağıtım başarıyla tamamlandı. Kalan (sahip): alan adı/DNS ve ilk yedek dosyasının kontrolü</td>
 </tr>
 </tbody></table></div>
 <h3>Faz 1: Katalog veritabanına (5–7 gün)</h3>
@@ -480,7 +480,7 @@ tbody tr:nth-child(even) { background: #fffaf5; }
 <td>1.7</td>
 <td>ISR: <code>revalidateTag</code> ile katalog önbelleği; <code>next/image</code></td>
 <td>1.5</td>
-<td>Ana sayfa TTFB &lt; 200 ms yerelde — ✅ 9 Kasım: basit yaklaşım: revalidateTag/next/image yerine sayfalarda export const revalidate = 60 (ana sayfa, koleksiyonlar, tasarım, SSS; force-dynamic kalktı); panel kaydetme aksiyonları tüm sayfaları (revalidatePath('/', 'layout')) yeniler; görsel etiketlerine decoding=async (ve ilk ekran dışında loading=lazy); ana sayfa TTFB yerelde 156–170 ms (3 ölçüm). Not: koleksiyonlar sayfası searchParams kullandığı için istek başına üretilir</td>
+<td>Ana sayfa TTFB &lt; 200 ms yerelde — ✅ 9 Kasım: basit yaklaşım: revalidateTag/next/image yerine sayfalarda export const revalidate = 60 (ana sayfa, koleksiyonlar, tasarım, SSS; force-dynamic kalktı); panel kaydetme aksiyonları tüm sayfaları (revalidatePath('/', 'layout')) yeniler; görsel etiketlerine decoding=async (ve ilk ekran dışında loading=lazy); ana sayfa TTFB yerelde 156–170 ms (3 ölçüm). Not: koleksiyonlar sayfası searchParams kullandığı için istek başına üretilir · Düzeltme 9 Kasım: <code>revalidate = 60</code> ile sayfalar derleme anında statik üretiliyor ve Coolify derlemesinde veritabanı olmadığından build düşüyordu; vitrin düzeni <code>force-dynamic</code> yapıldı (istek anında üretim, DB'siz derleme doğrulandı). Önbellek için sonraki adım: <code>unstable_cache</code>/<code>'use cache'</code> ile veri düzeyinde önbellek</td>
 </tr>
 </tbody></table></div>
 <h3>Faz 2: Stüdyo v3 ve teklif kaydı (8–10 gün)</h3>
