@@ -153,7 +153,7 @@ Her iş paketi tek oturumda bitecek büyüklükte, bağımlılığı yazılı. S
 | 2.6 | Kanal seçimi ve önceden doldurulmuş mesaj (WhatsApp, Instagram) | 2.5 | Her iki kanalda kod ve bağlantı mesajda — ✅ 9 Kasım: onay diyaloğunda kayıt sonrası kanal adımı: WhatsApp (ayarlarda numara varsa, mesaj kod + takip bağlantısı + özetle dolu), Instagram DM (mesaj panoya kopyalanır), görselle paylaş (destekleyen cihazlarda), görseli indir; seçilen kanal kayda işlenir (`PATCH`) |
 | 2.7 | `/takip/[kod]` sayfası, ICS indirme | 2.5 | Kod ile durum görülür, kişisel veri maskeli |
 | 2.8 | Paylaşılabilir tasarım bağlantısı `/t/[kod]` ve Open Graph görseli | 2.5 | Bağlantı WhatsApp'ta önizlemeli açılır |
-| 2.9 | Panel: talep listesi, durum, not, tek tık yanıt | 2.5 | Durum değişince takip sayfası güncellenir |
+| 2.9 | Panel: talep listesi, durum, not, tek tık yanıt | 2.5 | Durum değişince takip sayfası güncellenir — ✅ 9 Kasım: panelde her talepte takip bağlantısı kopyalama; kurumsal talepte WhatsApp (firma telefonu) ve e-posta; bireysel talepte müşteri telefonu/e-postası toplanmadığı için WhatsApp/e-posta düğmesi gizli (müşteri kanalı kendisi seçiyor). Kopyalama ve düğmeler tarayıcıda doğrulandı |
 | 2.10 | Playwright uçtan uca: ana sayfa → tasarım → stüdyo → onay → kod | 2.7 | Mobil ve masaüstünde yeşil |
 
 ### Faz 3: Kurumsal, güven ve büyüme (5–7 gün)

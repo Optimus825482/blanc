@@ -1,5 +1,6 @@
 import { DURUMLAR, getQuotes, takipYolu, tarihYaz } from '../../lib/teklif';
 import { saveQuote } from './actions';
+import YanitDugmeleri from './yanit-dugmeleri';
 
 // Panel: teklif talepleri listesi; durum ve not satır içi formla güncellenir.
 export default async function Teklifler() {
@@ -29,6 +30,7 @@ function Liste({ id, baslik, aciklama, teklifler }) {
             {t.company?.firma && <p><strong>{t.company.firma}</strong> · {t.company.yetkili} · <a href={'mailto:' + t.company.eposta}>{t.company.eposta}</a>{t.company.telefon ? ' · ' + t.company.telefon : ''}<br />{t.company.kademe} · Kişi başı {t.company.butce}{t.company.numune ? ' · Numune istiyor' : ''}</p>}
             <p><strong>Kanal:</strong> {t.contact_channel || 'seçilmedi'} · <strong>Teslim:</strong> {t.delivery_method || '—'} {t.delivery_date ? tarihYaz(t.delivery_date) : ''} · <strong>Alıcı:</strong> {t.recipient_name || '—'} · <strong>Tahmin:</strong> {t.estimate !== null ? Number(t.estimate).toLocaleString('tr-TR') + ' TL' : '—'}</p>
             <a href={takipYolu(t.code, t.token)} target="_blank" rel="noopener">Müşterinin gördüğü takip sayfası ↗</a>
+            <YanitDugmeleri code={t.code} takipYolu={takipYolu(t.code, t.token)} telefon={t.company?.telefon} eposta={t.company?.eposta} firma={t.company?.firma} yetkili={t.company?.yetkili} />
             <details><summary>Özet metni</summary><pre>{t.summary}</pre></details>
           </div>
         </div>
