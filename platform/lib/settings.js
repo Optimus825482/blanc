@@ -5,6 +5,9 @@ import { query } from './db';
 export const settingKeys = [
   'contact_phone', 'contact_whatsapp', 'contact_email', 'address_street', 'address_locality',
   'address_region', 'address_country', 'maps_url', 'hours_text', 'hours_schema',
+  // Plan 3.4: vitrin metinleri panelden
+  'announcement_text', 'announcement_link', 'announcement_link_text', 'announcement_until',
+  'last_order_note', 'delivery_bands', 'studio_corporate_qty_note',
 ];
 
 export const getSettings = cache(async () => {
@@ -43,4 +46,20 @@ export function postalAddress(settings) {
   if (settings.address_region) address.addressRegion = settings.address_region;
   if (settings.address_country) address.addressCountry = settings.address_country;
   return address;
+}
+
+// Hazırlık süreleri: her satır "başlık = metin".
+export function deliveryBands(settings) {
+  return (settings.delivery_bands || '').split(/\r?\n/).map(line => line.split('=').map(part => part.trim()))
+    .filter(parts => parts.length === 2 && parts[0] && parts[1]).map(([title, text]) => ({ title, text }));
+}
+
+// Duyuru bandı: metin boşsa ya da son gösterim günü geçtiyse null.
+export function announcement(settings) {
+  const text = (settings.announcement_text || '').trim();
+  if (!text) return null;
+  const until = settings.announcement_until;
+  if (until && until < new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Nicosia' })) return null;
+  const link = (settings.announcement_link || '').trim();
+  return { text, link: link || null, linkText: (settings.announcement_link_text || '').trim() || 'Detay' };
 }

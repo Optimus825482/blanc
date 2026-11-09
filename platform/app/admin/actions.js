@@ -8,6 +8,7 @@ import { clearSession, createSession, equalText, requireAdmin } from '../../lib/
 import { query } from '../../lib/db';
 import { clearInstagramCache, encryptToken, verifyInstagram } from '../../lib/instagram';
 import { katalog, slugDeseni } from '../../lib/katalog';
+import { panelBolumu } from './bolumler';
 
 class InvalidInput extends Error {}
 
@@ -85,22 +86,22 @@ export async function save(data) {
     if (!result.rowCount) throw new InvalidInput();
   } catch (error) {
     if (!(error instanceof InvalidInput)) throw error;
-    redirect('/admin?durum=gecersiz');
+    redirect('/admin?bolum=icerik&durum=gecersiz');
   }
   revalidatePath('/', 'layout');
-  redirect('/admin?durum=kaydedildi');
+  redirect('/admin?bolum=icerik&durum=kaydedildi');
 }
 
 
 export async function connectInstagram(data) {
   await requireAdmin();
   const token = data.get('token');
-  if (typeof token !== 'string' || token.length < 20 || token.length > 2048 || !/^[A-Za-z0-9_\-.]+$/.test(token)) redirect('/admin?durum=meta-hata');
+  if (typeof token !== 'string' || token.length < 20 || token.length > 2048 || !/^[A-Za-z0-9_\-.]+$/.test(token)) redirect('/admin?bolum=instagram&durum=meta-hata');
   let account;
   try {
     account = await verifyInstagram(token);
   } catch {
-    redirect('/admin?durum=meta-hata');
+    redirect('/admin?bolum=instagram&durum=meta-hata');
   }
   await query(
     `INSERT INTO bb_instagram(singleton,account_id,username,token_cipher) VALUES (true,$1,$2,$3)
@@ -109,7 +110,7 @@ export async function connectInstagram(data) {
   );
   clearInstagramCache();
   revalidatePath('/');
-  redirect('/admin?durum=meta-bagli');
+  redirect('/admin?bolum=instagram&durum=meta-bagli');
 }
 
 export async function disconnectInstagram() {
@@ -117,24 +118,29 @@ export async function disconnectInstagram() {
   await query('DELETE FROM bb_instagram WHERE singleton=true');
   clearInstagramCache();
   revalidatePath('/');
-  redirect('/admin?durum=meta-kaldirildi');
+  redirect('/admin?bolum=instagram&durum=meta-kaldirildi');
 }
 
 const settingLimits = {
   contact_phone: 32, contact_whatsapp: 32, contact_email: 120, address_street: 160, address_locality: 60,
   address_region: 60, address_country: 60, maps_url: 400, hours_text: 600, hours_schema: 300,
+  announcement_text: 200, announcement_link: 400, announcement_link_text: 60, announcement_until: 10,
+  last_order_note: 240, delivery_bands: 600, studio_corporate_qty_note: 240,
 };
 
 export async function saveSettings(data) {
   await requireAdmin();
   const rows = [];
   for (const [key, max] of Object.entries(settingLimits)) {
+    if (!data.has(key)) continue; // ayarlar birkaç forma bölündü; yalnızca gönderilenler güncellenir
     const value = data.get(key);
-    if (typeof value !== 'string' || value.length > max) redirect('/admin?durum=gecersiz');
+    if (typeof value !== 'string' || value.length > max) redirect('/admin?bolum=ayarlar&durum=gecersiz');
     const trimmed = value.trim();
-    if (key === 'maps_url' && trimmed && !/^https:\/\/(www\.)?(google\.[a-z.]+\/maps|maps\.app\.goo\.gl|goo\.gl\/maps)\//.test(trimmed)) redirect('/admin?durum=gecersiz');
-    if (key === 'contact_email' && trimmed && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) redirect('/admin?durum=gecersiz');
-    if ((key === 'contact_phone' || key === 'contact_whatsapp') && trimmed && !/^\+?[\d\s()-]{10,20}$/.test(trimmed)) redirect('/admin?durum=gecersiz');
+    if (key === 'maps_url' && trimmed && !/^https:\/\/(www\.)?(google\.[a-z.]+\/maps|maps\.app\.goo\.gl|goo\.gl\/maps)\//.test(trimmed)) redirect('/admin?bolum=ayarlar&durum=gecersiz');
+    if (key === 'contact_email' && trimmed && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) redirect('/admin?bolum=ayarlar&durum=gecersiz');
+    if (key === 'announcement_link' && trimmed && !/^(\/[^\s]*|https:\/\/[^\s]+)$/.test(trimmed)) redirect('/admin?bolum=ayarlar&durum=gecersiz');
+    if (key === 'announcement_until' && trimmed && !/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) redirect('/admin?bolum=ayarlar&durum=gecersiz');
+    if ((key === 'contact_phone' || key === 'contact_whatsapp') && trimmed && !/^\+?[\d\s()-]{10,20}$/.test(trimmed)) redirect('/admin?bolum=ayarlar&durum=gecersiz');
     rows.push([key, trimmed]);
   }
   await query(
@@ -142,7 +148,7 @@ export async function saveSettings(data) {
     [rows.map(row => row[0]), rows.map(row => row[1])]
   );
   revalidatePath('/', 'layout');
-  redirect('/admin?durum=kaydedildi');
+  redirect('/admin?bolum=ayarlar&durum=kaydedildi');
 }
 
 /* ---------------------------------- Katalog (plan 1.3) --------------------------------- */
@@ -252,10 +258,10 @@ export async function saveCatalog(data) {
     }
   } catch (error) {
     if (!(error instanceof InvalidInput) && !veritabaniHatasi(error)) throw error;
-    redirect('/admin?durum=gecersiz#' + (kind || ''));
+    redirect('/admin?bolum=' + (panelBolumu[kind] || 'katalog') + '&durum=gecersiz#' + (kind || ''));
   }
   revalidatePath('/', 'layout');
-  redirect('/admin?durum=kaydedildi#' + kind);
+  redirect('/admin?bolum=' + (panelBolumu[kind] || 'katalog') + '&durum=kaydedildi#' + kind);
 }
 
 export async function deleteCatalog(data) {
@@ -269,12 +275,12 @@ export async function deleteCatalog(data) {
     const sonuc = await query(`DELETE FROM ${tanim.table} WHERE ${kosul(anahtar.where, 0)}`, anahtar.values);
     if (!sonuc.rowCount) throw new InvalidInput();
   } catch (error) {
-    if (error?.code === '23503') redirect('/admin?durum=bagli#' + kind);
+    if (error?.code === '23503') redirect('/admin?bolum=' + (panelBolumu[kind] || 'katalog') + '&durum=bagli#' + kind);
     if (!(error instanceof InvalidInput)) throw error;
-    redirect('/admin?durum=gecersiz#' + (kind || ''));
+    redirect('/admin?bolum=' + (panelBolumu[kind] || 'katalog') + '&durum=gecersiz#' + (kind || ''));
   }
   revalidatePath('/', 'layout');
-  redirect('/admin?durum=silindi#' + kind);
+  redirect('/admin?bolum=' + (panelBolumu[kind] || 'katalog') + '&durum=silindi#' + kind);
 }
 
 /* ---------------------------------- Teklifler (plan 2.5) -------------------------------- */
@@ -284,7 +290,7 @@ export async function saveQuote(data) {
   const status = data.get('status');
   const note = data.get('admin_note');
   const durumlar = ['new', 'contacted', 'quoted', 'confirmed', 'done', 'cancelled'];
-  if (!Number.isInteger(id) || id < 1 || !durumlar.includes(status) || typeof note !== 'string' || note.length > 2000) redirect('/admin?durum=gecersiz#teklifler');
+  if (!Number.isInteger(id) || id < 1 || !durumlar.includes(status) || typeof note !== 'string' || note.length > 2000) redirect('/admin?bolum=talepler&durum=gecersiz');
   await query('UPDATE bb_quotes SET status=$2, admin_note=$3, updated_at=now() WHERE id=$1', [id, status, note.trim()]);
-  redirect('/admin?durum=kaydedildi#teklifler');
+  redirect('/admin?bolum=talepler&durum=kaydedildi');
 }

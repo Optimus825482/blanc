@@ -47,6 +47,7 @@ export const getStudioData = cache(async () => {
       teslimSekilleri: grup('delivery', () => ({})),
       adetler: grup('quantity', () => ({})).map((a) => a.id),
       kurumsalAdetNotu: settings.studio_corporate_qty_note || '',
+      sonSiparisNotu: settings.last_order_note || '',
     },
     iletisim: { whatsapp: whatsappLink(settings) || '', instagram: 'https://ig.me/m/beyzablanc' },
     fiyatKurallari: rules.rows.map((k) => ({

@@ -78,6 +78,8 @@ export async function katalogTasi(client) {
   await grup('delivery', s.teslimSekilleri, (o) => o.ad, () => ({}));
   await grup('quantity', s.adetler, (o) => o + ' adet', () => ({}));
   await ekle('bb_settings', ['key', 'value'], ['studio_corporate_qty_note', s.kurumsalAdetNotu]);
+  await ekle('bb_settings', ['key', 'value'], ['last_order_note', 'Özel gün siparişlerinde önerilen son tarih: teslim gününden 3 iş günü önce.']);
+  await ekle('bb_settings', ['key', 'value'], ['delivery_bands', '1–4 adet = 2–3 iş günü içinde hazır\n5–24 adet = 3–5 iş günü içinde hazır\n25 adet ve üzeri = 5–7 iş günü içinde hazır']);
 
   // SSS: serial anahtarlı tablo; yalnızca boşsa doldurulur (panelden düzenlenenler korunur).
   const sssSayisi = (await client.query('SELECT count(*)::int AS n FROM bb_faq')).rows[0].n;

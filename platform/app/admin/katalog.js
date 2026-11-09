@@ -78,7 +78,8 @@ function Duzenleyici({ kind, tanim, item, secenekler, iliskiler }) {
   </form>;
 }
 
-export default async function KatalogBolumleri() {
+export default async function KatalogBolumleri({ kinds }) {
+  const gosterilen = Object.entries(katalog).filter(([kind]) => !kinds || kinds.includes(kind));
   const satirlar = {};
   for (const [kind, tanim] of Object.entries(katalog)) {
     satirlar[kind] = (await query(`SELECT * FROM ${tanim.table} ORDER BY ${tanim.order}`)).rows;
@@ -100,10 +101,10 @@ export default async function KatalogBolumleri() {
     extras: cift(satirlar.studio_option.filter((o) => o.option_group === 'extra')),
   };
   return <>
-    <h2 id="katalog">Katalog</h2>
-    <p>Özel günler, alıcılar, ürün tipleri, hazır tasarımlar ve stüdyo seçenekleri. Yayında olmayan kayıtlar sitede görünmez.</p>
-    {Object.entries(katalog).map(([kind, tanim]) => <section key={kind} id={kind} className="bb-katalog">
-      <h3>{tanim.title} <small>({satirlar[kind].length})</small></h3>
+    {!kinds && <h2 id="katalog">Katalog</h2>}
+    <p>Yayında olmayan kayıtlar sitede görünmez.</p>
+    {gosterilen.map(([kind, tanim]) => <section key={kind} id={kind} className="bb-katalog">
+      <h2>{tanim.title} <small>({satirlar[kind].length})</small></h2>
       {kind === 'price_rule' && <p className="kucuk">Temel fiyat: ürün tipi + (isteğe bağlı) boyut + adet aralığı için fiyat. Ekstra: seçilen stüdyo ekstrası için ek ücret. Stüdyodaki tahmini fiyat bu kurallardan hesaplanır; kural yoksa tahmin gösterilmez.</p>}
       {satirlar[kind].map((item) => <details key={(item.option_group || '') + (tanim.numericKey ? item.id : item.slug)}>
         <summary>{tanim.ozet ? tanim.ozet(item) : <>{tanim.group ? grupAdi(item.option_group) + ' · ' : ''}{item.title}{'published' in item ? (item.published ? ' · Yayında' : ' · Taslak') : ''}</>}</summary>

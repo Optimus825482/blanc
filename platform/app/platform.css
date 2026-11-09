@@ -186,3 +186,44 @@
 .bb-kurumsal__form .v-dugme { justify-self: start; }
 .bb-kurumsal__not { margin: 0; font-size: .84rem; color: var(--v-soluk); }
 .bb-teklif .bb-logo { object-fit: contain; padding: 2rem; background: #fff; }
+
+/* --- Panel: kenar menüsü ve bölümler (3.4) --- */
+.bb-admin--panel { width: min(100% - 2rem, 86rem); max-width: 86rem; }
+.bb-admin__ust { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap; border-bottom: 1px solid #dfd0be; padding-bottom: 1rem; }
+.bb-admin__ust h1 { margin: .25rem 0 0; font-size: clamp(1.8rem, 1.2rem + 1.6vw, 2.6rem); }
+.bb-admin__ust form { margin: 0; padding: 0; border: 0; background: none; }
+.bb-admin__govde { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: 2rem; align-items: start; margin-top: 1.5rem; }
+.bb-admin__menu { position: sticky; top: 1rem; display: grid; gap: .15rem; }
+.bb-admin__menu a { display: flex; align-items: center; gap: .65rem; min-height: 44px; padding: .5rem .85rem; border-radius: 6px; color: #3d2016; text-decoration: none; font-weight: 500; }
+.bb-admin__menu a:hover { background: #f5ebdf; }
+.bb-admin__menu a[aria-current="page"] { background: #512730; color: #fffaf5; }
+.bb-admin__simge { display: inline-grid; place-items: center; width: 1.5rem; font-size: .95rem; opacity: .8; }
+.bb-admin__rozet { margin-left: auto; min-width: 1.5rem; padding: .1rem .45rem; border-radius: 999px; background: #a3362a; color: #fff; font-size: .74rem; font-weight: 700; text-align: center; }
+.bb-admin__menu a[aria-current="page"] .bb-admin__rozet { background: #fffaf5; color: #512730; }
+.bb-admin__icerik { min-width: 0; }
+.bb-admin__icerik > h2:first-of-type { margin-top: 1rem; }
+.bb-admin__kirinti { margin: 0; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: #6e5a50; }
+.bb-admin__aciklama { margin: .25rem 0 0; color: #6e5a50; }
+.bb-admin__icerik h2 { margin-block: 2rem .75rem; font-size: 1.7rem; }
+.bb-admin__icerik h2 small, .bb-admin__menu small { font-size: .8rem; font-weight: 400; color: #6e5a50; }
+.bb-admin__icerik details { background: #fffdfa; border: 1px solid #dfd0be; margin-block: .5rem; }
+.bb-admin__icerik details > summary { padding: .9rem 1rem; color: #3d2016; }
+.bb-admin__icerik code { font-size: .9em; background: #f5ebdf; padding: .1em .35em; }
+@media (max-width: 840px) {
+  .bb-admin__govde { grid-template-columns: 1fr; gap: 1rem; }
+  .bb-admin__menu { position: static; display: flex; gap: .35rem; overflow-x: auto; padding-bottom: .5rem; -webkit-overflow-scrolling: touch; }
+  .bb-admin__menu a { flex: 0 0 auto; white-space: nowrap; }
+}
+
+/* --- Duyuru bandı (3.4) --- */
+.bb-duyuru { background: #512730; color: #fffaf5; font-size: .9rem; }
+.bb-duyuru__ic { display: flex; flex-wrap: wrap; justify-content: center; gap: .35rem 1.25rem; padding-block: .55rem; text-align: center; }
+.bb-duyuru a { color: #fffaf5; text-decoration: underline; text-underline-offset: .2em; font-weight: 600; }
+
+/* --- Hazırlık süreleri (3.4) --- */
+.bb-teslim { padding-block: clamp(1.5rem, 4vw, 3rem) 0; }
+.bb-teslim__bantlar { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1px; background: var(--v-cizgi); border: 1px solid var(--v-cizgi); }
+.bb-teslim__bantlar > div { padding: 1.1rem 1.25rem; background: #fffdf9; }
+.bb-teslim__adet { margin: 0; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--v-soluk); }
+.bb-teslim__sure { margin: .35rem 0 0; font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.35rem; color: var(--v-metin); }
+.bb-teslim__not { margin: .9rem 0 0; font-size: .92rem; color: var(--v-soluk); }

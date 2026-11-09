@@ -1384,7 +1384,7 @@
         })
         .join('');
 
-      document.getElementById('onay-son-siparis').textContent = 'Hazırlık ve teslim tarihini atölyeyle netleştirin.';
+      document.getElementById('onay-son-siparis').textContent = (D.studyo.sonSiparisNotu ? '📅 ' + D.studyo.sonSiparisNotu + ' ' : '') + 'Hazırlık ve teslim tarihini atölyeyle netleştirin.';
       tasdik.checked = false;
       gonderBtn.disabled = true;
       document.getElementById('onay-durum').textContent = '';

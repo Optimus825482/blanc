@@ -5,7 +5,7 @@ import { contact, instagram, pageMetadata, siteUrl } from '../../lib/seo';
 import Cards from './cards';
 import InstagramFeed from './instagram-feed';
 import { getInstagram } from '../../lib/instagram';
-import { getSettings, hoursSchema, postalAddress } from '../../lib/settings';
+import { deliveryBands, getSettings, hoursSchema, postalAddress } from '../../lib/settings';
 import './home.css';
 
 export const dynamic = 'force-dynamic';
@@ -24,6 +24,7 @@ export default async function Home() {
   const [home, about, corporate, occasions, recipients, feed, settings] = await Promise.all([
     getContent('home'), getContent('about'), getContent('corporate'), getOccasions(), getRecipients(), getInstagram(), getSettings()
   ]);
+  const bantlar = deliveryBands(settings);
   // Vitrinde görseli olan ilk 6 özel gün; kişisel günler önce.
   const categories = occasions.filter((o) => o.card_image).sort((a, b) => (a.root === 'kurumsal') - (b.root === 'kurumsal')).slice(0, 6)
     .map((o) => ({ slug: o.slug, title: o.title, body: o.body, image: o.card_image, alt: o.card_alt, icon: o.icon, count: Number(o.design_count) }));
@@ -70,6 +71,11 @@ export default async function Home() {
         <Link href="/studyo"><strong>Kendi tasarımımı yapmak</strong><span>Stüdyoda isim, tarih ve renklerinizle canlı önizleme</span></Link>
       </div>
     </section>
+    {bantlar.length > 0 && <section className="v-kabuk bb-teslim" aria-labelledby="teslim-baslik">
+      <p className="bb-overline" id="teslim-baslik">Hazırlık süreleri</p>
+      <div className="bb-teslim__bantlar">{bantlar.map((b) => <div key={b.title}><p className="bb-teslim__adet">{b.title}</p><p className="bb-teslim__sure">{b.text}</p></div>)}</div>
+      {settings.last_order_note && <p className="bb-teslim__not">📅 {settings.last_order_note}</p>}
+    </section>}
     <section className="v-kabuk v-bolum bb-collection" id="koleksiyonlar">
       <div className="v-bolum-baslik" data-reveal=""><div><p className="v-etiket">01 / Koleksiyonlar</p><h2>Kutlamanıza eşlik eden tasarımlar</h2><p>Nişan tepsilerinden isme özel bebek hediyelerine, atölyenin çalışmalarını keşfedin.</p></div>
         <Link className="v-metin-link" href="/koleksiyonlar">Tüm koleksiyonlar</Link></div>
