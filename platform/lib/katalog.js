@@ -108,5 +108,17 @@ export const katalog = {
   },
 };
 
+export const sss = {
+  table: 'bb_faq', title: 'Sıkça sorulan sorular', single: 'soru', order: 'position, id', numericKey: true,
+  ozet: (r) => (r.question.length > 80 ? r.question.slice(0, 77) + '…' : r.question) + (r.published ? '' : ' · Taslak'),
+  fields: [
+    { name: 'question', label: 'Soru', type: 'text', max: 200, required: true },
+    { name: 'answer', label: 'Cevap', type: 'textarea', max: 2000, required: true },
+    { name: 'position', label: 'Sıra', type: 'number' },
+    { name: 'published', label: 'Yayında', type: 'check' },
+  ],
+};
+katalog.faq = sss;
+
 export const slugDeseni = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 export const grupAdi = (slug) => GRUPLAR.find(([g]) => g === slug)?.[1] ?? slug;

@@ -51,6 +51,23 @@ export const getDesigns = cache(async ({ occasion, recipient, product, segment }
   return rows;
 });
 
+export const getDesign = cache(async (slug) => {
+  if (!slugOk(slug)) return undefined;
+  const { rows } = await query(`
+    SELECT d.*, p.title AS product_title, p.body AS product_body, p.sizes AS product_sizes, s.title AS segment_title, s.body AS segment_body,
+           o.title AS occasion_title, o.short_title AS occasion_short, o.icon AS occasion_icon, o.accent AS occasion_accent,
+           (SELECT array_agg(r.title ORDER BY r.position) FROM bb_design_recipients dr JOIN bb_recipients r ON r.slug = dr.recipient_slug WHERE dr.design_slug = d.slug AND r.published) AS recipient_titles,
+           (SELECT title FROM bb_studio_options WHERE option_group = 'chocolate' AND slug = d.chocolate) AS chocolate_title
+    FROM bb_designs d
+    JOIN bb_product_types p ON p.slug = d.product_type_slug
+    JOIN bb_occasions o ON o.slug = d.occasion_slug
+    LEFT JOIN bb_segments s ON s.slug = d.segment_slug
+    WHERE d.published AND d.slug = $1`, [slug]);
+  return rows[0];
+});
+
+export const getFaq = cache(async () => (await query('SELECT * FROM bb_faq WHERE published ORDER BY position, id')).rows);
+
 export function temizFiltre(params) {
   const al = (k) => (slugOk(params?.[k]) ? params[k] : undefined);
   return { recipient: al('kime'), product: al('urun'), segment: al('segment') };

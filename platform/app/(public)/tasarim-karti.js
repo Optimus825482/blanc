@@ -5,13 +5,13 @@ import { fiyatYaz } from '../../lib/katalog-oku';
 export default function TasarimKarti({ tasarim }) {
   const t = tasarim;
   return <article className="bb-tasarim" data-reveal="">
-    <Link className="bb-tasarim__gorsel" href={'/studyo?tasarim=' + t.slug} aria-label={t.title + ' ile stüdyoda başla'}>
+    <Link className="bb-tasarim__gorsel" href={'/tasarim/' + t.slug} aria-label={t.title + ' detayı'}>
       {t.image ? <img src={t.image} alt={t.alt || t.title} width="640" height="640" loading="lazy" decoding="async" /> : <span aria-hidden="true">{t.occasion_icon}</span>}
       {(t.bestseller || t.is_new) && <span className="bb-tasarim__rozet">{t.bestseller ? 'Çok tercih edilen' : 'Yeni'}</span>}
     </Link>
     <div className="bb-tasarim__metin">
       <p className="v-etiket">{t.product_title}{t.size ? ' · ' + t.size : ''}</p>
-      <h3>{t.title}</h3>
+      <h3><Link href={'/tasarim/' + t.slug}>{t.title}</Link></h3>
       {t.summary && <p>{t.summary}</p>}
       {t.tags?.length > 0 && <ul className="bb-tasarim__etiketler">{t.tags.slice(0, 3).map((e) => <li key={e}>{e}</li>)}</ul>}
       <div className="bb-tasarim__alt">

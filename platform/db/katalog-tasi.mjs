@@ -79,5 +79,11 @@ export async function katalogTasi(client) {
   await grup('quantity', s.adetler, (o) => o + ' adet', () => ({}));
   await ekle('bb_settings', ['key', 'value'], ['studio_corporate_qty_note', s.kurumsalAdetNotu]);
 
+  // SSS: serial anahtarlı tablo; yalnızca boşsa doldurulur (panelden düzenlenenler korunur).
+  const sssSayisi = (await client.query('SELECT count(*)::int AS n FROM bb_faq')).rows[0].n;
+  if (!sssSayisi) {
+    for (const [i, q] of (d.sss || []).entries()) await ekle('bb_faq', ['question', 'answer', 'position'], [q.soru, q.cevap, i * 10]);
+  }
+
   return sayac;
 }

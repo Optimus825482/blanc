@@ -128,3 +128,27 @@
 .bb-gun .v-etiket { color: var(--gun-vurgu); }
 .bb-gun .v-etiket span { border-color: var(--gun-vurgu); }
 .bb-gun__oneri { font-size: .86rem; color: var(--v-soluk); }
+
+/* --- Tasarım detayı ve SSS (plan 1.6) --- */
+.bb-tasarim-detay { align-items: start; }
+.bb-tasarim-detay__gorsel { position: relative; display: grid; place-items: center; aspect-ratio: 1; background: #efe4d6; border: 1px solid var(--v-cizgi); overflow: hidden; font-size: 6rem; }
+.bb-tasarim-detay__gorsel img { width: 100%; height: 100%; object-fit: cover; }
+.bb-kirinti { font-size: .78rem; color: var(--v-soluk); margin-bottom: .75rem; }
+.bb-kirinti a { color: inherit; }
+.bb-tasarim-detay__ozet { font-size: 1.15rem; }
+.bb-tasarim-detay__fiyat { color: var(--v-soluk); font-size: .92rem; }
+.bb-tasarim-detay__fiyat strong { color: var(--v-bordo); font: 600 1.6rem/1 "Cormorant Garamond", Georgia, serif; }
+.bb-ozellikler { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: .75rem 1.5rem; margin: 1.25rem 0; padding: 1rem 0; border-block: 1px solid var(--v-cizgi); }
+.bb-ozellikler div { display: grid; gap: .2rem; }
+.bb-ozellikler dt { font: 600 .66rem/1.4 "Inter", system-ui, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--gun-vurgu, var(--v-bordo)); }
+.bb-ozellikler dd { margin: 0; font-size: .92rem; }
+.bb-ozellikler dd a { color: inherit; }
+.bb-sss { display: grid; gap: .5rem; max-width: 52rem; }
+.bb-sss__soru { border: 1px solid var(--v-cizgi); background: #fffdf9; }
+.bb-sss__soru summary { display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 44px; padding: .9rem 1.1rem; cursor: pointer; list-style: none; }
+.bb-sss__soru summary::-webkit-details-marker { display: none; }
+.bb-sss__soru summary h2 { margin: 0; font-size: 1.25rem; line-height: 1.25; }
+.bb-sss__soru summary span { font-size: 1.4rem; color: var(--v-bordo); transition: transform .2s; }
+.bb-sss__soru[open] summary span { transform: rotate(45deg); }
+.bb-sss__soru .bb-prose { padding: 0 1.1rem 1.1rem; color: var(--v-soluk); }
+.bb-sss__eylem { margin-top: 2rem; }

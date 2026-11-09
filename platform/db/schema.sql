@@ -148,3 +148,12 @@ CREATE INDEX IF NOT EXISTS bb_price_rules_lookup_idx ON bb_price_rules (kind, pr
 -- 1.3: ürün tipine altlık fotoğrafı (stüdyo gerçek görsel zemini)
 ALTER TABLE bb_product_types ADD COLUMN IF NOT EXISTS image text NOT NULL DEFAULT '';
 ALTER TABLE bb_product_types ADD COLUMN IF NOT EXISTS alt text NOT NULL DEFAULT '';
+-- 1.6: sıkça sorulan sorular (panelden yönetilir)
+CREATE TABLE IF NOT EXISTS bb_faq (
+  id serial PRIMARY KEY,
+  question text NOT NULL,
+  answer text NOT NULL,
+  position integer NOT NULL DEFAULT 0,
+  published boolean NOT NULL DEFAULT true,
+  updated_at timestamptz NOT NULL DEFAULT now()
+);

@@ -17,7 +17,7 @@ export default async function PublicLayout({ children }) {
     <main id="icerik">{children}</main>
     <footer className="v-alt"><div className="v-kabuk v-alt-ic">
       <div><Link className="v-marka" href="/">BEYZA <span className="v-marka-script">Blanc</span></Link><p>Girne · Alsancak / Kuzey Kıbrıs</p></div>
-      <nav aria-label="Alt menü"><Link href="/hakkimizda">Atölye hakkında</Link><Link href="/iletisim">İletişim</Link><a href={instagram}>Instagram</a>{whatsapp && <a href={whatsapp}>WhatsApp</a>}</nav>
+      <nav aria-label="Alt menü"><Link href="/hakkimizda">Atölye hakkında</Link><Link href="/iletisim">İletişim</Link><Link href="/sss">Sık sorulanlar</Link><a href={instagram}>Instagram</a>{whatsapp && <a href={whatsapp}>WhatsApp</a>}</nav>
       <a className="v-metin-link" href={contact}>Atölyeye yaz <span aria-hidden="true">↗</span></a>
     </div></footer>
     <Script src="/assets/js/reveal.js" strategy="afterInteractive" />
