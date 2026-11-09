@@ -152,3 +152,18 @@
 .bb-sss__soru[open] summary span { transform: rotate(45deg); }
 .bb-sss__soru .bb-prose { padding: 0 1.1rem 1.1rem; color: var(--v-soluk); }
 .bb-sss__eylem { margin-top: 2rem; }
+
+/* --- Teklif takibi (plan 2.5) --- */
+.bb-teklif__izgara { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 2rem; align-items: start; }
+@media (max-width: 760px) { .bb-teklif__izgara { grid-template-columns: 1fr; } }
+.bb-adimlar { display: grid; gap: .5rem; list-style: none; margin: 0 0 1.5rem; padding: 0; }
+.bb-adimlar li { display: flex; align-items: center; gap: .75rem; min-height: 40px; color: var(--v-soluk); }
+.bb-adimlar li span { display: grid; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 50%; border: 1px solid var(--v-cizgi); font-size: .78rem; background: #fff; }
+.bb-adimlar li[aria-current="step"] { color: var(--v-metin); font-weight: 600; }
+.bb-adimlar li[aria-current="step"] span { background: var(--v-bordo); border-color: var(--v-bordo); color: #fffaf5; }
+.bb-adimlar .bb-adimlar__tamam span { background: #e9dfcf; }
+.bb-teklif__ozet { margin-top: 1.5rem; }
+.bb-teklif__ozet pre, .bb-admin pre { white-space: pre-wrap; font: inherit; font-size: .88rem; color: var(--v-soluk); background: #fffdf9; border: 1px solid var(--v-cizgi); padding: 1rem; }
+.bb-admin .bb-teklif-yeni > summary { color: #7a2e1f; }
+.bb-admin .bb-teklif-satir { display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap; }
+.bb-admin .bb-teklif-satir p { margin: 0 0 .5rem; font-size: .9rem; }

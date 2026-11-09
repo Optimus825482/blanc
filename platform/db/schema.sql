@@ -157,3 +157,29 @@ CREATE TABLE IF NOT EXISTS bb_faq (
   published boolean NOT NULL DEFAULT true,
   updated_at timestamptz NOT NULL DEFAULT now()
 );
+-- 2.5: teklif talepleri (stüdyo onayı sonrası kayıt; takip kodu müşteriye gösterilir)
+CREATE TABLE IF NOT EXISTS bb_quotes (
+  id serial PRIMARY KEY,
+  code text NOT NULL UNIQUE CHECK (code ~ '^BB-[A-Z0-9]{4}-[A-Z0-9]{2}$'),
+  kind text NOT NULL DEFAULT 'personal' CHECK (kind IN ('personal', 'corporate')),
+  design_slug text REFERENCES bb_designs(slug) ON DELETE SET NULL ON UPDATE CASCADE,
+  occasion_slug text NOT NULL DEFAULT '',
+  product_type_slug text NOT NULL DEFAULT '',
+  size text NOT NULL DEFAULT '',
+  quantity integer NOT NULL DEFAULT 1 CHECK (quantity >= 1),
+  selections jsonb NOT NULL DEFAULT '{}'::jsonb,
+  summary text NOT NULL DEFAULT '',
+  estimate numeric(10,2) CHECK (estimate IS NULL OR estimate >= 0),
+  delivery_method text NOT NULL DEFAULT '',
+  delivery_date date,
+  recipient_name text NOT NULL DEFAULT '',
+  contact_channel text NOT NULL DEFAULT '' CHECK (contact_channel IN ('', 'whatsapp', 'instagram', 'share', 'download')),
+  image_id uuid REFERENCES bb_media(id) ON DELETE SET NULL,
+  status text NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'contacted', 'quoted', 'confirmed', 'done', 'cancelled')),
+  admin_note text NOT NULL DEFAULT '',
+  client_hash text NOT NULL DEFAULT '',
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS bb_quotes_status_idx ON bb_quotes (status, created_at DESC);
+CREATE INDEX IF NOT EXISTS bb_quotes_client_idx ON bb_quotes (client_hash, created_at DESC);

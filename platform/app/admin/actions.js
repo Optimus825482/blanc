@@ -276,3 +276,15 @@ export async function deleteCatalog(data) {
   revalidatePath('/', 'layout');
   redirect('/admin?durum=silindi#' + kind);
 }
+
+/* ---------------------------------- Teklifler (plan 2.5) -------------------------------- */
+export async function saveQuote(data) {
+  await requireAdmin();
+  const id = Number(data.get('id'));
+  const status = data.get('status');
+  const note = data.get('admin_note');
+  const durumlar = ['new', 'contacted', 'quoted', 'confirmed', 'done', 'cancelled'];
+  if (!Number.isInteger(id) || id < 1 || !durumlar.includes(status) || typeof note !== 'string' || note.length > 2000) redirect('/admin?durum=gecersiz#teklifler');
+  await query('UPDATE bb_quotes SET status=$2, admin_note=$3, updated_at=now() WHERE id=$1', [id, status, note.trim()]);
+  redirect('/admin?durum=kaydedildi#teklifler');
+}

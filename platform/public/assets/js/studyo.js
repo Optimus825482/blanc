@@ -1096,8 +1096,8 @@
     }
   }
 
-  function akilliPaylas() {
-    var metin = ozetUret();
+  function akilliPaylas(hazirMetin) {
+    var metin = hazirMetin || ozetUret();
     if (!paylasDugmesiDestekliMi()) {
       indir();
       window.open(UI.waLink(metin + '\n\n(Görseli indirdim, sohbete ekliyorum.)'), '_blank', 'noopener');
@@ -1369,6 +1369,10 @@
     }
 
     function onayAc() {
+      kanalEl.hidden = true;
+      document.querySelector('.onay-tasdik').hidden = false;
+      document.querySelector('.onay-eylem').hidden = false;
+      document.getElementById('onay-son-siparis').hidden = false;
       var tuval = document.getElementById('onay-tuval');
       tuval.width = 480;
       tuval.height = 480;
@@ -1394,11 +1398,99 @@
       gonderBtn.disabled = !tasdik.checked;
     });
 
+    /* --- Teklif kaydı (plan 2.5) ve kanal seçimi (2.6) --- */
+    var kanalEl = document.getElementById('onay-kanal');
+    var sonTeklif = null;
+
+    function teklifVerisi(tahmin) {
+      return {
+        tema: durum.tema, urun: durum.urun, boyut: durum.boyut, adet: durum.adet,
+        tasarim: new URLSearchParams(location.search).get('tasarim') || '',
+        teslimSekli: durum.teslimSekli, teslimTarihi: durum.teslimTarihi || '', aliciAdi: durum.aliciAdi || '',
+        tahmin: tahmin ? tahmin.toplam : null,
+        ozet: ozetEl ? ozetEl.value : ozetUret(),
+        secimler: {
+          cikolata: durum.cikolata, ambalaj: durum.ambalaj, kurdele: durum.kurdele, kart: durum.kart, font: durum.font,
+          isim: durum.isim, tarih: durum.tarih, mesaj: durum.mesaj, ekstralar: durum.ekstralar, teslimNotu: durum.teslimNotu || '',
+          fotograf: !!fotograf, gorunum: durum.gorunum
+        }
+      };
+    }
+
+    function kanalIsaretle(kanal) {
+      if (!sonTeklif) return;
+      try {
+        fetch('/api/teklif', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kod: sonTeklif.kod, kanal: kanal }), keepalive: true });
+      } catch (e) { /* sessiz */ }
+    }
+
+    function kanalGoster(t) {
+      sonTeklif = t;
+      document.getElementById('onay-kod').textContent = t.kod;
+      var takip = document.getElementById('onay-takip');
+      takip.href = t.takip;
+      takip.textContent = t.takip.replace(/^https?:\/\//, '');
+      var wa = document.getElementById('kanal-wa');
+      wa.hidden = !t.whatsapp;
+      if (t.whatsapp) wa.href = t.whatsapp;
+      document.getElementById('kanal-ig').href = t.instagram;
+      document.getElementById('kanal-paylas').hidden = !paylasDugmesiDestekliMi();
+      document.querySelector('.onay-tasdik').hidden = true;
+      document.querySelector('.onay-eylem').hidden = true;
+      document.getElementById('onay-son-siparis').hidden = true;
+      kanalEl.hidden = false;
+      document.getElementById('kanal-ig').focus();
+    }
+
+    function teklifKaydet() {
+      var tahmin = fiyatTahmini();
+      var onayDurum = document.getElementById('onay-durum');
+      gonderBtn.disabled = true;
+      onayDurum.textContent = 'Tasarımınız kaydediliyor…';
+      pngBlob(function (blob) {
+        var fd = new FormData();
+        fd.append('veri', JSON.stringify(teklifVerisi(tahmin)));
+        fd.append('gorsel', blob, dosyaAdi());
+        fetch('/api/teklif', { method: 'POST', body: fd })
+          .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.hata || 'Kayıt başarısız'); return j; }); })
+          .then(function (t) {
+            onayDurum.textContent = '';
+            kanalGoster(t);
+          })
+          .catch(function (e) {
+            gonderBtn.disabled = false;
+            onayDurum.textContent = (e.message || 'Kayıt yapılamadı.') + ' Görseli indirip doğrudan da gönderebilirsiniz.';
+          });
+      });
+    }
+
     gonderBtn.addEventListener('click', function () {
       if (!tasdik.checked) return;
+      teklifKaydet();
+    });
+
+    document.getElementById('kanal-wa').addEventListener('click', function () { kanalIsaretle('whatsapp'); });
+    document.getElementById('kanal-ig').addEventListener('click', function () {
+      kanalIsaretle('instagram');
+      var metin = sonTeklif ? sonTeklif.mesaj : ozetUret();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(metin).then(function () {
+          document.getElementById('kanal-not').textContent = 'Özet ve takip kodu panoya kopyalandı; Instagram sohbetine yapıştırın. Görseli de indirip ekleyebilirsiniz.';
+        }, function () {});
+      }
+    });
+    document.getElementById('kanal-paylas').addEventListener('click', function () {
+      kanalIsaretle('share');
+      akilliPaylas(sonTeklif ? sonTeklif.mesaj : null);
+    });
+    document.getElementById('kanal-indir').addEventListener('click', function () {
+      kanalIsaretle('download');
+      indir();
+    });
+    document.getElementById('kanal-kapat').addEventListener('click', function () {
       if (typeof diyalog.close === 'function') diyalog.close();
       else diyalog.removeAttribute('open');
-      akilliPaylas();
+      durumYaz('Talebiniz ' + (sonTeklif ? sonTeklif.kod : '') + ' koduyla kaydedildi.', true);
     });
 
     document.getElementById('btn-duzenle').addEventListener('click', function () {

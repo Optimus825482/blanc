@@ -5,6 +5,7 @@ import { connectInstagram, disconnectInstagram, login, logout, save, saveSetting
 import { getSettings } from '../../lib/settings';
 import { getInstagram } from '../../lib/instagram';
 import KatalogBolumleri from './katalog';
+import Teklifler from './teklifler';
 
 export const metadata = { title: 'Yönetim', robots: { index: false, follow: false } };
 export const dynamic = 'force-dynamic';
@@ -76,6 +77,7 @@ export default async function Admin({ searchParams }) {
       <button className="btn btn--birincil" type="submit">Giriş yap</button>
     </form> : <>
       <form action={logout}><button className="btn btn--cizgili" type="submit">Çıkış yap</button></form>
+      <Teklifler />
       <h2>Instagram bağlantısı</h2>
       <p>Instagram Login için oluşturulmuş Beyza Blanc profesyonel hesap erişim anahtarını girin. Anahtar sunucuda şifreli saklanır.</p>
       {instagram.rows[0] ? <>

@@ -53,3 +53,14 @@ body[data-sayfa="studyo"] { background: #f6f0e8; }
 .fiyat-tahmini__tutar strong { font: 600 1.7rem/1 "Cormorant Garamond", Georgia, serif; color: #512730; }
 .fiyat-tahmini__detay { margin: .5rem 0 0; padding: 0; list-style: none; font-size: .9rem; color: #4a3a30; }
 .fiyat-tahmini__not { margin: .5rem 0 0; font-size: .78rem; color: #7a6a60; }
+
+/* Teklif kaydı ve kanal seçimi (plan 2.5 / 2.6) */
+.onay-kanal { margin-top: 1rem; padding: 1.1rem 1.25rem; border: 1px solid #dfd0be; border-radius: 12px; background: #fffdf9; display: grid; gap: .6rem; }
+.onay-kanal__etiket { margin: 0; font: 600 .7rem/1 "Inter", system-ui, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #6e5a50; }
+.onay-kanal__kod { margin: 0; font: 600 2.2rem/1 "Cormorant Garamond", Georgia, serif; letter-spacing: .06em; color: #512730; }
+.onay-kanal__dugmeler { display: flex; flex-wrap: wrap; gap: .6rem; }
+.onay-kanal .btn--birincil { background: #512730; border-color: #512730; color: #fffaf5; }
+.onay-kanal a.btn { text-decoration: none; }
+
+/* hidden özniteliği .btn ve flex kapsayıcıların display kuralını yensin */
+.onay-diyalog [hidden] { display: none !important; }

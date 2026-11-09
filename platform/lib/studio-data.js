@@ -1,7 +1,7 @@
 import 'server-only';
 import { cache } from 'react';
 import { query } from './db';
-import { getSettings } from './settings';
+import { getSettings, whatsappLink } from './settings';
 
 // Stüdyo ve vitrin betiklerinin beklediği BEYZA_DATA biçimini (eski data.js) tablolardan üretir.
 // Alan adları Türkçe kalır; böylece public/assets/js/studyo.js değişmeden tablolardan beslenir.
@@ -48,6 +48,7 @@ export const getStudioData = cache(async () => {
       adetler: grup('quantity', () => ({})).map((a) => a.id),
       kurumsalAdetNotu: settings.studio_corporate_qty_note || '',
     },
+    iletisim: { whatsapp: whatsappLink(settings) || '', instagram: 'https://ig.me/m/beyzablanc' },
     fiyatKurallari: rules.rows.map((k) => ({
       tur: k.kind, urun: k.product_type_slug, boyut: k.size, secenek: k.option_slug ? camel(k.option_slug) : null,
       minAdet: k.min_qty, maxAdet: k.max_qty, tutar: Number(k.amount), mod: k.mode, para: k.currency,
