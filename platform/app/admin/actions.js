@@ -118,3 +118,28 @@ export async function disconnectInstagram() {
   revalidatePath('/');
   redirect('/admin?durum=meta-kaldirildi');
 }
+
+const settingLimits = {
+  contact_phone: 32, contact_whatsapp: 32, contact_email: 120, address_street: 160, address_locality: 60,
+  address_region: 60, address_country: 60, maps_url: 400, hours_text: 600, hours_schema: 300,
+};
+
+export async function saveSettings(data) {
+  await requireAdmin();
+  const rows = [];
+  for (const [key, max] of Object.entries(settingLimits)) {
+    const value = data.get(key);
+    if (typeof value !== 'string' || value.length > max) redirect('/admin?durum=gecersiz');
+    const trimmed = value.trim();
+    if (key === 'maps_url' && trimmed && !/^https:\/\/(www\.)?(google\.[a-z.]+\/maps|maps\.app\.goo\.gl|goo\.gl\/maps)\//.test(trimmed)) redirect('/admin?durum=gecersiz');
+    if (key === 'contact_email' && trimmed && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) redirect('/admin?durum=gecersiz');
+    if ((key === 'contact_phone' || key === 'contact_whatsapp') && trimmed && !/^\+?[\d\s()-]{10,20}$/.test(trimmed)) redirect('/admin?durum=gecersiz');
+    rows.push([key, trimmed]);
+  }
+  await query(
+    'INSERT INTO bb_settings(key,value) SELECT * FROM unnest($1::text[], $2::text[]) ON CONFLICT(key) DO UPDATE SET value=EXCLUDED.value, updated_at=now()',
+    [rows.map(row => row[0]), rows.map(row => row[1])]
+  );
+  revalidatePath('/', 'layout');
+  redirect('/admin?durum=kaydedildi');
+}

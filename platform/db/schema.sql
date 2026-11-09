@@ -33,3 +33,8 @@ CREATE TABLE IF NOT EXISTS bb_instagram (
   token_cipher text NOT NULL,
   updated_at timestamptz NOT NULL DEFAULT now()
 );
+CREATE TABLE IF NOT EXISTS bb_settings (
+  key text PRIMARY KEY CHECK (key ~ '^[a-z_]{1,40}$'),
+  value text NOT NULL,
+  updated_at timestamptz NOT NULL DEFAULT now()
+);

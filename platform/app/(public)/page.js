@@ -3,6 +3,7 @@ import { contact, instagram, pageMetadata, siteUrl } from '../../lib/seo';
 import Cards from './cards';
 import InstagramFeed from './instagram-feed';
 import { getInstagram } from '../../lib/instagram';
+import { getSettings, hoursSchema, postalAddress } from '../../lib/settings';
 import './home.css';
 
 export const dynamic = 'force-dynamic';
@@ -18,14 +19,18 @@ const posts = [
 ];
 
 export default async function Home() {
-  const [home, about, corporate, categories, feed] = await Promise.all([
-    getContent('home'), getContent('about'), getContent('corporate'), getCategories(), getInstagram()
+  const [home, about, corporate, categories, feed, settings] = await Promise.all([
+    getContent('home'), getContent('about'), getContent('corporate'), getCategories(), getInstagram(), getSettings()
   ]);
   const business = {
     '@context': 'https://schema.org', '@type': 'LocalBusiness', name: 'Beyza Blanc',
     description: home.body, url: siteUrl || undefined,
     image: siteUrl ? new URL(home.image, siteUrl).href : undefined, sameAs: [instagram],
-    address: { '@type': 'PostalAddress', addressLocality: 'Alsancak', addressRegion: 'Girne' },
+    address: postalAddress(settings),
+    telephone: settings.contact_phone || undefined,
+    email: settings.contact_email || undefined,
+    hasMap: settings.maps_url || undefined,
+    openingHours: hoursSchema(settings),
   };
   return <div className="bb-home">
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(business).replace(/</g, '\\u003c') }} />

@@ -50,3 +50,9 @@
 .bb-story { display:grid; justify-items:center; gap:.4rem; min-width:6rem; font-size:.7rem; text-align:center; text-decoration:none; }
 .bb-story img { width:5.25rem; height:5.25rem; object-fit:cover; border-radius:50%; padding:3px; border:2px solid #a77c4e; }
 .bb-page-intro .bb-status { margin-top: 1rem; padding: .75rem 1rem; background: #f0e6d7; border-left: 3px solid #a77c4e; }
+.bb-contact { display: grid; gap: clamp(2rem, 5vw, 4rem); grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); align-items: start; }
+.bb-contact-list { margin: 0; display: grid; gap: 1.1rem; padding: 1.5rem; background: #fff9ef; border: 1px solid var(--v-cizgi); }
+.bb-contact-list div { display: grid; gap: .3rem; }
+.bb-contact-list dt { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--v-soluk); }
+.bb-contact-list dd { margin: 0; display: grid; gap: .2rem; }
+.bb-contact-list dd a { color: inherit; min-height: 44px; display: inline-flex; align-items: center; }

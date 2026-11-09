@@ -126,7 +126,7 @@ Her iş paketi tek oturumda bitecek büyüklükte, bağımlılığı yazılı. S
 | 0.2 | ESLint + `eslint-config-next`, `npm run lint` ve `npm run check` | `package.json` | Lint sıfır hata |
 | 0.3 | Başlıkta "Blanc" script yazı tipi (logo ile uyum); Great Vibes veya Pinyon Script self-host | `app/layout.js`, `app/(public)/layout.js`, `vitrin.css` | Başlık ve alt bilgi logo ile tutarlı, kontrast AA |
 | 0.4 | Koleksiyon sayfası `gun` parametresini okur: eşleşen kategoriye yönlendirir, eşleşmeyene not gösterir; `/sss` ve `/urun` uzantısız açılır | `koleksiyonlar/page.js`, `next.config.mjs` | 20 menü bağlantısı doğru hedefe gider ✔ (9 Kasım) |
-| 0.5 | İletişim sayfası ve JSON-LD: adres, telefon, saat, harita, iki kanal; değerler `bb_settings`'ten | `iletisim/page.js`, `page.js`, şema | Rich Results testi geçer |
+| 0.5 | İletişim sayfası ve JSON-LD: adres, telefon, saat, harita, iki kanal; değerler `bb_settings`'ten, panelde form | `iletisim/page.js`, `page.js`, `lib/settings.js`, `admin/*` | Rich Results testi geçer ✔ (9 Kasım; telefon ve WhatsApp panelden girilecek) |
 | 0.6 | Docker Compose + Caddy + yedek betiği; VPS'e ilk dağıtım | `Dockerfile`, `compose.yml`, `deploy/` | HTTPS'te açılır, yedek dosyası oluşur |
 
 ### Faz 1: Katalog veritabanına (5–7 gün)
@@ -164,7 +164,7 @@ Her iş paketi tek oturumda bitecek büyüklükte, bağımlılığı yazılı. S
 | 3.2 | Yorum toplama ve onay; ana sayfada "Sizden gelenler" | 2.9 | Onaysız yorum yayınlanmaz |
 | 3.3 | Özel gün hatırlatıcısı (e-posta ilk, WhatsApp sonra) | 2.5 | 10 gün önce mesaj gider, tek tık iptal |
 | 3.4 | Panel ayarları: duyuru bandı, son sipariş notu, teslim bantları, iletişim | 1.3 | Kod değişmeden içerik yönetilir |
-| 3.5 | Güvenlik: IP bazlı giriş sınırı, CSP, HSTS, TOTP (isteğe bağlı), Instagram anahtar yenileme işi | 0.6 | Güvenlik başlıkları testinde A |
+| 3.5 | Güvenlik: IP bazlı giriş sınırı, sunucu tarafı oturum iptali (`bb_sessions`, parola değişince tüm oturumlar düşer), CSP, HSTS, TOTP (isteğe bağlı), Instagram anahtar yenileme işi | 0.6 | Güvenlik başlıkları testinde A |
 | 3.6 | Ölçüm: Plausible/Umami, huni olayları (seçici, stüdyo adımları, onay, kanal) | 0.6 | Haftalık dönüşüm raporu |
 | 3.7 | CI/CD: GitHub Actions lint + test + build + SSH dağıtım | 0.1 | `main`'e birleşince canlıya çıkar |
 
