@@ -134,7 +134,7 @@ Her iş paketi tek oturumda bitecek büyüklükte, bağımlılığı yazılı. S
 | No | İş | Bağımlılık | Kabul ölçütü |
 |---|---|---|---|
 | 1.1 | Şema: occasions, recipients, segments, product_types, designs, bağlantı tabloları, studio_options, price_rules (settings 0.5'te geldi) | 0.1 | `db:seed` idempotent çalışır ✔ (9 Kasım; 10 yeni tablo, iki kez seed doğrulandı) |
-| 1.2 | `data.js`'den seed göçü; `bb_categories` → `bb_occasions` | 1.1 | 19 özel gün, 8 alıcı, 28 tasarım panelde görünür |
+| 1.2 | `data.js`'den seed göçü; `bb_categories` → `bb_occasions` | 1.1 | 19 özel gün, 8 alıcı, 28 tasarım panelde görünür — ✅ 9 Kasım: `db/katalog-tasi.mjs` seed içinde çalışır; 19 özel gün, 8 alıcı, 3 segment, 4 ürün tipi, 28 tasarım (28 özel gün + 49 alıcı bağı), 42 stüdyo seçeneği tabloda; tekrar çalıştırma var olanı ezmez. Panelde görünme 1.3 ile |
 | 1.3 | Panel: sekmeler, tasarım CRUD, çoklu etiket, sıralama, silme, taslak önizleme | 1.2 | Yeni tasarım 2 dakikada eklenebilir |
 | 1.4 | Mega menü ve niyet seçici veritabanından | 1.2 | Menü 6 kök, mobil akordeon |
 | 1.5 | `/koleksiyonlar` filtre + sıralama + URL durumu, `/koleksiyonlar/[slug]` tasarım ızgarası | 1.2 | Statik sitedeki tüm filtre kombinasyonları çalışır |

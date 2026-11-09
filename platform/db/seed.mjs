@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import nextEnv from '@next/env';
 import pg from 'pg';
+import { katalogTasi } from './katalog-tasi.mjs';
 
 nextEnv.loadEnvConfig(process.cwd());
 const pool = new pg.Pool();
@@ -42,8 +43,10 @@ try {
   for (const [index, row] of categories.entries()) {
     await client.query('INSERT INTO bb_categories(slug,title,body,image,alt,position,published) VALUES ($1,$2,$3,$4,$5,$6,true) ON CONFLICT DO NOTHING', [...row, index * 10]);
   }
+  const katalog = await katalogTasi(client);
   await client.query('COMMIT');
   console.log('Beyza Blanc içerik tabloları hazır.');
+  console.log('Katalog (yeni satır):', JSON.stringify(katalog));
 } catch (error) {
   await client.query('ROLLBACK');
   throw error;
