@@ -20,6 +20,10 @@ RUN addgroup -S app && adduser -S app -G app
 COPY --from=build --chown=app:app /app/.next/standalone ./
 COPY --from=build --chown=app:app /app/.next/static ./.next/static
 COPY --from=build --chown=app:app /app/public ./public
+# Şema ve tohum açılışta uygulanır (docker-entrypoint.sh); db/ ve data.js bunun için gerekir.
+COPY --from=build --chown=app:app /app/db ./db
+COPY --chown=app:app docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh && mkdir -p ./public/uploads && chown app:app ./public/uploads
 USER app
 EXPOSE 3000
-CMD ["node", "server.js"]
+ENTRYPOINT ["./docker-entrypoint.sh"]

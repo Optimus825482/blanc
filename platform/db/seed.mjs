@@ -1,9 +1,10 @@
 import { readFile } from 'node:fs/promises';
-import nextEnv from '@next/env';
 import pg from 'pg';
 import { katalogTasi } from './katalog-tasi.mjs';
 
-nextEnv.loadEnvConfig(process.cwd());
+// Yerelde .env.local okunur; konteynerde değişkenler ortamdan gelir ve @next/env bulunmayabilir.
+const nextEnv = await import('@next/env').then((m) => m.default).catch(() => null);
+nextEnv?.loadEnvConfig(process.cwd());
 const pool = new pg.Pool();
 const client = await pool.connect();
 const image = (path) => '/assets/img/instagram/' + path + '.webp';
