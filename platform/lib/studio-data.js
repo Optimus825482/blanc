@@ -8,7 +8,7 @@ import { getSettings } from './settings';
 const camel = (slug) => slug.replace(/-([a-z0-9])/g, (_, h) => h.toUpperCase());
 
 export const getStudioData = cache(async () => {
-  const [occasions, recipients, segments, types, designs, recipientLinks, options, settings] = await Promise.all([
+  const [occasions, recipients, segments, types, designs, recipientLinks, options, settings, rules] = await Promise.all([
     query('SELECT * FROM bb_occasions WHERE published ORDER BY position, title'),
     query('SELECT * FROM bb_recipients WHERE published ORDER BY position, title'),
     query('SELECT * FROM bb_segments ORDER BY position, title'),
@@ -17,6 +17,7 @@ export const getStudioData = cache(async () => {
     query('SELECT design_slug, recipient_slug FROM bb_design_recipients'),
     query('SELECT * FROM bb_studio_options WHERE published ORDER BY option_group, position, title'),
     getSettings(),
+    query('SELECT kind, product_type_slug, size, option_slug, min_qty, max_qty, amount, mode, currency FROM bb_price_rules ORDER BY kind, min_qty'),
   ]);
   const alicilar = {};
   for (const r of recipientLinks.rows) (alicilar[r.design_slug] ??= []).push(r.recipient_slug);
@@ -47,6 +48,10 @@ export const getStudioData = cache(async () => {
       adetler: grup('quantity', () => ({})).map((a) => a.id),
       kurumsalAdetNotu: settings.studio_corporate_qty_note || '',
     },
+    fiyatKurallari: rules.rows.map((k) => ({
+      tur: k.kind, urun: k.product_type_slug, boyut: k.size, secenek: k.option_slug ? camel(k.option_slug) : null,
+      minAdet: k.min_qty, maxAdet: k.max_qty, tutar: Number(k.amount), mod: k.mode, para: k.currency,
+    })),
     yorumlar: [],
   };
 });

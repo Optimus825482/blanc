@@ -90,6 +90,22 @@ export const katalog = {
       ortak.position, ortak.published,
     ],
   },
+  price_rule: {
+    table: 'bb_price_rules', title: 'Fiyat kuralları', single: 'fiyat kuralı', order: 'kind, product_type_slug, size, min_qty, id',
+    numericKey: true,
+    ozet: (r) => (r.kind === 'base' ? 'Ürün fiyatı' : 'Ekstra') + ' · ' + (r.product_type_slug || r.option_slug || '') + (r.size ? ' · ' + r.size : '') + ' · ' + r.min_qty + (r.max_qty ? '–' + r.max_qty : '+') + ' adet · ' + Number(r.amount).toLocaleString('tr-TR') + ' ' + r.currency + (r.mode === 'per_order' ? ' / sipariş' : ' / adet'),
+    fields: [
+      { name: 'kind', input: 'rule_kind', label: 'Kural türü', type: 'select', options: [['base', 'Ürün temel fiyatı'], ['extra', 'Ekstra ücreti']], required: true },
+      { name: 'product_type_slug', label: 'Ürün tipi (temel fiyat için)', type: 'select', options: 'product_types', empty: 'Seçin', nullable: true },
+      { name: 'size', label: 'Boyut (boş: tüm boyutlar)', type: 'text', max: 40 },
+      { name: 'option_slug', label: 'Ekstra (ekstra ücreti için)', type: 'select', options: 'extras', empty: 'Seçin', nullable: true },
+      { name: 'min_qty', label: 'En az adet', type: 'number', min: 1 },
+      { name: 'max_qty', label: 'En çok adet (boş: sınırsız)', type: 'number', min: 1, nullable: true },
+      { name: 'amount', label: 'Tutar (TL)', type: 'decimal', required: true },
+      { name: 'mode', label: 'Uygulama', type: 'select', options: [['per_unit', 'Adet başına'], ['per_order', 'Sipariş başına']], required: true },
+      { name: 'note', label: 'Not (yalnızca panelde)', type: 'text', max: 200 },
+    ],
+  },
 };
 
 export const slugDeseni = /^[a-z0-9]+(-[a-z0-9]+)*$/;

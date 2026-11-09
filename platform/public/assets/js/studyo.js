@@ -973,8 +973,65 @@
     return satirlar.join('\n');
   }
 
+  /* --------------------------- Fiyat tahmini (plan 2.2) ------------------ */
+  // Panelde tanımlı kurallardan hesaplanır: ürün tipi (+boyut) ve adet aralığına uyan temel fiyat,
+  // seçili ekstraların ücreti. Kural yoksa tahmin gösterilmez; kesin fiyat her zaman atölyeden.
+  var fiyatEl = document.getElementById('fiyat-tahmini');
+
+  function paraYaz(tutar, para) {
+    var sayi = Math.round(tutar).toLocaleString('tr-TR');
+    return para === 'TRY' || !para ? sayi + ' TL' : sayi + ' ' + para;
+  }
+
+  function adetUyar(k, adet) {
+    return k.minAdet <= adet && (k.maxAdet === null || k.maxAdet === undefined || adet <= k.maxAdet);
+  }
+
+  function fiyatTahmini() {
+    var kurallar = D.fiyatKurallari || [];
+    var adet = parseInt(durum.adet, 10) || 1;
+    var temel = kurallar.filter(function (k) {
+      return k.tur === 'base' && k.urun === durum.urun && (k.boyut === '' || k.boyut === durum.boyut) && adetUyar(k, adet);
+    }).sort(function (a, b) {
+      // boyutu birebir eşleşen ve adet aralığı dar olan kural önce
+      return (b.boyut === durum.boyut) - (a.boyut === durum.boyut) || b.minAdet - a.minAdet;
+    })[0];
+    if (!temel) return null;
+    var toplam = temel.mod === 'per_order' ? temel.tutar : temel.tutar * adet;
+    var ekstralar = [];
+    D.studyo.ekstralar.forEach(function (e) {
+      if (durum.ekstralar.indexOf(e.id) === -1) return;
+      var k = kurallar.filter(function (x) { return x.tur === 'extra' && x.secenek === e.id && adetUyar(x, adet); })
+        .sort(function (a, b) { return b.minAdet - a.minAdet; })[0];
+      if (!k) return;
+      var tutar = k.mod === 'per_order' ? k.tutar : k.tutar * adet;
+      ekstralar.push({ ad: e.ad, tutar: tutar });
+      toplam += tutar;
+    });
+    return { toplam: toplam, adet: adet, birim: toplam / adet, para: temel.para, ekstralar: ekstralar, temel: temel };
+  }
+
+  function fiyatGuncelle() {
+    if (!fiyatEl) return null;
+    var t = fiyatTahmini();
+    if (!t) { fiyatEl.hidden = true; fiyatEl.innerHTML = ''; return null; }
+    var ekstraMetin = t.ekstralar.length
+      ? '<li>Ekstralar: ' + t.ekstralar.map(function (e) { return e.ad + ' (' + paraYaz(e.tutar, t.para) + ')'; }).join(', ') + '</li>'
+      : '';
+    fiyatEl.hidden = false;
+    fiyatEl.innerHTML =
+      '<p class="fiyat-tahmini__tutar"><span>Tahmini fiyat</span><strong>' + paraYaz(t.toplam, t.para) + '</strong></p>' +
+      '<ul class="fiyat-tahmini__detay">' +
+      '<li>' + t.adet + ' adet · adet başına yaklaşık ' + paraYaz(t.birim, t.para) + '</li>' + ekstraMetin +
+      '</ul>' +
+      '<p class="fiyat-tahmini__not">Kesin fiyat ve teslim günü atölyeden yazılı olarak bildirilir; tahmin baskı detayına göre değişebilir.</p>';
+    return t;
+  }
+
   function ozetGuncelle() {
     var metin = ozetUret();
+    var t = fiyatGuncelle();
+    if (t) metin = metin.replace('\n\nTasarım görselini', '\n• Sitedeki tahmini fiyat: ' + paraYaz(t.toplam, t.para) + ' (kesin teklif atölyeden)\n\nTasarım görselini');
     if (ozetEl) ozetEl.value = metin;
   }
 

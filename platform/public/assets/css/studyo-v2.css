@@ -45,3 +45,11 @@ body[data-sayfa="studyo"] { background: #f6f0e8; }
 .onizleme-mod button { font: 600 .7rem/1 inherit; letter-spacing: .08em; text-transform: uppercase; padding: .55rem .8rem; border: 0; border-radius: 999px; background: transparent; color: #715241; cursor: pointer; min-height: 32px; }
 .onizleme-mod button[aria-pressed="true"] { background: #512730; color: #fffaf5; }
 .onizleme-mod button:focus-visible { outline: 3px solid #806029; outline-offset: 2px; }
+
+/* Fiyat tahmini (plan 2.2) */
+.fiyat-tahmini { margin-top: .9rem; padding: .9rem 1.1rem; border: 1px solid #dfd0be; border-radius: 12px; background: #fffdf9; }
+.fiyat-tahmini__tutar { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin: 0; }
+.fiyat-tahmini__tutar span { font: 600 .72rem/1 "Inter", system-ui, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #6e5a50; }
+.fiyat-tahmini__tutar strong { font: 600 1.7rem/1 "Cormorant Garamond", Georgia, serif; color: #512730; }
+.fiyat-tahmini__detay { margin: .5rem 0 0; padding: 0; list-style: none; font-size: .9rem; color: #4a3a30; }
+.fiyat-tahmini__not { margin: .5rem 0 0; font-size: .78rem; color: #7a6a60; }

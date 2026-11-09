@@ -147,13 +147,14 @@ export async function saveSettings(data) {
 
 /* ---------------------------------- Katalog (plan 1.3) --------------------------------- */
 function katalogDeger(alan, data) {
-  const ham = data.get(alan.name);
+  const ham = data.get(alan.input || alan.name);
   const metin = typeof ham === 'string' ? ham.trim() : '';
   switch (alan.type) {
     case 'check': return ham === 'on';
     case 'number': {
+      if (!metin && alan.nullable) return null;
       const n = Number(metin || '0');
-      if (!Number.isInteger(n) || n < 0 || n > 10000) throw new InvalidInput();
+      if (!Number.isInteger(n) || n < (alan.min ?? 0) || n > 10000) throw new InvalidInput();
       return n;
     }
     case 'decimal': {
@@ -179,8 +180,8 @@ function katalogDeger(alan, data) {
     }
     case 'select':
       if (!metin) { if (alan.nullable) return null; if (alan.required) throw new InvalidInput(); return ''; }
+      if (Array.isArray(alan.options)) { if (!alan.options.some(([v]) => v === metin)) throw new InvalidInput(); return metin; }
       if (!slugDeseni.test(metin) || metin.length > 72) throw new InvalidInput();
-      if (Array.isArray(alan.options) && !alan.options.some(([v]) => v === metin)) throw new InvalidInput();
       return metin;
     default:
       if (alan.required && !metin) throw new InvalidInput();
@@ -190,7 +191,13 @@ function katalogDeger(alan, data) {
 }
 
 // Satırın anahtarı: slug; stüdyo seçeneklerinde (grup, slug) çifti.
-function katalogAnahtar(tanim, data) {
+function katalogAnahtar(tanim, data, yeni = false) {
+  if (tanim.numericKey) {
+    if (yeni) return { key: null, where: [], values: [] };
+    const id = Number(field(data, 'key', 12));
+    if (!Number.isInteger(id) || id < 1) throw new InvalidInput();
+    return { key: id, where: ['id'], values: [id] };
+  }
   const key = field(data, 'key', 72);
   if (!slugDeseni.test(key)) throw new InvalidInput();
   if (!tanim.group) return { key, where: ['slug'], values: [key] };
@@ -209,8 +216,8 @@ export async function saveCatalog(data) {
     kind = field(data, 'kind', 20);
     const tanim = katalog[kind];
     if (!tanim) throw new InvalidInput();
-    const anahtar = katalogAnahtar(tanim, data);
     const yeni = data.get('new') === '1';
+    const anahtar = katalogAnahtar(tanim, data, yeni);
     const sutunlar = [];
     const degerler = [];
     let gorsel = null;
