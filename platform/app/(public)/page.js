@@ -9,7 +9,7 @@ import { deliveryBands, getSettings, hoursSchema, postalAddress } from '../../li
 import { getReviews, kisaAd } from '../../lib/yorum';
 import './home.css';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic'; // veri tablolardan; derleme anında DB yok, önbellek yanıt başlıklarıyla (1.7)
 export async function generateMetadata() {
   const home = await getContent('home');
   return pageMetadata('Girne Alsancak’ta ' + home.title, home.body, '/', home.image);

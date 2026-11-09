@@ -12,7 +12,7 @@ ZAMAN="$(date +%Y%m%d-%H%M%S)"
 DOSYA="$KLASOR/beyza-$ZAMAN.sql.gz"
 mkdir -p -m 700 "$KLASOR"
 
-docker compose exec -T db pg_dump -U "${PGUSER:-beyza}" -d "${PGDATABASE:-beyza}" --no-owner --clean --if-exists | gzip > "$DOSYA"
+docker compose -f compose.vps.yml exec -T db pg_dump -U "${PGUSER:-beyza}" -d "${PGDATABASE:-beyza}" --no-owner --clean --if-exists | gzip > "$DOSYA"
 
 # Boş ya da yarım yedeği kabul etme.
 if [ ! -s "$DOSYA" ]; then echo "Yedek boş: $DOSYA" >&2; exit 1; fi

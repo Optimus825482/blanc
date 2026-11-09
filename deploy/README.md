@@ -1,6 +1,6 @@
 # Yayın ve yedek (plan 0.6)
 
-Yapı: `compose.yml` üç hizmet çalıştırır: **app** (Next.js, `platform/Dockerfile`), **db** (PostgreSQL 16) ve **caddy** (HTTPS, otomatik sertifika). Dışarıya yalnızca 80 ve 443 açılır.
+Yapı (Coolify kullanmayan düz VPS kurulumu; Coolify için `deploy/COOLIFY.md` ve kökteki `compose.yml`): `compose.vps.yml` üç hizmet çalıştırır: **app** (Next.js, `platform/Dockerfile`), **db** (PostgreSQL 16) ve **caddy** (HTTPS, otomatik sertifika). Dışarıya yalnızca 80 ve 443 açılır.
 
 ## İlk kurulum (VPS, Ubuntu varsayımı)
 
@@ -15,8 +15,8 @@ Yapı: `compose.yml` üç hizmet çalıştırır: **app** (Next.js, `platform/Do
 4. Alan adının A kaydı sunucu IP'sine işaret ettiğinden emin olun (Caddy sertifika için buna ihtiyaç duyar).
 5. Başlatın ve tohum verisini yükleyin:
    ```bash
-   docker compose up -d --build
-   docker compose --profile tools run --rm migrate
+   docker compose -f compose.vps.yml up -d --build
+   docker compose -f compose.vps.yml --profile tools run --rm migrate
    ```
 6. `https://<alan-adınız>` adresinin açıldığını ve `/admin` girişinin çalıştığını kontrol edin.
 
@@ -27,7 +27,7 @@ Yapı: `compose.yml` üç hizmet çalıştırır: **app** (Next.js, `platform/Do
 ```bash
 cd /opt/beyza
 git pull --ff-only
-docker compose up -d --build
+docker compose -f compose.vps.yml up -d --build
 ```
 
 ## Yedek
@@ -43,7 +43,7 @@ crontab -e
 Geri yükleme denemesi (haftalık önerilir; önce test bir veritabanında):
 
 ```bash
-gunzip -c yedekler/beyza-YYYYMMDD-HHMMSS.sql.gz | docker compose exec -T db psql -U "$PGUSER" -d "$PGDATABASE"
+gunzip -c yedekler/beyza-YYYYMMDD-HHMMSS.sql.gz | docker compose -f compose.vps.yml exec -T db psql -U "$PGUSER" -d "$PGDATABASE"
 ```
 
 Yedekleri sunucu dışına da kopyalayın (ör. başka bir depolama alanına); tek sunucuda yedek, arıza riskini tek başına çözmez.

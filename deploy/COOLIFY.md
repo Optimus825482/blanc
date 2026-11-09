@@ -1,12 +1,12 @@
 # Coolify ile yayın
 
-Depo: https://github.com/Optimus825482/blanc — compose dosyası: `docker-compose.coolify.yml` (kökte).
+Depo: https://github.com/Optimus825482/blanc — compose dosyası: `compose.yml` (kökte, varsayılan).
 Tek Coolify kaynağı içinde üç hizmet çalışır: **app** (Next.js), **db** (PostgreSQL 16), **backup** (günlük pg_dump).
 
 ## Kurulum (yaklaşık 10 dakika)
 
 1. Coolify → Projects → projeniz → **+ New Resource** → **Docker Compose** → kaynak olarak GitHub deposunu seçin (`Optimus825482/blanc`, dal `main`).
-2. **Docker Compose Location** alanına `/docker-compose.coolify.yml` yazın; Coolify dosyayı okuyup hizmetleri listeler.
+2. **Docker Compose Location** varsayılan (`/compose.yml`) kalabilir; Coolify dosyayı okuyup hizmetleri listeler.
 3. **Domains**: `app` hizmetine alan adınızı yazın (ör. `https://beyzablanc.com`). HTTPS sertifikasını Coolify kendisi alır. DNS A kaydı Coolify sunucusunun IP'sine işaret etmeli.
 4. **Environment Variables** sekmesinde Coolify'ın ürettiği değerler görünür:
    - `SERVICE_PASSWORD_DB` → veritabanı parolası (otomatik)
@@ -46,4 +46,4 @@ docker exec -i <db-konteyner-adı> pg_restore -U beyza -d beyza --clean --if-exi
 ## Notlar
 - Uygulama ters vekil (Traefik) arkasındadır; istemci adresi `X-Forwarded-For` başlığının son hop'undan okunur, hız sınırları buna göre çalışır.
 - `SEED_ON_START=0` verilirse açılışta tohum adımı atlanır (çok hızlı yeniden başlatma istenirse).
-- `compose.yml` + `Caddyfile` ise Coolify olmadan düz bir VPS'e kurulum içindir (bkz. `deploy/README.md`).
+- `compose.vps.yml` + `Caddyfile` ise Coolify olmadan düz bir VPS'e kurulum içindir (bkz. `deploy/README.md`).

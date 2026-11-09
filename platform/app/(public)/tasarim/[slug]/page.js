@@ -4,7 +4,7 @@ import { fiyatYaz, getDesign, getDesigns } from '../../../../lib/katalog-oku';
 import { contact, pageMetadata, siteUrl } from '../../../../lib/seo';
 import { TasarimIzgarasi } from '../../tasarim-karti';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic'; // veri tablolardan; derleme anında DB yok, önbellek yanıt başlıklarıyla (1.7)
 
 export async function generateMetadata({ params }) {
   const t = await getDesign((await params).slug);

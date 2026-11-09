@@ -85,4 +85,4 @@ jobs:
           chmod 600 ~/.ssh/id_deploy
           # Sunucudaki dizin ve komut VPS kurulumuna (plan 0.6) göre güncellenecek.
           ssh -o StrictHostKeyChecking=accept-new -i ~/.ssh/id_deploy "$DEPLOY_USER@$DEPLOY_HOST" \
-            "cd /opt/beyza && git pull --ff-only && docker compose up -d --build"
+            "cd /opt/beyza && git pull --ff-only && docker compose -f compose.vps.yml up -d --build"

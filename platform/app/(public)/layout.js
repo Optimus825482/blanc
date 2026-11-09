@@ -5,6 +5,9 @@ import { announcement, getSettings, whatsappLink } from '../../lib/settings';
 import MegaMenu from './mega-menu';
 import ZiyaretOlcer from './ziyaret-olcer';
 
+// Vitrin tamamen tablolardan beslenir: sayfalar istek anında üretilir, derleme sırasında veritabanı gerekmez.
+export const dynamic = 'force-dynamic';
+
 // Arama motoru doğrulama etiketleri panelden (Arama ve analitik bölümü).
 export async function generateMetadata() {
   const s = await getSettings();

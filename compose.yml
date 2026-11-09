@@ -1,68 +1,80 @@
-# Beyza Blanc: uygulama + PostgreSQL + Caddy (HTTPS). Ayarlar .env dosyasından okunur (bkz. .env.example).
-name: beyza
+# Beyza Blanc — Coolify için varsayılan Docker Compose (tek proje: uygulama + PostgreSQL + günlük yedek).
+# Coolify olmadan düz VPS kurulumu (Caddy ile HTTPS) için: compose.vps.yml
+# Coolify'da: Yeni kaynak → Docker Compose → bu depo → "Docker Compose Location": /compose.yml (varsayılan, boş bırakılabilir)
+# HTTPS ve alan adını Coolify (Traefik) yönetir; burada port açılmaz. SERVICE_* değişkenlerini Coolify üretir.
+#
+# Kalıcı hacimler:
+#   pgdata   → veritabanı (içerik, katalog, teklifler VE panelden yüklenen tüm görseller bb_media tablosunda)
+#   uploads  → /app/public/uploads (dosya olarak eklenecek görseller / gelecekteki yüklemeler; dağıtımda silinmez)
+#   backups  → günlük pg_dump yedekleri (14 gün tutulur)
 
 services:
+  app:
+    build:
+      context: ./platform
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - SERVICE_FQDN_APP_3000
+      - SITE_URL=${SERVICE_URL_APP}
+      - PGHOST=db
+      - PGPORT=5432
+      - PGUSER=${PGUSER:-beyza}
+      - PGPASSWORD=${SERVICE_PASSWORD_DB}
+      - PGDATABASE=${PGDATABASE:-beyza}
+      - ADMIN_PASSWORD=${SERVICE_PASSWORD_ADMIN}
+      - SESSION_SECRET=${SERVICE_BASE64_64_SESSION}
+      - SEED_ON_START=1
+      - NODE_ENV=production
+    volumes:
+      - uploads:/app/public/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
   db:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${PGUSER:-beyza}
-      POSTGRES_PASSWORD: ${PGPASSWORD:?PGPASSWORD .env dosyasında tanımlanmalı}
-      POSTGRES_DB: ${PGDATABASE:-beyza}
+      - POSTGRES_USER=${PGUSER:-beyza}
+      - POSTGRES_PASSWORD=${SERVICE_PASSWORD_DB}
+      - POSTGRES_DB=${PGDATABASE:-beyza}
     volumes:
       - pgdata:/var/lib/postgresql/data
-      # Şema ilk açılışta uygulanır (boş veri klasöründe). Sonraki değişiklikler için: docker compose --profile tools run --rm migrate
-      - ./platform/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 12
 
-  app:
-    build: ./platform
+  # Günlük yedek: her 24 saatte pg_dump, 14 günden eskiler silinir. Dosyalar "backups" hacminde.
+  backup:
+    image: postgres:16-alpine
     restart: unless-stopped
-    env_file: .env
     environment:
-      PGHOST: db
-      PGPORT: 5432
-    depends_on:
-      db:
-        condition: service_healthy
-    expose:
-      - "3000"
-
-  # Şema ve tohum: docker compose --profile tools run --rm migrate
-  migrate:
-    profiles: ["tools"]
-    build:
-      context: ./platform
-      target: build
-    env_file: .env
-    environment:
-      PGHOST: db
-      PGPORT: 5432
-    depends_on:
-      db:
-        condition: service_healthy
-    command: ["sh", "-c", "node db/seed.mjs"]
-
-  caddy:
-    image: caddy:2-alpine
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    environment:
-      SITE_DOMAIN: ${SITE_DOMAIN:?SITE_DOMAIN (örn. beyzablanc.example) .env dosyasında tanımlanmalı}
+      - PGHOST=db
+      - PGUSER=${PGUSER:-beyza}
+      - PGPASSWORD=${SERVICE_PASSWORD_DB}
+      - PGDATABASE=${PGDATABASE:-beyza}
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
-      - caddy_config:/config
+      - backups:/backups
     depends_on:
-      - app
+      db:
+        condition: service_healthy
+    command: >
+      sh -c 'while true; do
+        pg_dump -Fc -f "/backups/beyza-$(date +%F-%H%M).dump" && echo "yedek alındı $(date)";
+        find /backups -name "beyza-*.dump" -mtime +14 -delete;
+        sleep 86400;
+      done'
 
 volumes:
   pgdata:
-  caddy_data:
-  caddy_config:
+  uploads:
+  backups:

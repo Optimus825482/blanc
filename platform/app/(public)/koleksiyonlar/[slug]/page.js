@@ -5,7 +5,7 @@ import { contact, pageMetadata } from '../../../../lib/seo';
 import Filtreler from '../../filtreler';
 import { TasarimIzgarasi } from '../../tasarim-karti';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic'; // veri tablolardan; derleme anında DB yok, önbellek yanıt başlıklarıyla (1.7)
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
