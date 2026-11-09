@@ -2,13 +2,19 @@ import { createHash, randomUUID } from 'node:crypto';
 import sharp from 'sharp';
 import { query } from '../../../lib/db';
 import { getSettings, whatsappLink } from '../../../lib/settings';
-import { kodUret } from '../../../lib/teklif';
+import { kodDeseni, kodUret, sorguIzinli, takipYolu, tokenDeseni, tokenUret } from '../../../lib/teklif';
 
 // Stüdyo onayı sonrası teklif kaydı (plan 2.5). multipart: veri (JSON), gorsel (PNG/WebP/JPEG).
 // Oturum yok; kayıt anonimdir, takip kodu müşteriye döner. Basit oran sınırı: aynı istemci 15 dakikada en çok 8 kayıt.
 const slug = (v, max = 72) => (typeof v === 'string' && /^[a-z0-9]+(-[a-z0-9]+)*$/i.test(v) && v.length <= max ? v : '');
 const metin = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
-const json = (o) => Response.json(o);
+const json = (o, init) => Response.json(o, init);
+// İstemci kimliği: ters vekil arkasında vekilin eklediği (en sağdaki) adres; başlık yoksa boş. Sunucu kurulumunda
+// Nginx X-Forwarded-For'u yeniden yazmalı; yerelde tek istemci olduğundan sınır herkes için ortaktır.
+const istemci = (request) => {
+  const xff = request.headers.get('x-forwarded-for') || '';
+  return (xff.split(',').pop() || request.headers.get('x-real-ip') || '').trim();
+};
 
 export async function POST(request) {
   let form;
@@ -17,8 +23,7 @@ export async function POST(request) {
   try { veri = JSON.parse(String(form.get('veri') || '')); } catch { return json({ hata: 'Geçersiz veri.' }, { status: 400 }); }
   if (!veri || typeof veri !== 'object') return json({ hata: 'Geçersiz veri.' }, { status: 400 });
 
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() || request.headers.get('x-real-ip') || '';
-  const clientHash = createHash('sha256').update(ip + '|' + (request.headers.get('user-agent') || '')).digest('hex').slice(0, 32);
+  const clientHash = createHash('sha256').update(istemci(request)).digest('hex').slice(0, 32);
   const { rows: [{ n }] } = await query("SELECT count(*)::int AS n FROM bb_quotes WHERE client_hash=$1 AND created_at > now() - interval '15 minutes'", [clientHash]);
   if (n >= 8) return json({ hata: 'Çok sık kayıt oluşturuldu. Lütfen birkaç dakika sonra tekrar deneyin.' }, { status: 429 });
 
@@ -49,14 +54,15 @@ export async function POST(request) {
   const kind = kok === 'kurumsal' || veri.kurumsal === true || quantity >= 50 ? 'corporate' : 'personal';
 
   if (gorsel) await query('INSERT INTO bb_media(id,bytes,width,height) VALUES ($1,$2,$3,$4)', [gorsel.id, gorsel.data, gorsel.width, gorsel.height]);
+  const token = tokenUret();
   let code = null;
   for (let deneme = 0; deneme < 5 && !code; deneme++) {
     const aday = kodUret();
     const r = await query(`
-      INSERT INTO bb_quotes(code, kind, design_slug, occasion_slug, product_type_slug, size, quantity, selections, summary, estimate,
+      INSERT INTO bb_quotes(code, token, kind, design_slug, occasion_slug, product_type_slug, size, quantity, selections, summary, estimate,
         delivery_method, delivery_date, recipient_name, image_id, client_hash)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9,$10,$11,$12,$13,$14,$15) ON CONFLICT (code) DO NOTHING RETURNING code`,
-      [aday, kind, designOk ? designSlug : null, slug(veri.tema), slug(veri.urun), metin(veri.boyut, 40), quantity, secimMetin,
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb,$10,$11,$12,$13,$14,$15,$16) ON CONFLICT (code) DO NOTHING RETURNING code`,
+      [aday, token, kind, designOk ? designSlug : null, slug(veri.tema), slug(veri.urun), metin(veri.boyut, 40), quantity, secimMetin,
         metin(veri.ozet, 6000), estimate, slug(veri.teslimSekli), teslimTarihi, metin(veri.aliciAdi, 120), gorsel?.id ?? null, clientHash]);
     if (r.rowCount) code = r.rows[0].code;
   }
@@ -64,10 +70,11 @@ export async function POST(request) {
 
   const settings = await getSettings();
   const origin = process.env.SITE_URL?.trim() || new URL(request.url).origin;
-  const takip = origin + '/teklif/' + code;
+  const takip = origin + takipYolu(code, token);
   const mesaj = 'Merhaba Beyza Blanc, ' + code + ' kodlu tasarımım için fiyat teklifi istiyorum.\n' + takip + '\n\n' + metin(veri.ozet, 3000);
   return json({
     kod: code,
+    anahtar: token,
     takip,
     mesaj,
     whatsapp: whatsappLink(settings, mesaj),
@@ -76,12 +83,13 @@ export async function POST(request) {
   });
 }
 
-// Kanal tercihi: müşteri hangi düğmeye bastıysa kayda işlenir (yalnızca boşsa).
+// Kanal tercihi: müşteri hangi düğmeye bastıysa kayda işlenir (yalnızca boşsa). Kod + anahtar birlikte gerekir.
 export async function PATCH(request) {
+  if (!sorguIzinli('patch|' + istemci(request))) return json({ hata: 'Çok sık istek.' }, { status: 429 });
   let veri;
   try { veri = await request.json(); } catch { return json({ hata: 'Geçersiz istek.' }, { status: 400 }); }
   const kanal = ['whatsapp', 'instagram', 'share', 'download'].includes(veri?.kanal) ? veri.kanal : null;
-  if (!kanal || !/^BB-[A-Z0-9]{4}-[A-Z0-9]{2}$/.test(veri.kod || '')) return json({ hata: 'Geçersiz veri.' }, { status: 400 });
-  await query("UPDATE bb_quotes SET contact_channel=$2, updated_at=now() WHERE code=$1 AND contact_channel=''", [veri.kod, kanal]);
+  if (!kanal || !kodDeseni.test(veri.kod || '') || !tokenDeseni.test(veri.anahtar || '')) return json({ hata: 'Geçersiz veri.' }, { status: 400 });
+  await query("UPDATE bb_quotes SET contact_channel=$2, updated_at=now() WHERE code=$1 AND token=$3 AND contact_channel=''", [veri.kod, kanal, veri.anahtar]);
   return json({ tamam: true });
 }

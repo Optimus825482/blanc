@@ -1,4 +1,4 @@
-import { DURUMLAR, getQuotes, tarihYaz } from '../../lib/teklif';
+import { DURUMLAR, getQuotes, takipYolu, tarihYaz } from '../../lib/teklif';
 import { saveQuote } from './actions';
 
 // Panel: teklif talepleri listesi; durum ve not satır içi formla güncellenir.
@@ -17,7 +17,7 @@ export default async function Teklifler() {
           {t.image_id && <img src={'/admin/media/' + t.image_id} alt="" width="144" height="144" loading="lazy" />}
           <div>
             <p><strong>Kanal:</strong> {t.contact_channel || 'seçilmedi'} · <strong>Teslim:</strong> {t.delivery_method || '—'} {t.delivery_date ? tarihYaz(t.delivery_date) : ''} · <strong>Alıcı:</strong> {t.recipient_name || '—'} · <strong>Tahmin:</strong> {t.estimate !== null ? Number(t.estimate).toLocaleString('tr-TR') + ' TL' : '—'}</p>
-            <a href={'/teklif/' + t.code} target="_blank" rel="noopener">Müşterinin gördüğü takip sayfası ↗</a>
+            <a href={takipYolu(t.code, t.token)} target="_blank" rel="noopener">Müşterinin gördüğü takip sayfası ↗</a>
             <details><summary>Özet metni</summary><pre>{t.summary}</pre></details>
           </div>
         </div>

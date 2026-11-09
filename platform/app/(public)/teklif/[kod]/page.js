@@ -1,17 +1,20 @@
 import Link from 'next/link';
+import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { contact } from '../../../../lib/seo';
 import { getSettings, whatsappLink } from '../../../../lib/settings';
-import { DURUMLAR, getQuote, tarihYaz } from '../../../../lib/teklif';
+import { DURUMLAR, getQuote, sorguIzinli, tarihYaz } from '../../../../lib/teklif';
 import { fiyatYaz } from '../../../../lib/katalog-oku';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Teklif takibi', robots: { index: false, follow: false } };
 
-// Takip sayfası: kod bilen herkes görür (kod tahmin edilemez); kişisel veri yalnızca alıcı adı.
-export default async function Teklif({ params }) {
-  const { kod } = await params;
-  const [q, settings] = await Promise.all([getQuote(kod.toUpperCase()), getSettings()]);
+// Takip sayfası: kod + 128 bitlik anahtar (?t=) birlikte gerekir; kod tek başına yalnızca okunur referanstır.
+export default async function Teklif({ params, searchParams }) {
+  const [{ kod }, { t }, basliklar] = await Promise.all([params, searchParams, headers()]);
+  const istemci = (basliklar.get('x-forwarded-for') || '').split(',').pop().trim() || basliklar.get('x-real-ip') || '';
+  if (!sorguIzinli('takip|' + istemci)) return <section className="v-kabuk v-bolum bb-inner-page"><div className="bb-page-intro"><h1>Çok sık istek</h1><p>Lütfen bir dakika sonra yeniden deneyin.</p></div></section>;
+  const [q, settings] = await Promise.all([getQuote(kod.toUpperCase(), typeof t === 'string' ? t : ''), getSettings()]);
   if (!q) notFound();
   const adim = Math.max(0, DURUMLAR.findIndex(([d]) => d === q.status));
   const iptal = q.status === 'cancelled';

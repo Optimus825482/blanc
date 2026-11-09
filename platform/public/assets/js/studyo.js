@@ -1420,7 +1420,7 @@
     function kanalIsaretle(kanal) {
       if (!sonTeklif) return;
       try {
-        fetch('/api/teklif', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kod: sonTeklif.kod, kanal: kanal }), keepalive: true });
+        fetch('/api/teklif', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kod: sonTeklif.kod, anahtar: sonTeklif.anahtar, kanal: kanal }), keepalive: true });
       } catch (e) { /* sessiz */ }
     }
 
