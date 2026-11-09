@@ -37,67 +37,309 @@
   },
   "gercek": {
     "varsayilan": {
-      "kutu": "/assets/img/instagram/hediyelik/zarif-hediye-sunumu.webp",
-      "tepsi": "/assets/img/instagram/nisan/kristal-inci-nisan-tepsisi.webp",
-      "bar": "/assets/img/instagram/kisiye-ozel/isim-ve-bas-harf-tasarimi.webp"
+      "kutu": {
+        "src": "/assets/img/instagram/kisiye-ozel/beyza-blanc-cikolata.webp",
+        "odak": [
+          0.5,
+          0.88
+        ],
+        "yakin": 1.35
+      },
+      "tepsi": {
+        "src": "/assets/img/instagram/nisan/altin-inci-cikolata-sunumu.webp",
+        "odak": [
+          0.5,
+          0.8
+        ],
+        "yakin": 1.3
+      },
+      "bar": {
+        "src": "/assets/img/instagram/nisan/altin-cikolata-aranjmani.webp",
+        "odak": [
+          0.5,
+          0.9
+        ],
+        "yakin": 2.0
+      }
     },
     "soz-nisan": {
-      "kutu": "/assets/img/instagram/nisan/altin-cikolata-aranjmani.webp",
-      "tepsi": "/assets/img/instagram/nisan/kristal-inci-nisan-tepsisi.webp",
-      "bar": "/assets/img/instagram/nisan/nisan-hatiralari.webp"
+      "kutu": {
+        "src": "/assets/img/instagram/nisan/altin-cikolata-aranjmani.webp",
+        "odak": [
+          0.5,
+          0.9
+        ],
+        "yakin": 2.0
+      },
+      "tepsi": {
+        "src": "/assets/img/instagram/nisan/altin-inci-cikolata-sunumu.webp",
+        "odak": [
+          0.5,
+          0.8
+        ],
+        "yakin": 1.3
+      },
+      "bar": {
+        "src": "/assets/img/instagram/kisiye-ozel/tavus-kusu-temali-cikolata.webp",
+        "odak": [
+          0.5,
+          0.9
+        ],
+        "yakin": 1.9
+      }
     },
     "dugun": {
-      "kutu": "/assets/img/instagram/nisan/altin-cikolata-aranjmani.webp",
-      "tepsi": "/assets/img/instagram/nisan/kristal-inci-nisan-tepsisi.webp"
+      "kutu": {
+        "src": "/assets/img/instagram/nisan/altin-cikolata-aranjmani.webp",
+        "odak": [
+          0.5,
+          0.9
+        ],
+        "yakin": 2.0
+      },
+      "tepsi": {
+        "src": "/assets/img/instagram/nisan/altin-inci-cikolata-sunumu.webp",
+        "odak": [
+          0.5,
+          0.8
+        ],
+        "yakin": 1.3
+      },
+      "bar": {
+        "src": "/assets/img/instagram/kisiye-ozel/tavus-kusu-temali-cikolata.webp",
+        "odak": [
+          0.5,
+          0.9
+        ],
+        "yakin": 1.9
+      }
     },
     "evlilik-yildonumu": {
-      "kutu": "/assets/img/instagram/nisan/nisan-hatiralari.webp",
-      "tepsi": "/assets/img/instagram/nisan/kristal-inci-nisan-tepsisi.webp"
+      "kutu": {
+        "src": "/assets/img/instagram/nisan/altin-cikolata-aranjmani.webp",
+        "odak": [
+          0.5,
+          0.9
+        ],
+        "yakin": 2.0
+      },
+      "tepsi": {
+        "src": "/assets/img/instagram/nisan/altin-inci-cikolata-sunumu.webp",
+        "odak": [
+          0.5,
+          0.8
+        ],
+        "yakin": 1.3
+      },
+      "bar": {
+        "src": "/assets/img/instagram/kisiye-ozel/tavus-kusu-temali-cikolata.webp",
+        "odak": [
+          0.5,
+          0.9
+        ],
+        "yakin": 1.9
+      }
     },
     "sevgililer": {
-      "kutu": "/assets/img/instagram/nisan/altin-cikolata-aranjmani.webp"
+      "kutu": {
+        "src": "/assets/img/instagram/nisan/altin-cikolata-aranjmani.webp",
+        "odak": [
+          0.5,
+          0.9
+        ],
+        "yakin": 2.0
+      },
+      "tepsi": {
+        "src": "/assets/img/instagram/nisan/altin-inci-cikolata-sunumu.webp",
+        "odak": [
+          0.5,
+          0.8
+        ],
+        "yakin": 1.3
+      },
+      "bar": {
+        "src": "/assets/img/instagram/kisiye-ozel/tavus-kusu-temali-cikolata.webp",
+        "odak": [
+          0.5,
+          0.9
+        ],
+        "yakin": 1.9
+      }
     },
     "hos-geldin-bebek": {
-      "kutu": "/assets/img/instagram/bebek/bebek-hediye-kutusu.webp",
-      "tepsi": "/assets/img/instagram/bebek/isme-ozel-pleksi-kapi-susu.webp",
-      "bar": "/assets/img/instagram/bebek/bulut-kapi-susu.webp"
-    },
-    "dogum-gunu": {
-      "kutu": "/assets/img/instagram/dogum-gunu/ilk-yas-hatirasi.webp",
-      "bar": "/assets/img/instagram/kisiye-ozel/fotografli-puzzle-cikolata.webp"
-    },
-    "anneler-babalar": {
-      "kutu": "/assets/img/instagram/hediyelik/musteri-hediye-tasarimi.webp"
-    },
-    "tesekkur-tebrik": {
-      "kutu": "/assets/img/instagram/hediyelik/atolye-hediye-tasarimi.webp"
-    },
-    "yeni-ev": {
-      "kutu": "/assets/img/instagram/hediyelik/zarif-hediye-sunumu.webp"
-    },
-    "mezuniyet": {
-      "kutu": "/assets/img/instagram/kisiye-ozel/isim-ve-bas-harf-tasarimi.webp"
-    },
-    "her-zaman": {
-      "kutu": "/assets/img/instagram/kisiye-ozel/tavus-kusu-temali-cikolata.webp"
+      "kutu": {
+        "src": "/assets/img/instagram/bebek/bebek-hediye-kutusu.webp",
+        "odak": [
+          0.25,
+          0.74
+        ],
+        "yakin": 1.5
+      },
+      "tepsi": {
+        "src": "/assets/img/instagram/nisan/altin-inci-cikolata-sunumu.webp",
+        "odak": [
+          0.5,
+          0.8
+        ],
+        "yakin": 1.3
+      },
+      "bar": {
+        "src": "/assets/img/instagram/kisiye-ozel/tavus-kusu-temali-cikolata.webp",
+        "odak": [
+          0.5,
+          0.9
+        ],
+        "yakin": 1.9
+      }
     },
     "kurumsal": {
-      "kutu": "/assets/img/instagram/kurumsal/gokhan-turk-motors.webp",
-      "bar": "/assets/img/instagram/kurumsal/osk-auto.webp",
-      "tepsi": "/assets/img/instagram/kurumsal/ege-motors.webp"
+      "kutu": {
+        "src": "/assets/img/instagram/kisiye-ozel/bursaspor-cikolata.webp",
+        "odak": [
+          0.5,
+          0.74
+        ],
+        "yakin": 1.3
+      },
+      "tepsi": {
+        "src": "/assets/img/instagram/nisan/altin-inci-cikolata-sunumu.webp",
+        "odak": [
+          0.5,
+          0.8
+        ],
+        "yakin": 1.3
+      },
+      "bar": {
+        "src": "/assets/img/instagram/nisan/altin-cikolata-aranjmani.webp",
+        "odak": [
+          0.5,
+          0.9
+        ],
+        "yakin": 2.0
+      }
     },
     "is-yildonumu": {
-      "kutu": "/assets/img/instagram/kurumsal/ege-motors.webp",
-      "bar": "/assets/img/instagram/kurumsal/gokhan-turk-motors.webp"
+      "kutu": {
+        "src": "/assets/img/instagram/kisiye-ozel/bursaspor-cikolata.webp",
+        "odak": [
+          0.5,
+          0.74
+        ],
+        "yakin": 1.3
+      },
+      "tepsi": {
+        "src": "/assets/img/instagram/nisan/altin-inci-cikolata-sunumu.webp",
+        "odak": [
+          0.5,
+          0.8
+        ],
+        "yakin": 1.3
+      },
+      "bar": {
+        "src": "/assets/img/instagram/nisan/altin-cikolata-aranjmani.webp",
+        "odak": [
+          0.5,
+          0.9
+        ],
+        "yakin": 2.0
+      }
     },
     "ise-baslama": {
-      "kutu": "/assets/img/instagram/kurumsal/osk-auto.webp"
+      "kutu": {
+        "src": "/assets/img/instagram/kisiye-ozel/bursaspor-cikolata.webp",
+        "odak": [
+          0.5,
+          0.74
+        ],
+        "yakin": 1.3
+      },
+      "tepsi": {
+        "src": "/assets/img/instagram/nisan/altin-inci-cikolata-sunumu.webp",
+        "odak": [
+          0.5,
+          0.8
+        ],
+        "yakin": 1.3
+      },
+      "bar": {
+        "src": "/assets/img/instagram/nisan/altin-cikolata-aranjmani.webp",
+        "odak": [
+          0.5,
+          0.9
+        ],
+        "yakin": 2.0
+      }
     },
     "terfi": {
-      "kutu": "/assets/img/instagram/kurumsal/gokhan-turk-motors.webp"
+      "kutu": {
+        "src": "/assets/img/instagram/kisiye-ozel/bursaspor-cikolata.webp",
+        "odak": [
+          0.5,
+          0.74
+        ],
+        "yakin": 1.3
+      },
+      "tepsi": {
+        "src": "/assets/img/instagram/nisan/altin-inci-cikolata-sunumu.webp",
+        "odak": [
+          0.5,
+          0.8
+        ],
+        "yakin": 1.3
+      },
+      "bar": {
+        "src": "/assets/img/instagram/nisan/altin-cikolata-aranjmani.webp",
+        "odak": [
+          0.5,
+          0.9
+        ],
+        "yakin": 2.0
+      }
     },
     "acilis-toren": {
-      "kutu": "/assets/img/instagram/kurumsal/ege-motors.webp"
+      "kutu": {
+        "src": "/assets/img/instagram/kisiye-ozel/bursaspor-cikolata.webp",
+        "odak": [
+          0.5,
+          0.74
+        ],
+        "yakin": 1.3
+      },
+      "tepsi": {
+        "src": "/assets/img/instagram/nisan/altin-inci-cikolata-sunumu.webp",
+        "odak": [
+          0.5,
+          0.8
+        ],
+        "yakin": 1.3
+      },
+      "bar": {
+        "src": "/assets/img/instagram/nisan/altin-cikolata-aranjmani.webp",
+        "odak": [
+          0.5,
+          0.9
+        ],
+        "yakin": 2.0
+      }
+    },
+    "her-zaman": {
+      "kutu": {
+        "src": "/assets/img/instagram/kisiye-ozel/beyza-blanc-cikolata.webp",
+        "odak": [
+          0.5,
+          0.88
+        ],
+        "yakin": 1.35
+      },
+      "bar": {
+        "src": "/assets/img/instagram/kisiye-ozel/tavus-kusu-temali-cikolata.webp",
+        "odak": [
+          0.5,
+          0.9
+        ],
+        "yakin": 1.9
+      }
     }
-  }
+  },
+  "_not": "gercek: özel gün → ürün tipi → {src, odak:[x,y] 0–1, yakin (isteğe bağlı yakınlaştırma; videodan gelen ▶ simgesini kadraj dışında bırakmak için)}. odak, kare kırpmada hangi noktanın ortalanacağını söyler (logo dışarıda kalsın diye ürünün olduğu alt bölge). Panelden ürün tipine altlık yüklenirse (bb_product_types.image) bu eşlemenin önüne geçer."
 }

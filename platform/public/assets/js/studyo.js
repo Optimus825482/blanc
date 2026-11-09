@@ -768,18 +768,23 @@
   // isim, tarih, kurdele rengi, kart ve yüklenen fotoğraf üstüne bindirilir.
   var gercekImg = {};
 
-  function gercekYol(tema, tip) {
+  // Eşleme değeri ya düz yol (eski biçim, ortadan kırpılır) ya da {src, odak:[x,y]} nesnesidir;
+  // odak, kare kırpmada ortalanacak noktayı verir — fotoğraftaki logo dışarıda, ürün içeride kalsın diye.
+  function gercekKayit(tema, tip) {
     var harita = (altlikGeo && altlikGeo.gercek) || {};
     var kayit = (tema && harita[tema.id]) || {};
     var varsayilan = harita.varsayilan || {};
     var urunTipi = D.studyo.urunTipleri.filter(function (u) { return u.id === durum.urun; })[0];
     var panelAltlik = urunTipi && urunTipi.altlik ? urunTipi.altlik : null;
-    return kayit[tip] || panelAltlik || varsayilan[tip] || kayit.kutu || varsayilan.kutu || null;
+    var v = panelAltlik || kayit[tip] || varsayilan[tip] || kayit.kutu || varsayilan.kutu || null;
+    if (!v) return null;
+    return typeof v === 'string' ? { src: v, odak: [0.5, 0.5] } : v;
   }
 
   function gercekGorsel(tema, tip) {
-    var yol = gercekYol(tema, tip);
-    if (!yol) return null;
+    var kayit = gercekKayit(tema, tip);
+    if (!kayit) return null;
+    var yol = kayit.src;
     if (gercekImg[yol] === undefined) {
       gercekImg[yol] = null;
       var img = new Image();
@@ -787,14 +792,18 @@
       img.onerror = function () { gercekImg[yol] = false; ciz(); };
       img.src = yol;
     }
-    return gercekImg[yol] || null;
+    return gercekImg[yol] ? { img: gercekImg[yol], odak: kayit.odak || [0.5, 0.5], yakin: kayit.yakin || 1 } : null;
   }
 
-  function kaplaCiz(img, x, y, g, h) {
-    var oran = Math.max(g / img.naturalWidth, h / img.naturalHeight);
+  function kaplaCiz(img, x, y, g, h, odak, yakin) {
+    var oran = Math.max(g / img.naturalWidth, h / img.naturalHeight) * (yakin || 1);
     var sw = g / oran;
     var sh = h / oran;
-    ctx.drawImage(img, (img.naturalWidth - sw) / 2, (img.naturalHeight - sh) / 2, sw, sh, x, y, g, h);
+    var fx = odak ? odak[0] : 0.5;
+    var fy = odak ? odak[1] : 0.5;
+    var sx = Math.min(Math.max((img.naturalWidth * fx) - sw / 2, 0), img.naturalWidth - sw);
+    var sy = Math.min(Math.max((img.naturalHeight * fy) - sh / 2, 0), img.naturalHeight - sh);
+    ctx.drawImage(img, sx, sy, sw, sh, x, y, g, h);
   }
 
   function camPanel(x, y, g, h, r) {
@@ -809,9 +818,9 @@
     ctx.stroke();
   }
 
-  function cizGercek(img, amb, kur, kart, cik, tema, urun, tip) {
+  function cizGercek(gercek, amb, kur, kart, cik, tema, urun, tip) {
     var vurgu = (tema && tema.vurgu) || '#a98336';
-    kaplaCiz(img, 0, 0, OLCO, OLCO);
+    kaplaCiz(gercek.img, 0, 0, OLCO, OLCO, gercek.odak, gercek.yakin);
 
     // Alt ve üst karartma: yazı okunurluğu
     var ust = ctx.createLinearGradient(0, 0, 0, 220);
