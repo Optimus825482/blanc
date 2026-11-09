@@ -53,6 +53,7 @@ body[data-sayfa="studyo"] { background: #f6f0e8; }
 .fiyat-tahmini__tutar strong { font: 600 1.7rem/1 "Cormorant Garamond", Georgia, serif; color: #512730; }
 .fiyat-tahmini__detay { margin: .5rem 0 0; padding: 0; list-style: none; font-size: .9rem; color: #4a3a30; }
 .fiyat-tahmini__not { margin: .5rem 0 0; font-size: .78rem; color: #7a6a60; }
+.alan__uyari { margin: .45rem 0 0; padding: .45rem .7rem; border-left: 3px solid #b7791f; background: #fff8ec; font-size: .85rem; color: #6b4a12; }
 
 /* Teklif kaydı ve kanal seçimi (plan 2.5 / 2.6) */
 .onay-kanal { margin-top: 1rem; padding: 1.1rem 1.25rem; border: 1px solid #dfd0be; border-radius: 12px; background: #fffdf9; display: grid; gap: .6rem; }

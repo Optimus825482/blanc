@@ -1040,7 +1040,72 @@
     return t;
   }
 
+  /* ------------------------ Teslim: tarih ve hazırlık ------------------------ */
+  // Bant başlığı "1–4 adet" / "50+ adet" biçiminde; metin "2–3 iş günü" içerir (lib/settings.js deliveryBands).
+  function bantAdetAraligi(baslik) {
+    var sayilar = (baslik.match(/\d+/g) || []).map(Number);
+    if (!sayilar.length) return null;
+    if (/\+|üzeri/i.test(baslik)) return { min: sayilar[0], max: Infinity };
+    return { min: sayilar[0], max: sayilar[sayilar.length - 1] };
+  }
+
+  // Seçili adet için en az iş günü: eşleşen bandın metnindeki en büyük gün sayısı; bulunamazsa 0 (uyarı yok).
+  function asgariHazirlikGunu(adet) {
+    var bantlar = D.studyo.teslimBantlari || [];
+    for (var i = 0; i < bantlar.length; i++) {
+      var ar = bantAdetAraligi(bantlar[i].title);
+      if (!ar || adet < ar.min || adet > ar.max) continue;
+      var g = bantlar[i].text.match(/(\d+)(?:\s*[–-]\s*(\d+))?\s*iş günü/i);
+      if (g) return parseInt(g[2] || g[1], 10);
+    }
+    return 0;
+  }
+
+  // Hafta sonu dışındaki günleri sayar: başlangıç hariç, hedef dahil (resmi tatiller sayılmaz).
+  function isGunuFarki(baslangic, hedef) {
+    var n = 0;
+    var t = new Date(baslangic.getTime());
+    while (t < hedef) {
+      t.setDate(t.getDate() + 1);
+      var g = t.getDay();
+      if (g !== 0 && g !== 6) n++;
+    }
+    return n;
+  }
+
+  function yerelIsoTarih(d) {
+    function pad(s) { return (s < 10 ? '0' : '') + s; }
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+
+  // Geçmiş tarihi temizler; eşik içindeyse uyarı gösterir ama göndermeyi engellemez.
+  function teslimKontrol() {
+    var tarihEl = document.getElementById('teslimTarihi');
+    var uyariEl = document.getElementById('teslim-uyari');
+    if (!tarihEl || !uyariEl) return;
+    var bugun = new Date();
+    bugun.setHours(0, 0, 0, 0);
+    tarihEl.min = yerelIsoTarih(bugun);
+    var metin = '';
+    if (tarihEl.value) {
+      var hedef = new Date(tarihEl.value + 'T00:00:00');
+      if (hedef < bugun) {
+        tarihEl.value = '';
+        durum.teslimTarihi = '';
+        metin = 'Geçmiş bir gün seçilemez.';
+      } else {
+        var asgari = asgariHazirlikGunu(parseInt(durum.adet, 10) || 1);
+        if (asgari > 0 && isGunuFarki(bugun, hedef) < asgari) {
+          metin = 'Bu adet için en az ' + asgari + ' iş günü gerekir; atölyeyle teyit edin.';
+        }
+      }
+    }
+    uyariEl.textContent = metin;
+    uyariEl.hidden = !metin;
+  }
+
   function ozetGuncelle() {
+    teslimKontrol();
     var metin = ozetUret();
     var t = fiyatGuncelle();
     if (t) metin = metin.replace('\n\nTasarım görselini', '\n• Sitedeki tahmini fiyat: ' + paraYaz(t.toplam, t.para) + ' (kesin teklif atölyeden)\n\nTasarım görselini');
@@ -1206,8 +1271,9 @@
     var teslimYardim = document.getElementById('teslim-yardim');
     if (teslimYardim) {
       teslimYardim.textContent =
-        'Hazırlık ve teslim zamanı atölyeyle görüşülerek netleştirilir.';
+        'Hazırlık ve teslim zamanı atölyeyle görüşülerek netleştirilir. Geçmiş tarihler seçilemez.';
     }
+    teslimKontrol();
 
     var ekstraAlan = document.getElementById('ekstra-liste');
     ekstraAlan.innerHTML = D.studyo.ekstralar

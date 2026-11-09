@@ -144,7 +144,7 @@ tbody tr:nth-child(even) { background: #fffaf5; }
   <div class="kapak__ic">
     <p class="kapak__marka">Beyza Blanc — Araştırma dosyası</p>
     <h1>Beyza Blanc geliştirme planı</h1>
-    <p class="kapak__alt">Kararlar, hedef deneyim, modüller ve fazlar · 9 Kasım 2026</p>
+    <p class="kapak__alt">Güncel durum</p>
     <div class="kapak__etiketler">
       <span class="etiket">Türkçe</span>
       <span class="etiket">Kaynaklı</span>
@@ -404,8 +404,8 @@ tbody tr:nth-child(even) { background: #fffaf5; }
 <tr>
 <td>0.2</td>
 <td>ESLint + <code>eslint-config-next</code>, <code>npm run lint</code> ve <code>npm run check</code></td>
-<td><code>package.json</code></td>
-<td>Lint sıfır hata</td>
+<td><code>package.json</code>, <code>eslint.config.mjs</code></td>
+<td>Lint sıfır hata ✔ (9 Kasım; 13 uyarı: <code>&lt;img&gt;</code> → 1.7, font/CSS etiketleri → 3.5)</td>
 </tr>
 <tr>
 <td>0.3</td>
@@ -415,15 +415,15 @@ tbody tr:nth-child(even) { background: #fffaf5; }
 </tr>
 <tr>
 <td>0.4</td>
-<td>Yönlendirmelerde sorgu koruma: <code>koleksiyonlar.html?gun=X</code> → <code>/koleksiyonlar?gun=X</code></td>
-<td><code>next.config.mjs</code></td>
-<td>20 menü bağlantısı doğru hedefe gider</td>
+<td>Koleksiyon sayfası <code>gun</code> parametresini okur: eşleşen kategoriye yönlendirir, eşleşmeyene not gösterir; <code>/sss</code> ve <code>/urun</code> uzantısız açılır</td>
+<td><code>koleksiyonlar/page.js</code>, <code>next.config.mjs</code></td>
+<td>20 menü bağlantısı doğru hedefe gider ✔ (9 Kasım)</td>
 </tr>
 <tr>
 <td>0.5</td>
-<td>İletişim sayfası ve JSON-LD: adres, telefon, saat, harita, iki kanal; değerler <code>bb_settings</code>'ten</td>
-<td><code>iletisim/page.js</code>, <code>page.js</code>, şema</td>
-<td>Rich Results testi geçer</td>
+<td>İletişim sayfası ve JSON-LD: adres, telefon, saat, harita, iki kanal; değerler <code>bb_settings</code>'ten, panelde form</td>
+<td><code>iletisim/page.js</code>, <code>page.js</code>, <code>lib/settings.js</code>, <code>admin/*</code></td>
+<td>Rich Results testi geçer ✔ (9 Kasım; telefon ve WhatsApp panelden girilecek)</td>
 </tr>
 <tr>
 <td>0.6</td>
@@ -442,39 +442,39 @@ tbody tr:nth-child(even) { background: #fffaf5; }
 </tr></thead><tbody>
 <tr>
 <td>1.1</td>
-<td>Şema: occasions, recipients, product_types, designs, bağlantı tabloları, studio_options, price_rules, settings</td>
+<td>Şema: occasions, recipients, segments, product_types, designs, bağlantı tabloları, studio_options, price_rules (settings 0.5'te geldi)</td>
 <td>0.1</td>
-<td><code>db:seed</code> idempotent çalışır</td>
+<td><code>db:seed</code> idempotent çalışır ✔ (9 Kasım; 10 yeni tablo, iki kez seed doğrulandı)</td>
 </tr>
 <tr>
 <td>1.2</td>
 <td><code>data.js</code>'den seed göçü; <code>bb_categories</code> → <code>bb_occasions</code></td>
 <td>1.1</td>
-<td>19 özel gün, 8 alıcı, 28 tasarım panelde görünür</td>
+<td>19 özel gün, 8 alıcı, 28 tasarım panelde görünür — ✅ 9 Kasım: <code>db/katalog-tasi.mjs</code> seed içinde çalışır; 19 özel gün, 8 alıcı, 3 segment, 4 ürün tipi, 28 tasarım (28 özel gün + 49 alıcı bağı), 42 stüdyo seçeneği tabloda; tekrar çalıştırma var olanı ezmez. Panelde görünme 1.3 ile</td>
 </tr>
 <tr>
 <td>1.3</td>
 <td>Panel: sekmeler, tasarım CRUD, çoklu etiket, sıralama, silme, taslak önizleme</td>
 <td>1.2</td>
-<td>Yeni tasarım 2 dakikada eklenebilir</td>
+<td>Yeni tasarım 2 dakikada eklenebilir — ✅ 9 Kasım: panelde Katalog bölümü (özel gün, alıcı, segment, ürün tipi, tasarım, stüdyo seçeneği) ekle/düzenle/sil; tasarımda çoklu alıcı ve ek özel gün; ürün tipine altlık fotoğrafı yükleme; alan tanımları <code>lib/katalog.js</code>'de. Kalan: sekmeli düzen ve taslak önizleme (2.1 sonrası)</td>
 </tr>
 <tr>
 <td>1.4</td>
 <td>Mega menü ve niyet seçici veritabanından</td>
 <td>1.2</td>
-<td>Menü 6 kök, mobil akordeon</td>
+<td>Menü 6 kök, mobil akordeon — ✅ 9 Kasım: üst menü tablolardan (<code>mega-menu.js</code>): Özel güne göre (3 kök sütun), Kime göre, Ürün tipi, Kurumsal, Atölye; <code>&lt;details&gt;</code> tabanlı, mobilde akordeon, dışarı tıklama/Escape kapatır. Ana sayfada "Bugün ne için geldiniz?" niyet seçici (4 niyet) ve özel gün kartları tablodan</td>
 </tr>
 <tr>
 <td>1.5</td>
 <td><code>/koleksiyonlar</code> filtre + sıralama + URL durumu, <code>/koleksiyonlar/[slug]</code> tasarım ızgarası</td>
 <td>1.2</td>
-<td>Statik sitedeki tüm filtre kombinasyonları çalışır</td>
+<td>Statik sitedeki tüm filtre kombinasyonları çalışır — ✅ 9 Kasım: <code>/koleksiyonlar</code> özel günleri kök başlıklarıyla listeler; <code>?kime= ?urun= ?segment=</code> çipleri URL'de tutulur ve tasarım ızgarasını filtreler; <code>/koleksiyonlar/[slug]</code> özel gün açılışı (vurgu rengi, atölye önerisi) + filtreli tasarım kartları (rozet, "… TL'den başlayan", stüdyoya <code>?tasarim=</code> bağlantısı); eski kategori adresleri 308 ile özel güne yönlenir; <code>/studyo?tema=</code> devralır; sitemap özel günlerden. Sıralama seçeneği yok (öne çıkan → çok satan → sıra)</td>
 </tr>
 <tr>
 <td>1.6</td>
 <td><code>/tasarim/[slug]</code>, <code>/sss</code> Next sayfası; eski <code>urun.html</code> ve <code>sss.html</code> kaldırılır</td>
 <td>1.5</td>
-<td>Tek kabuk, noindex yok, sitemap'te</td>
+<td>Tek kabuk, noindex yok, sitemap'te — ✅ 9 Kasım: <code>/tasarim/[slug]</code> (özellik listesi, başlayan fiyat, Product JSON-LD, benzer tasarımlar, stüdyoya bağlantı) ve <code>/sss</code> (<code>bb_faq</code> tablosu, panelde "Sıkça sorulan sorular" CRUD, FAQPage JSON-LD, akordeon); <code>urun.html</code>/<code>sss.html</code> kaldırıldı, eski adresler 308 ile yönlenir; sitemap tasarımları ve SSS'yi içerir</td>
 </tr>
 <tr>
 <td>1.7</td>
@@ -495,37 +495,37 @@ tbody tr:nth-child(even) { background: #fffaf5; }
 <td>2.1</td>
 <td>Stüdyoyu Next istemci bileşenine taşı; seçenekler <code>/api/studio-options</code> veya sunucu props</td>
 <td>1.1</td>
-<td><code>data.js</code> bağımlılığı yok, eski davranış korunur</td>
+<td><code>data.js</code> bağımlılığı yok, eski davranış korunur — ✅ 9 Kasım: <code>/studyo</code> artık Next rotası (<code>app/(public)/studyo</code>); veri <code>lib/studio-data.js</code> ile tablolardan (özel gün, ürün tipi, stüdyo seçenekleri, tasarımlar, ayarlar) üretilip betiğe <code>BEYZA_DATA</code> olarak verilir; panelden yüklenen ürün tipi altlığı gerçek görselde kullanılır; <code>public/studyo.html</code> kaldırıldı. Gövde markup'ı hâlâ HTML dosyası, çizim kodu <code>studyo.js</code> — tam React bileşenine ayrıştırma 2.2 ile</td>
 </tr>
 <tr>
 <td>2.2</td>
 <td>Fiyat aralığı hesaplayıcı (sunucu ve istemci aynı fonksiyon)</td>
 <td>1.1</td>
-<td>Panelde kural değişince stüdyo günceller</td>
+<td>Panelde kural değişince stüdyo günceller — ✅ 9 Kasım: panelde "Fiyat kuralları" (temel: ürün tipi + boyut + adet aralığı; ekstra: stüdyo ekstrası ücreti; adet veya sipariş başına); stüdyo canlı taslak altında "Tahmini fiyat" kutusu ve teklif metninde satır; kural yoksa gösterilmez. Hesap istemcide (<code>fiyatTahmini</code>), kurallar <code>studio-data</code> ile gelir. Gerçek fiyatlar panelden girilecek (sahibi girdisi)</td>
 </tr>
 <tr>
 <td>2.3</td>
 <td>Katmanlı gerçek fotoğraf önizlemesi (ürün başına altlık + maske)</td>
 <td>2.1</td>
-<td>4 ürün tipi için fotoğraflı önizleme</td>
+<td>4 ürün tipi için fotoğraflı önizleme — ◐ 9 Kasım: altlık sistemi (<code>altliklar.json</code> + render edilmiş kutu/bar/tepsi sahneleri) ve gerçekçi çizim katmanı statik stüdyoda canlı; 9 Kasım (2): "Gerçek görsel / Taslak çizim" geçişi — özel güne ve ürün tipine göre atölyenin gerçek fotoğrafı altlık olur, isim/tarih/kurdele/kart/fotoğraf üstüne işlenir (<code>altliklar.json</code> → <code>gercek</code> eşlemesi, 16 özel gün); kalan: panelden altlık ve gerçek görsel yükleme (1.3 ile)</td>
 </tr>
 <tr>
 <td>2.4</td>
 <td>Teslim adımı: tarih seçici, son sipariş eşiği, hazırlık bandı uyarıları</td>
 <td>2.1</td>
-<td>Geçmiş veya eşik dışı tarih engellenir</td>
+<td>Geçmiş veya eşik dışı tarih engellenir — ✅ 9 Kasım: tarih seçici (bugünden önce seçilemez, geçmiş tarih temizlenir), adete göre hazırlık bandından en az iş günü uyarısı (göndermeyi engellemez, bant metni 'N iş günü' okunur; hafta sonu sayılmaz, resmi tatiller sayılmaz); özet satırı 'Hedef teslim günü' zaten vardı</td>
 </tr>
 <tr>
 <td>2.5</td>
 <td><code>bb_quotes</code> + kayıt eylemi + PNG saklama + kod üretimi</td>
 <td>1.1</td>
-<td>Onay sonrası kayıt oluşur, kod gösterilir</td>
+<td>Onay sonrası kayıt oluşur, kod gösterilir — ✅ 9 Kasım: <code>bb_quotes</code> + <code>POST /api/teklif</code> (seçimler JSON, özet, tahmin, teslim, PNG→WebP <code>bb_media</code>, kod BB-XXXX-YY, istemci başına 15 dk/8 kayıt sınırı); <code>/teklif/[kod]?t=anahtar</code> takip sayfası (kod okunur referans, 128 bitlik anahtar zorunlu, dakikada 30 sorgu sınırı; durum çizelgesi, özet, görsel); panelde "Teklif talepleri" listesi, durum ve not. Kurumsal sınıflama: kök kurumsal veya ≥50 adet. Herkese açık <code>/media</code> artık özel gün/ürün tipi/tasarım/teklif görsellerini de sunar (1.3'teki eksik)</td>
 </tr>
 <tr>
 <td>2.6</td>
 <td>Kanal seçimi ve önceden doldurulmuş mesaj (WhatsApp, Instagram)</td>
 <td>2.5</td>
-<td>Her iki kanalda kod ve bağlantı mesajda</td>
+<td>Her iki kanalda kod ve bağlantı mesajda — ✅ 9 Kasım: onay diyaloğunda kayıt sonrası kanal adımı: WhatsApp (ayarlarda numara varsa, mesaj kod + takip bağlantısı + özetle dolu), Instagram DM (mesaj panoya kopyalanır), görselle paylaş (destekleyen cihazlarda), görseli indir; seçilen kanal kayda işlenir (<code>PATCH</code>)</td>
 </tr>
 <tr>
 <td>2.7</td>
@@ -564,7 +564,7 @@ tbody tr:nth-child(even) { background: #fffaf5; }
 <td>3.1</td>
 <td>Kurumsal teklif akışı: logo, adet kademesi, tahmini bütçe, numune</td>
 <td>2.5</td>
-<td>Kurumsal talep panelde ayrı görünür</td>
+<td>Kurumsal talep panelde ayrı görünür — ✅ 9 Kasım: <code>/kurumsal#kurumsal-teklif</code> formu (firma, yetkili, e-posta, telefon, vesile, ürün, adet kademesi, kişi başı bütçe, hedef tarih, logo→<code>bb_media</code>, numune, not, onay, bal küpü, 15 dk/5 sınır); kayıt <code>bb_quotes</code> kind=corporate (<code>company</code> jsonb, <code>logo_id</code>); başarıda takip sayfasına yönlenir (kurumsal ayrıntılar + logo); panelde "Kurumsal talepler" ve "Bireysel teklif talepleri" ayrı</td>
 </tr>
 <tr>
 <td>3.2</td>
@@ -582,11 +582,11 @@ tbody tr:nth-child(even) { background: #fffaf5; }
 <td>3.4</td>
 <td>Panel ayarları: duyuru bandı, son sipariş notu, teslim bantları, iletişim</td>
 <td>1.3</td>
-<td>Kod değişmeden içerik yönetilir</td>
+<td>Kod değişmeden içerik yönetilir — ✅ 9 Kasım: panel kenar menüsüyle bölümlere ayrıldı (<code>?bolum=</code> Talepler, Katalog, Tasarımlar, Stüdyo seçenekleri, Fiyat kuralları, SSS, Sayfa içerikleri, Ayarlar, Instagram; yeni talep rozeti; aksiyonlar ilgili bölüme döner). Ayarlar: duyuru bandı (metin, bağlantı, son gösterim günü → tüm sayfaların üstünde), hazırlık süreleri (ana sayfada bantlar), son sipariş notu (ana sayfa + stüdyo onayı), stüdyo yüksek adet notu, iletişim</td>
 </tr>
 <tr>
 <td>3.5</td>
-<td>Güvenlik: IP bazlı giriş sınırı, CSP, HSTS, TOTP (isteğe bağlı), Instagram anahtar yenileme işi</td>
+<td>Güvenlik: IP bazlı giriş sınırı, sunucu tarafı oturum iptali (<code>bb_sessions</code>, parola değişince tüm oturumlar düşer), CSP, HSTS, TOTP (isteğe bağlı), Instagram anahtar yenileme işi</td>
 <td>0.6</td>
 <td>Güvenlik başlıkları testinde A</td>
 </tr>

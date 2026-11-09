@@ -1,7 +1,7 @@
 import 'server-only';
 import { cache } from 'react';
 import { query } from './db';
-import { getSettings, whatsappLink } from './settings';
+import { deliveryBands, getSettings, whatsappLink } from './settings';
 
 // Stüdyo ve vitrin betiklerinin beklediği BEYZA_DATA biçimini (eski data.js) tablolardan üretir.
 // Alan adları Türkçe kalır; böylece public/assets/js/studyo.js değişmeden tablolardan beslenir.
@@ -45,6 +45,8 @@ export const getStudioData = cache(async () => {
       fontlar: grup('font', ({ css }) => ({ css })),
       ekstralar: grup('extra', ({ varsayilan }) => ({ varsayilan: !!varsayilan })).map((e) => ({ ...e, id: camel(e.id) })),
       teslimSekilleri: grup('delivery', () => ({})),
+      // Hazırlık bantları (panel: "başlık = metin"); studyo.js adete göre en az iş günü uyarısı için okur.
+      teslimBantlari: deliveryBands(settings),
       adetler: grup('quantity', () => ({})).map((a) => a.id),
       kurumsalAdetNotu: settings.studio_corporate_qty_note || '',
       sonSiparisNotu: settings.last_order_note || '',
