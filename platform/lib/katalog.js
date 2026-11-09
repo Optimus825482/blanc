@@ -27,7 +27,7 @@ export const katalog = {
       { name: 'icon', label: 'Simge (emoji)', type: 'text', max: 8 },
       { name: 'root', label: 'Menü kökü', type: 'select', options: KOKLER, required: true },
       { name: 'accent', label: 'Vurgu rengi', type: 'color' },
-      { name: 'suggested', label: 'Önerilen stüdyo seçimleri (JSON: ambalaj, kurdele, cikolata)', type: 'json' },
+      { name: 'suggested', label: 'Stüdyoda bu gün seçilince önerilen seçimler', type: 'oneri' },
       ortak.image, ortak.alt, ortak.position, ortak.published,
     ],
   },
@@ -86,7 +86,7 @@ export const katalog = {
     group: { name: 'option_group', label: 'Grup', options: GRUPLAR },
     fields: [
       { name: 'title', label: 'Başlık', type: 'text', max: 120, required: true },
-      { name: 'data', label: 'Veri (JSON: renk kodları, css, varsayilan)', type: 'json' },
+      { name: 'data', label: 'Görünüm', type: 'veri' },
       ortak.position, ortak.published,
     ],
   },
@@ -119,6 +119,42 @@ export const sss = {
   ],
 };
 katalog.faq = sss;
+
+// Stüdyo seçeneklerinin `data` alanı: grup başına sade alt alanlar (renk seçici, onay kutusu, liste).
+// Panel bu tanımdan form çizer, aksiyon aynı tanımla doğrulayıp JSON'a çevirir. Form alanı adı: veri_<ad>.
+export const YAZI_TIPLERI = [
+  ["'Cormorant Garamond', Georgia, serif", 'Cormorant Garamond (klasik serif)'],
+  ["'Playfair Display', Georgia, serif", 'Playfair Display (zarif serif)'],
+  ["'Great Vibes', cursive", 'Great Vibes (el yazısı)'],
+  ["'Inter', system-ui, sans-serif", 'Inter (modern sans)'],
+  ['Georgia, serif', 'Georgia (sistem serif)'],
+  ['system-ui, sans-serif', 'Sistem yazı tipi'],
+];
+export const VERI_ALANLARI = {
+  chocolate: [
+    { ad: 'dolgu', etiket: 'Çikolata rengi', tip: 'renk' },
+    { ad: 'kenar', etiket: 'Kenar / gölge rengi', tip: 'renk' },
+    { ad: 'karisik', etiket: 'Karışık görünüm (çok renkli; renkler yok sayılır)', tip: 'bayrak' },
+  ],
+  wrap_color: [
+    { ad: 'zemin', etiket: 'Zemin rengi', tip: 'renk' },
+    { ad: 'kenar', etiket: 'Kenar rengi', tip: 'renk' },
+    { ad: 'metin', etiket: 'Üzerindeki yazı rengi', tip: 'renk' },
+  ],
+  ribbon: [
+    { ad: 'renk', etiket: 'Kurdele rengi', tip: 'renk' },
+    { ad: 'yok', etiket: '"Kurdele istemiyorum" seçeneği (renk kullanılmaz)', tip: 'bayrak' },
+  ],
+  card: [
+    { ad: 'zemin', etiket: 'Kart zemini', tip: 'renk' },
+    { ad: 'metin', etiket: 'Kart yazısı', tip: 'renk' },
+    { ad: 'yok', etiket: '"Kart istemiyorum" seçeneği (renkler kullanılmaz)', tip: 'bayrak' },
+  ],
+  font: [{ ad: 'css', etiket: 'Yazı tipi', tip: 'secim', secenekler: YAZI_TIPLERI }],
+  extra: [{ ad: 'varsayilan', etiket: 'Stüdyoda varsayılan olarak seçili gelsin', tip: 'bayrak' }],
+  delivery: [],
+  quantity: [],
+};
 
 export const slugDeseni = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 export const grupAdi = (slug) => GRUPLAR.find(([g]) => g === slug)?.[1] ?? slug;

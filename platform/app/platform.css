@@ -167,6 +167,8 @@
 .bb-admin .bb-teklif-yeni > summary { color: #7a2e1f; }
 .bb-admin .bb-teklif-satir { display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap; }
 .bb-admin .bb-teklif-satir p { margin: 0 0 .5rem; font-size: .9rem; }
+.bb-yanit { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; margin: .5rem 0 .8rem; }
+.bb-yanit__bilgi { font-size: .85rem; color: #5b4a40; }
 
 /* --- Kurumsal teklif formu (plan 3.1) --- */
 .bb-kurumsal { padding-top: 0; }
@@ -227,3 +229,20 @@
 .bb-teslim__adet { margin: 0; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--v-soluk); }
 .bb-teslim__sure { margin: .35rem 0 0; font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.35rem; color: var(--v-metin); }
 .bb-teslim__not { margin: .9rem 0 0; font-size: .92rem; color: var(--v-soluk); }
+
+/* --- Panel: stüdyo seçeneği görünüm alanları (renk seçici, onay kutusu) --- */
+.bb-admin .bb-veri__alanlar { display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); gap: .6rem 1rem; padding: .75rem 1rem; border: 1px solid #dfd0be; background: #fff; }
+.bb-admin .bb-renk span { display: flex; align-items: center; gap: .6rem; }
+.bb-admin input[type="color"] { width: 3rem; height: 2.4rem; padding: .15rem; border: 1px solid #89746b; border-radius: 4px; background: #fff; cursor: pointer; }
+.bb-admin .bb-renk code { font-size: .8rem; color: #6e5a50; }
+.bb-admin .bb-oneri { grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: .5rem 1rem; }
+/* Yeni seçenek formunda yalnızca seçili grubun alanları görünür */
+.bb-admin form:has(select[name="option_group"]) .bb-veri { display: none; }
+.bb-admin form:has(select[name="option_group"] option[value="chocolate"]:checked) .bb-veri[data-grup="chocolate"],
+.bb-admin form:has(select[name="option_group"] option[value="wrap_color"]:checked) .bb-veri[data-grup="wrap_color"],
+.bb-admin form:has(select[name="option_group"] option[value="ribbon"]:checked) .bb-veri[data-grup="ribbon"],
+.bb-admin form:has(select[name="option_group"] option[value="card"]:checked) .bb-veri[data-grup="card"],
+.bb-admin form:has(select[name="option_group"] option[value="font"]:checked) .bb-veri[data-grup="font"],
+.bb-admin form:has(select[name="option_group"] option[value="extra"]:checked) .bb-veri[data-grup="extra"],
+.bb-admin form:has(select[name="option_group"] option[value="delivery"]:checked) .bb-veri[data-grup="delivery"],
+.bb-admin form:has(select[name="option_group"] option[value="quantity"]:checked) .bb-veri[data-grup="quantity"] { display: block; }

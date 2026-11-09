@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { clearSession, createSession, equalText, requireAdmin } from '../../lib/auth';
 import { query } from '../../lib/db';
 import { clearInstagramCache, encryptToken, verifyInstagram } from '../../lib/instagram';
-import { katalog, slugDeseni } from '../../lib/katalog';
+import { VERI_ALANLARI, katalog, slugDeseni } from '../../lib/katalog';
 import { panelBolumu } from './bolumler';
 
 class InvalidInput extends Error {}
@@ -175,6 +175,35 @@ function katalogDeger(alan, data) {
     case 'tags':
       if (metin.length > (alan.max || 300)) throw new InvalidInput();
       return metin.split(',').map((p) => p.trim()).filter(Boolean).slice(0, 30);
+    case 'veri': {
+      // Grup başına sade alanlardan stüdyonun beklediği JSON üretilir (bkz. VERI_ALANLARI).
+      const grup = data.get('option_group');
+      const alanlar = VERI_ALANLARI[grup];
+      if (!alanlar) throw new InvalidInput();
+      const nesne = {};
+      const bayraklar = {};
+      for (const a of alanlar) {
+        const v = data.get('veri_' + a.ad);
+        if (a.tip === 'bayrak') bayraklar[a.ad] = v === 'on';
+        else if (a.tip === 'renk') { if (typeof v !== 'string' || !/^#[0-9A-Fa-f]{6}$/.test(v)) throw new InvalidInput(); nesne[a.ad] = v.toUpperCase(); }
+        else if (a.tip === 'secim') { if (!a.secenekler.some(([s]) => s === v)) throw new InvalidInput(); nesne[a.ad] = v; }
+      }
+      if (grup === 'chocolate' && bayraklar.karisik) { nesne.dolgu = 'mix'; nesne.kenar = '#00000022'; }
+      if (grup === 'ribbon' && bayraklar.yok) nesne.renk = null;
+      if (grup === 'card' && bayraklar.yok) { nesne.zemin = null; nesne.metin = null; }
+      if (grup === 'extra') nesne.varsayilan = !!bayraklar.varsayilan;
+      return JSON.stringify(nesne);
+    }
+    case 'oneri': {
+      const nesne = {};
+      for (const ad of ['ambalaj', 'kurdele', 'cikolata']) {
+        const v = data.get('oneri_' + ad);
+        if (typeof v !== 'string' || !v) continue;
+        if (!slugDeseni.test(v) || v.length > 72) throw new InvalidInput();
+        nesne[ad] = v;
+      }
+      return JSON.stringify(nesne);
+    }
     case 'json': {
       if (!metin) return '{}';
       if (metin.length > 2000) throw new InvalidInput();

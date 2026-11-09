@@ -1,9 +1,32 @@
 import { query } from '../../lib/db';
-import { grupAdi, katalog } from '../../lib/katalog';
+import { VERI_ALANLARI, grupAdi, katalog } from '../../lib/katalog';
 import { deleteCatalog, saveCatalog } from './actions';
 import SilDugmesi from './sil-dugmesi';
 
 const onizleme = (yol) => (yol.startsWith('/media/') ? '/admin/media/' + yol.split('/').pop() : yol);
+const hex6 = (v, varsayilan = '#B08D57') => (typeof v === 'string' && /^#[0-9A-Fa-f]{6}$/.test(v) ? v : varsayilan);
+
+// Stüdyo seçeneğinin görünüm alanları: grup başına renk seçici / onay kutusu / liste (JSON yerine).
+function VeriAlanlari({ grup, veri, id }) {
+  const alanlar = VERI_ALANLARI[grup] || [];
+  if (!alanlar.length) return <p className="kucuk">Bu grup için ek görünüm ayarı yok.</p>;
+  const d = veri || {};
+  const bayrak = (ad) => ad === 'karisik' ? d.dolgu === 'mix' : ad === 'yok' ? (grup === 'ribbon' ? d.renk === null && 'renk' in d : d.zemin === null && 'zemin' in d) : !!d[ad];
+  return <div className="bb-veri__alanlar">
+    {alanlar.map((a) => {
+      const ida = id + '-' + a.ad;
+      if (a.tip === 'renk') return <label key={a.ad} htmlFor={ida} className="bb-renk">{a.etiket}
+        <span><input id={ida} type="color" name={'veri_' + a.ad} defaultValue={hex6(d[a.ad])} /> <code>{typeof d[a.ad] === 'string' ? d[a.ad] : '—'}</code></span>
+      </label>;
+      if (a.tip === 'bayrak') return <label key={a.ad} className="bb-check"><input type="checkbox" name={'veri_' + a.ad} defaultChecked={bayrak(a.ad)} /> {a.etiket}</label>;
+      return <label key={a.ad} htmlFor={ida}>{a.etiket}
+        <select id={ida} name={'veri_' + a.ad} defaultValue={a.secenekler.some(([v]) => v === d[a.ad]) ? d[a.ad] : a.secenekler[0][0]}>
+          {a.secenekler.map(([v, ad]) => <option key={v} value={v} style={{ fontFamily: v }}>{ad}</option>)}
+        </select>
+      </label>;
+    })}
+  </div>;
+}
 
 function Alan({ alan, item, id, secenekler }) {
   const deger = item?.[alan.name];
@@ -18,7 +41,25 @@ function Alan({ alan, item, id, secenekler }) {
     case 'decimal':
       return <label htmlFor={id}>{etiket}<input id={id} type="text" inputMode="decimal" name={alan.input || alan.name} defaultValue={deger ?? ''} placeholder="örn. 850" /></label>;
     case 'color':
-      return <label htmlFor={id}>{etiket} (#RRGGBB)<input id={id} name={alan.input || alan.name} defaultValue={deger ?? ''} pattern="#[0-9A-Fa-f]{6}" placeholder="#B08D57" /></label>;
+      return <label htmlFor={id} className="bb-renk">{etiket}
+        <span><input id={id} type="color" name={alan.input || alan.name} defaultValue={hex6(deger)} /> <code>{deger || 'varsayılan'}</code></span>
+      </label>;
+    case 'veri':
+      // Mevcut kayıtta grup belli; yeni kayıtta tüm gruplar çizilir, CSS seçili gruba göre gösterir.
+      return item ? <VeriAlanlari grup={item.option_group} veri={deger} id={id} />
+        : Object.keys(VERI_ALANLARI).map((g) => <div key={g} className="bb-veri" data-grup={g}><VeriAlanlari grup={g} veri={null} id={id + '-' + g} /></div>);
+    case 'oneri': {
+      const o = deger || {};
+      const liste = [['ambalaj', 'Ambalaj rengi', 'wrap_colors'], ['kurdele', 'Kurdele', 'ribbons'], ['cikolata', 'Çikolata', 'chocolate']];
+      return <fieldset className="bb-oneri"><legend>{etiket}</legend>
+        {liste.map(([ad, baslik, kaynak]) => <label key={ad} htmlFor={id + '-' + ad}>{baslik}
+          <select id={id + '-' + ad} name={'oneri_' + ad} defaultValue={o[ad] ?? ''}>
+            <option value="">Öneri yok</option>
+            {(secenekler[kaynak] || []).map(([v, isim]) => <option key={v} value={v}>{isim}</option>)}
+          </select>
+        </label>)}
+      </fieldset>;
+    }
     case 'tags':
       return <label htmlFor={id}>{etiket}<input id={id} name={alan.input || alan.name} defaultValue={Array.isArray(deger) ? deger.join(', ') : ''} maxLength={alan.max} /></label>;
     case 'json':
@@ -98,6 +139,8 @@ export default async function KatalogBolumleri({ kinds }) {
     segments: cift(satirlar.segment),
     product_types: cift(satirlar.product_type),
     chocolate: cift(satirlar.studio_option.filter((o) => o.option_group === 'chocolate')),
+    wrap_colors: cift(satirlar.studio_option.filter((o) => o.option_group === 'wrap_color')),
+    ribbons: cift(satirlar.studio_option.filter((o) => o.option_group === 'ribbon')),
     extras: cift(satirlar.studio_option.filter((o) => o.option_group === 'extra')),
   };
   return <>
