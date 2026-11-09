@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { getContent, getCategories } from '../../lib/db';
 import { contact, instagram, pageMetadata, siteUrl } from '../../lib/seo';
 import Cards from './cards';
@@ -58,7 +59,7 @@ export default async function Home() {
     </nav>
     <section className="v-kabuk v-bolum bb-collection" id="koleksiyonlar">
       <div className="v-bolum-baslik" data-reveal=""><div><p className="v-etiket">01 / Koleksiyonlar</p><h2>Kutlamanıza eşlik eden tasarımlar</h2><p>Nişan tepsilerinden isme özel bebek hediyelerine, atölyenin çalışmalarını keşfedin.</p></div>
-        <a className="v-metin-link" href="/koleksiyonlar">Tüm koleksiyonlar</a></div>
+        <Link className="v-metin-link" href="/koleksiyonlar">Tüm koleksiyonlar</Link></div>
       <Cards categories={categories} />
       {!categories.length && <p>Yeni koleksiyonlarımız hazırlanıyor.</p>}
     </section>
@@ -79,11 +80,11 @@ export default async function Home() {
     <section className="v-kabuk v-eslesme bb-atelier">
       <img data-reveal="" src={about.image} alt={about.alt} width="640" height="640" loading="lazy" />
       <div className="v-panel bb-prose" data-reveal=""><p className="v-etiket">Alsancak / Atölye</p>
-        <h2>{about.title}</h2><p>{about.body}</p><a className="v-dugme" href="/hakkimizda">Atölyeyi tanıyın</a></div>
+        <h2>{about.title}</h2><p>{about.body}</p><Link className="v-dugme" href="/hakkimizda">Atölyeyi tanıyın</Link></div>
     </section>
     <section className="v-kabuk v-eslesme v-kurumsal bb-atelier" id="kurumsal">
       <div className="v-panel bb-prose" data-reveal=""><p className="v-etiket">03 / Kurumsal hediyeler</p>
-        <h2>{corporate.title}</h2><p>{corporate.body}</p><a className="v-dugme v-dugme--cizgi" href="/kurumsal">Kurumsal hediyeleri inceleyin</a></div>
+        <h2>{corporate.title}</h2><p>{corporate.body}</p><Link className="v-dugme v-dugme--cizgi" href="/kurumsal">Kurumsal hediyeleri inceleyin</Link></div>
       <img data-reveal="" src={corporate.image} alt={corporate.alt} width="640" height="640" loading="lazy" />
     </section>
     <InstagramFeed feed={feed} fallback={posts.map(([id, title, image]) => ({

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getCategory } from '../../../../lib/db';
 import { contact, pageMetadata } from '../../../../lib/seo';
@@ -13,7 +14,7 @@ export default async function Collection({ params }) {
   const item = await getCategory((await params).slug);
   if (!item) notFound();
   return <section className="v-kabuk v-bolum v-acilis">
-    <div className="bb-prose"><a className="v-metin-link" href="/koleksiyonlar">← Koleksiyonlar</a>
+    <div className="bb-prose"><Link className="v-metin-link" href="/koleksiyonlar">← Koleksiyonlar</Link>
       <h1>{item.title}</h1><p>{item.body}</p>
       <div className="v-eylemler"><a className="v-dugme" href={contact}>Atölyeye yaz</a><a className="v-metin-link" href="/studyo">Stüdyoda tasarla</a></div>
     </div>

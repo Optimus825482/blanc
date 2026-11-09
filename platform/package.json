@@ -5,6 +5,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "lint": "eslint .",
+    "check": "npm run lint && node --check db/seed.mjs",
     "db:seed": "node db/seed.mjs"
   },
   "type": "module",
@@ -16,5 +18,12 @@
     "react-dom": "^19.3.1",
     "sharp": "^0.35.5"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.5"
+  },
+  "engines": {
+    "node": ">=20.9"
+  }
 }

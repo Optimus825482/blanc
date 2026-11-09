@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { isAdmin } from '../../lib/auth';
 import { query } from '../../lib/db';
 import { connectInstagram, disconnectInstagram, login, logout, save, saveSettings } from './actions';
@@ -65,7 +66,7 @@ export default async function Admin({ searchParams }) {
     getSettings(),
   ]) : [];
   return <main className="bb-admin">
-    <a href="/">← Vitrine dön</a><h1>Beyza Blanc Yönetim</h1>
+    <Link href="/">← Vitrine dön</Link><h1>Beyza Blanc Yönetim</h1>
     {message && <p className="bb-status" role="status">{message}</p>}
     {!authenticated ? <form action={login}>
       <label htmlFor="password">Yönetim parolası<input id="password" name="password" type="password" autoComplete="current-password" required maxLength="128" /></label>
