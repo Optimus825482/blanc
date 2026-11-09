@@ -163,6 +163,8 @@ CREATE TABLE IF NOT EXISTS bb_quotes (
   id serial PRIMARY KEY,
   code text NOT NULL UNIQUE CHECK (code ~ '^BB-[A-Z0-9]{4}-[A-Z0-9]{2}$'),
   token text NOT NULL DEFAULT encode(gen_random_bytes(16), 'hex'),
+  logo_id uuid REFERENCES bb_media(id) ON DELETE SET NULL,          -- kurumsal: müşteri logosu
+  company jsonb NOT NULL DEFAULT '{}'::jsonb,                        -- kurumsal: firma, yetkili, e-posta, kademe, bütçe, numune
   kind text NOT NULL DEFAULT 'personal' CHECK (kind IN ('personal', 'corporate')),
   design_slug text REFERENCES bb_designs(slug) ON DELETE SET NULL ON UPDATE CASCADE,
   occasion_slug text NOT NULL DEFAULT '',
@@ -184,5 +186,7 @@ CREATE TABLE IF NOT EXISTS bb_quotes (
   updated_at timestamptz NOT NULL DEFAULT now()
 );
 ALTER TABLE bb_quotes ADD COLUMN IF NOT EXISTS token text NOT NULL DEFAULT encode(gen_random_bytes(16), 'hex');
+ALTER TABLE bb_quotes ADD COLUMN IF NOT EXISTS logo_id uuid REFERENCES bb_media(id) ON DELETE SET NULL;
+ALTER TABLE bb_quotes ADD COLUMN IF NOT EXISTS company jsonb NOT NULL DEFAULT '{}'::jsonb;
 CREATE INDEX IF NOT EXISTS bb_quotes_status_idx ON bb_quotes (status, created_at DESC);
 CREATE INDEX IF NOT EXISTS bb_quotes_client_idx ON bb_quotes (client_hash, created_at DESC);

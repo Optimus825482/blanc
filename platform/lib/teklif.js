@@ -25,6 +25,16 @@ export function sorguIzinli(anahtar, sinir = 30, pencereMs = 60000) {
   return kayit.sayi <= sinir;
 }
 
+// Kurumsal form (plan 3.1): [anahtar, etiket, kayda yazılan adet]
+export const ADET_KADEMELERI = [
+  ['25-50', '25–50 adet', 25], ['50-100', '50–100 adet', 50], ['100-250', '100–250 adet', 100],
+  ['250-500', '250–500 adet', 250], ['500+', '500 ve üzeri', 500],
+];
+export const BUTCELER = [
+  ['belirsiz', 'Henüz belirlemedim'], ['250-500', '250–500 TL'], ['500-1000', '500–1.000 TL'],
+  ['1000-2000', '1.000–2.000 TL'], ['2000+', '2.000 TL ve üzeri'],
+];
+
 export const DURUMLAR = [
   ['new', 'Yeni talep', 'Talebiniz alındı; atölye en kısa sürede dönüş yapar.'],
   ['contacted', 'Görüşülüyor', 'Atölye sizinle iletişime geçti; detaylar netleşiyor.'],
@@ -48,7 +58,7 @@ export const getQuote = cache(async (code, token) => {
 });
 
 export const getQuotes = cache(async (limit = 200) => (await query(`
-  SELECT q.id, q.code, q.token, q.kind, q.status, q.quantity, q.size, q.estimate, q.recipient_name, q.delivery_method, q.delivery_date,
+  SELECT q.id, q.code, q.token, q.kind, q.company, q.logo_id, q.status, q.quantity, q.size, q.estimate, q.recipient_name, q.delivery_method, q.delivery_date,
          q.contact_channel, q.image_id, q.admin_note, q.created_at, q.updated_at, q.summary,
          o.short_title AS occasion_title, p.title AS product_title
   FROM bb_quotes q

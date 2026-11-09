@@ -167,3 +167,22 @@
 .bb-admin .bb-teklif-yeni > summary { color: #7a2e1f; }
 .bb-admin .bb-teklif-satir { display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap; }
 .bb-admin .bb-teklif-satir p { margin: 0 0 .5rem; font-size: .9rem; }
+
+/* --- Kurumsal teklif formu (plan 3.1) --- */
+.bb-kurumsal { padding-top: 0; }
+.bb-kurumsal__form { display: grid; gap: 1.25rem; max-width: 52rem; padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--v-cizgi); background: #fffdf9; }
+.bb-kurumsal__izgara { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; }
+.bb-kurumsal__form label { display: grid; gap: .35rem; font-size: .9rem; }
+.bb-kurumsal__form label small { color: var(--v-soluk); font-weight: 400; }
+.bb-kurumsal__form input:not([type="radio"]):not([type="checkbox"]), .bb-kurumsal__form select, .bb-kurumsal__form textarea { width: 100%; padding: .65rem .8rem; border: 1px solid var(--v-cizgi); background: #fff; font: inherit; color: var(--v-metin); }
+.bb-kurumsal__form input:focus-visible, .bb-kurumsal__form select:focus-visible, .bb-kurumsal__form textarea:focus-visible { outline: 2px solid var(--v-bordo); outline-offset: 1px; }
+.bb-kurumsal__form fieldset { margin: 0; padding: 0; border: 0; display: grid; gap: .6rem; }
+.bb-kurumsal__form legend { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--v-soluk); margin-bottom: .4rem; }
+.bb-kurumsal__secenekler { display: flex; flex-wrap: wrap; gap: .5rem; }
+.bb-kurumsal__form .bb-secenek { display: flex; align-items: center; gap: .5rem; min-height: 44px; padding: 0 .9rem; border: 1px solid var(--v-cizgi); background: #fff; cursor: pointer; }
+.bb-kurumsal__form .bb-secenek:has(input:checked) { border-color: var(--v-bordo); background: #f7ece4; }
+.bb-kurumsal__form .bb-secenek input { width: 1.05rem; height: 1.05rem; margin: 0; accent-color: var(--v-bordo); }
+.bb-kurumsal__form .bb-gizli { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.bb-kurumsal__form .v-dugme { justify-self: start; }
+.bb-kurumsal__not { margin: 0; font-size: .84rem; color: var(--v-soluk); }
+.bb-teklif .bb-logo { object-fit: contain; padding: 2rem; background: #fff; }

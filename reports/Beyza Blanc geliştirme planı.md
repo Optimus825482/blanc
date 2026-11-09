@@ -160,7 +160,7 @@ Her iş paketi tek oturumda bitecek büyüklükte, bağımlılığı yazılı. S
 
 | No | İş | Bağımlılık | Kabul ölçütü |
 |---|---|---|---|
-| 3.1 | Kurumsal teklif akışı: logo, adet kademesi, tahmini bütçe, numune | 2.5 | Kurumsal talep panelde ayrı görünür |
+| 3.1 | Kurumsal teklif akışı: logo, adet kademesi, tahmini bütçe, numune | 2.5 | Kurumsal talep panelde ayrı görünür — ✅ 9 Kasım: `/kurumsal#kurumsal-teklif` formu (firma, yetkili, e-posta, telefon, vesile, ürün, adet kademesi, kişi başı bütçe, hedef tarih, logo→`bb_media`, numune, not, onay, bal küpü, 15 dk/5 sınır); kayıt `bb_quotes` kind=corporate (`company` jsonb, `logo_id`); başarıda takip sayfasına yönlenir (kurumsal ayrıntılar + logo); panelde "Kurumsal talepler" ve "Bireysel teklif talepleri" ayrı |
 | 3.2 | Yorum toplama ve onay; ana sayfada "Sizden gelenler" | 2.9 | Onaysız yorum yayınlanmaz |
 | 3.3 | Özel gün hatırlatıcısı (e-posta ilk, WhatsApp sonra) | 2.5 | 10 gün önce mesaj gider, tek tık iptal |
 | 3.4 | Panel ayarları: duyuru bandı, son sipariş notu, teslim bantları, iletişim | 1.3 | Kod değişmeden içerik yönetilir |

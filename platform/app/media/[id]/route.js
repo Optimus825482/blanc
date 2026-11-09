@@ -12,7 +12,7 @@ export async function GET(_request, { params }) {
       OR EXISTS (SELECT 1 FROM bb_occasions WHERE image=$2 AND published)
       OR EXISTS (SELECT 1 FROM bb_product_types WHERE image=$2 AND published)
       OR EXISTS (SELECT 1 FROM bb_designs WHERE image=$2 AND published)
-      OR EXISTS (SELECT 1 FROM bb_quotes WHERE image_id=$1)
+      OR EXISTS (SELECT 1 FROM bb_quotes WHERE image_id=$1 OR logo_id=$1)
     )`, [id, '/media/' + id]
   );
   if (!image) return new Response(null, { status: 404 });
