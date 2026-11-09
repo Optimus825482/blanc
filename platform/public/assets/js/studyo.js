@@ -72,6 +72,18 @@
     }
   }
 
+  // Koleksiyon sayfasından gelen ?tema= : özel gün ve atölye önerisi devralınır.
+  var onTema = new URLSearchParams(location.search).get('tema');
+  var urlTema = onTema && !tasarim ? UI.temaBul(onTema) : null;
+  if (urlTema) {
+    durum.tema = urlTema.id;
+    if (urlTema.oneri) {
+      if (urlTema.oneri.ambalaj) durum.ambalaj = urlTema.oneri.ambalaj;
+      if (urlTema.oneri.kurdele) durum.kurdele = urlTema.oneri.kurdele;
+      if (urlTema.oneri.cikolata) durum.cikolata = urlTema.oneri.cikolata;
+    }
+  }
+
   /* ------------------------------- Yardımcı çizim ------------------------ */
 
   function secili(id, liste) {

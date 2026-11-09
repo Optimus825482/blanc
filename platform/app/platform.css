@@ -65,3 +65,66 @@
 .bb-admin fieldset { display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); gap: 0 1rem; border: 1px solid #dfd0be; padding: .5rem 1rem; }
 .bb-admin fieldset .bb-check { min-height: 36px; }
 .bb-admin .bb-actions { display: flex; gap: .75rem; flex-wrap: wrap; }
+
+/* --- Vitrin tablodan (plan 1.4 / 1.5) --- */
+.bb-menu { display: flex; flex-wrap: wrap; align-items: center; gap: 0 1.5rem; }
+.bb-menu > a, .bb-menu summary { display: flex; align-items: center; gap: .3rem; min-height: 44px; font-size: .8rem; color: inherit; text-decoration: none; cursor: pointer; list-style: none; }
+.bb-menu summary::-webkit-details-marker { display: none; }
+.bb-menu summary span { font-size: .7em; transition: transform .2s; }
+.bb-menu details[open] summary span { transform: rotate(180deg); }
+.bb-menu > a:hover, .bb-menu summary:hover, .bb-menu details[open] summary { text-decoration: underline; text-underline-offset: .2em; }
+.bb-menu__oge { position: relative; }
+.bb-menu__panel { position: absolute; top: 100%; left: 0; z-index: 30; min-width: 16rem; max-width: min(92vw, 56rem); padding: 1.25rem 1.5rem; background: #fffdf9; border: 1px solid var(--v-cizgi); box-shadow: 0 18px 40px -20px rgba(40, 20, 10, .35); }
+.bb-menu__sutunlar { display: grid; grid-template-columns: repeat(3, minmax(11rem, 1fr)); gap: 1.5rem; }
+.bb-menu__panel h3 { margin: 0 0 .5rem; font: 600 .66rem/1.4 "Inter", system-ui, sans-serif; letter-spacing: .16em; text-transform: uppercase; color: var(--v-bordo); }
+.bb-menu__panel ul { list-style: none; margin: 0; padding: 0; }
+.bb-menu__panel li a { display: flex; flex-direction: column; min-height: 36px; justify-content: center; font-size: .86rem; text-decoration: none; color: var(--v-metin); }
+.bb-menu__panel li a:hover { text-decoration: underline; }
+.bb-menu__panel li a small { color: var(--v-soluk); font-size: .74rem; }
+.bb-menu__liste { columns: 2; column-gap: 1.5rem; min-width: 22rem; }
+.bb-menu__tumu { display: inline-block; margin-top: 1rem; font-size: .82rem; font-weight: 600; color: var(--v-bordo); }
+@media (max-width: 760px) {
+  .bb-menu { order: 1; width: 100%; border-top: 1px solid var(--v-cizgi); gap: 0 1.1rem; }
+  .bb-menu__panel { position: static; box-shadow: none; border-width: 0 0 1px; padding: .5rem 0 1rem; max-width: none; }
+  .bb-menu__sutunlar { grid-template-columns: 1fr; gap: .75rem; }
+  .bb-menu__liste { columns: 1; min-width: 0; }
+}
+
+.bb-niyet { padding-block: clamp(1.5rem, 4vw, 3rem) 0; }
+.bb-niyet__secenekler { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; }
+.bb-niyet__secenekler a { display: grid; gap: .35rem; padding: 1.1rem 1.25rem; border: 1px solid var(--v-cizgi); background: #fffdf9; text-decoration: none; color: var(--v-metin); }
+.bb-niyet__secenekler a:hover { border-color: var(--v-bordo); }
+.bb-niyet__secenekler strong { font: 600 1.25rem/1.2 "Cormorant Garamond", Georgia, serif; }
+.bb-niyet__secenekler span { font-size: .84rem; color: var(--v-soluk); }
+
+.bb-topics__simge { display: grid; place-items: center; aspect-ratio: 1; font-size: 4rem; background: #efe4d6; }
+.bb-topics__sayi { display: block; margin: .4rem 1rem 0; font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--v-bordo); }
+.bb-kok { margin-top: clamp(2rem, 5vw, 3.5rem); }
+.bb-kok > h2 { margin-bottom: 1rem; }
+
+.bb-filtreler { display: grid; gap: .75rem; margin-block: 1.5rem 2rem; padding: 1rem 1.25rem; border: 1px solid var(--v-cizgi); background: #fffdf9; }
+.bb-filtre-grup { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .75rem; }
+.bb-filtre-grup__baslik { min-width: 9rem; font: 600 .66rem/1.4 "Inter", system-ui, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--v-soluk); }
+.bb-filtre-grup ul { display: flex; flex-wrap: wrap; gap: .4rem; list-style: none; margin: 0; padding: 0; }
+.bb-filtre-grup a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 .85rem; border: 1px solid var(--v-cizgi); border-radius: 999px; font-size: .8rem; text-decoration: none; color: var(--v-metin); background: #fff; }
+.bb-filtre-grup a:hover { border-color: var(--v-bordo); }
+.bb-filtre-grup a[aria-current="true"] { background: var(--v-bordo); border-color: var(--v-bordo); color: #fffaf5; }
+
+.bb-tasarimlar { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 1.5rem; }
+.bb-tasarim { display: flex; flex-direction: column; border: 1px solid var(--v-cizgi); background: #fffdf9; }
+.bb-tasarim__gorsel { position: relative; display: grid; place-items: center; aspect-ratio: 1; background: #efe4d6; overflow: hidden; font-size: 4rem; }
+.bb-tasarim__gorsel img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+.bb-tasarim:hover .bb-tasarim__gorsel img { transform: scale(1.03); }
+.bb-tasarim__rozet { position: absolute; top: .75rem; left: .75rem; padding: .3rem .6rem; background: var(--v-bordo); color: #fffaf5; font: 600 .64rem/1 "Inter", system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+.bb-tasarim__metin { display: flex; flex-direction: column; gap: .4rem; padding: 1rem 1.1rem 1.1rem; flex: 1; }
+.bb-tasarim__metin .v-etiket { margin: 0; }
+.bb-tasarim__metin h3 { margin: 0; font-size: 1.45rem; line-height: 1.15; }
+.bb-tasarim__metin p { margin: 0; font-size: .9rem; color: var(--v-soluk); }
+.bb-tasarim__etiketler { display: flex; flex-wrap: wrap; gap: .35rem; list-style: none; margin: .2rem 0 0; padding: 0; }
+.bb-tasarim__etiketler li { padding: .2rem .55rem; border: 1px solid var(--v-cizgi); border-radius: 999px; font-size: .72rem; color: var(--v-soluk); }
+.bb-tasarim__alt { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .5rem; margin-top: auto; padding-top: .75rem; border-top: 1px solid var(--v-cizgi); }
+.bb-tasarim__fiyat { font-size: .86rem; font-weight: 600; color: var(--v-bordo); }
+
+.bb-gun .v-etiket { color: var(--gun-vurgu); }
+.bb-gun .v-etiket span { border-color: var(--gun-vurgu); }
+.bb-gun__oneri { font-size: .86rem; color: var(--v-soluk); }

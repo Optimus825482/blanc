@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { getContent, getCategories } from '../../lib/db';
+import { getContent } from '../../lib/db';
+import { getOccasions, getRecipients } from '../../lib/katalog-oku';
 import { contact, instagram, pageMetadata, siteUrl } from '../../lib/seo';
 import Cards from './cards';
 import InstagramFeed from './instagram-feed';
@@ -20,9 +21,12 @@ const posts = [
 ];
 
 export default async function Home() {
-  const [home, about, corporate, categories, feed, settings] = await Promise.all([
-    getContent('home'), getContent('about'), getContent('corporate'), getCategories(), getInstagram(), getSettings()
+  const [home, about, corporate, occasions, recipients, feed, settings] = await Promise.all([
+    getContent('home'), getContent('about'), getContent('corporate'), getOccasions(), getRecipients(), getInstagram(), getSettings()
   ]);
+  // Vitrinde görseli olan ilk 6 özel gün; kişisel günler önce.
+  const categories = occasions.filter((o) => o.card_image).sort((a, b) => (a.root === 'kurumsal') - (b.root === 'kurumsal')).slice(0, 6)
+    .map((o) => ({ slug: o.slug, title: o.title, body: o.body, image: o.card_image, alt: o.card_alt, icon: o.icon, count: Number(o.design_count) }));
   const business = {
     '@context': 'https://schema.org', '@type': 'LocalBusiness', name: 'Beyza Blanc',
     description: home.body, url: siteUrl || undefined,
@@ -57,6 +61,15 @@ export default async function Home() {
       <a href="#tasarim"><small>02</small> Kişiselleştirme <span aria-hidden="true">↘</span></a>
       <a href="#kurumsal"><small>03</small> Kurumsal hediyeler <span aria-hidden="true">↘</span></a>
     </nav>
+    <section className="v-kabuk bb-niyet" aria-labelledby="niyet-baslik">
+      <p className="bb-overline" id="niyet-baslik">Bugün ne için geldiniz?</p>
+      <div className="bb-niyet__secenekler">
+        <Link href="/koleksiyonlar"><strong>Bir özel gün için hediye</strong><span>Söz, nişan, doğum günü, bebek… güne göre keşfedin</span></Link>
+        <Link href="/koleksiyonlar?kime=es-sevgili"><strong>Birine göre seçmek</strong><span>{recipients.slice(0, 4).map((r) => r.short_title).join(', ')}…</span></Link>
+        <Link href="/kurumsal"><strong>Kurumsal hediye</strong><span>Logo baskılı toplu kutular, ekip ve müşteri hediyeleri</span></Link>
+        <Link href="/studyo"><strong>Kendi tasarımımı yapmak</strong><span>Stüdyoda isim, tarih ve renklerinizle canlı önizleme</span></Link>
+      </div>
+    </section>
     <section className="v-kabuk v-bolum bb-collection" id="koleksiyonlar">
       <div className="v-bolum-baslik" data-reveal=""><div><p className="v-etiket">01 / Koleksiyonlar</p><h2>Kutlamanıza eşlik eden tasarımlar</h2><p>Nişan tepsilerinden isme özel bebek hediyelerine, atölyenin çalışmalarını keşfedin.</p></div>
         <Link className="v-metin-link" href="/koleksiyonlar">Tüm koleksiyonlar</Link></div>

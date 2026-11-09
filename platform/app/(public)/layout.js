@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Script from 'next/script';
 import { contact, instagram } from '../../lib/seo';
 import { getSettings, whatsappLink } from '../../lib/settings';
+import MegaMenu from './mega-menu';
 
 export default async function PublicLayout({ children }) {
   const whatsapp = whatsappLink(await getSettings());
@@ -10,9 +11,7 @@ export default async function PublicLayout({ children }) {
     <div className="v-serit">Girne · Alsancak <span aria-hidden="true">✦</span> Çikolata ve hediye atölyesi</div>
     <header className="v-kabuk v-ust">
       <Link className="v-marka" href="/"><img src="/assets/img/instagram/marka/beyza-blanc-profil.webp" width="38" height="38" alt="" />BEYZA <span className="v-marka-script">Blanc</span></Link>
-      <nav aria-label="Ana menü">
-        <Link href="/koleksiyonlar">Koleksiyonlar</Link><Link href="/hakkimizda">Atölye</Link><Link href="/kurumsal">Kurumsal</Link>
-      </nav>
+      <MegaMenu />
       <a className="v-dugme v-dugme--cizgi" href="/studyo">Tasarım stüdyosu <span aria-hidden="true">↗</span></a>
     </header>
     <main id="icerik">{children}</main>
