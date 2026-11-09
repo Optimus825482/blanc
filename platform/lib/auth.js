@@ -1,10 +1,16 @@
 import 'server-only';
-import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
+import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { query } from './db';
 
+// Yönetim oturumu (plan 3.5): çerezde rastgele 256 bitlik belirteç; sunucuda yalnızca özeti (SHA-256) tutulur.
+// Oturum kaydı parola parmak izini taşır: ADMIN_PASSWORD veya SESSION_SECRET değişince tüm oturumlar düşer.
 const cookieName = 'bb_admin';
 const sessionSeconds = 8 * 60 * 60;
+const tokenDeseni = /^[a-f0-9]{64}$/;
+
+const ozet = (deger) => createHash('sha256').update(deger).digest('hex');
 
 export function equalText(a, b) {
   const first = Buffer.from(a);
@@ -12,17 +18,22 @@ export function equalText(a, b) {
   return first.length === second.length && timingSafeEqual(first, second);
 }
 
-function sign(payload) {
-  const key = process.env.SESSION_SECRET;
-  if (!key || key.length < 32) throw new Error('SESSION_SECRET eksik veya çok kısa.');
-  return createHmac('sha256', key).update(payload).digest('hex');
+function parmakIzi() {
+  return ozet('bb-iz|' + (process.env.ADMIN_PASSWORD || '') + '|' + (process.env.SESSION_SECRET || '')).slice(0, 32);
+}
+
+function cerezAyar(maxAge) {
+  return { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', path: '/admin', maxAge };
 }
 
 export async function isAdmin() {
-  const value = (await cookies()).get(cookieName)?.value || '';
-  const [expires, nonce, signature, extra] = value.split('.');
-  if (extra !== undefined || !/^\d{10}$/.test(expires) || !/^[a-f0-9]{32}$/.test(nonce || '') || !/^[a-f0-9]{64}$/.test(signature || '')) return false;
-  return Number(expires) > Math.floor(Date.now() / 1000) && equalText(signature, sign(expires + '.' + nonce));
+  const token = (await cookies()).get(cookieName)?.value || '';
+  if (!tokenDeseni.test(token)) return false;
+  const { rows } = await query(
+    'SELECT 1 FROM bb_sessions WHERE token_hash=$1 AND fingerprint=$2 AND expires_at > now()',
+    [ozet(token), parmakIzi()],
+  );
+  return rows.length > 0;
 }
 
 export async function requireAdmin() {
@@ -30,12 +41,23 @@ export async function requireAdmin() {
 }
 
 export async function createSession() {
-  const payload = Math.floor(Date.now() / 1000 + sessionSeconds) + '.' + randomBytes(16).toString('hex');
-  (await cookies()).set(cookieName, payload + '.' + sign(payload), {
-    httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', path: '/admin', maxAge: sessionSeconds,
-  });
+  const token = randomBytes(32).toString('hex');
+  await query('DELETE FROM bb_sessions WHERE expires_at < now()');
+  await query(
+    "INSERT INTO bb_sessions (token_hash, fingerprint, expires_at) VALUES ($1, $2, now() + interval '8 hours')",
+    [ozet(token), parmakIzi()],
+  );
+  (await cookies()).set(cookieName, token, cerezAyar(sessionSeconds));
 }
 
 export async function clearSession() {
-  (await cookies()).set(cookieName, '', { path: '/admin', maxAge: 0, httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production' });
+  const token = (await cookies()).get(cookieName)?.value || '';
+  if (tokenDeseni.test(token)) await query('DELETE FROM bb_sessions WHERE token_hash=$1', [ozet(token)]);
+  (await cookies()).set(cookieName, '', cerezAyar(0));
+}
+
+// Tüm oturumları kapatır (bu tarayıcıdaki dahil).
+export async function clearAllSessions() {
+  await query('DELETE FROM bb_sessions');
+  (await cookies()).set(cookieName, '', cerezAyar(0));
 }

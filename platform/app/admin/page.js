@@ -1,13 +1,15 @@
 import Link from 'next/link';
 import { isAdmin } from '../../lib/auth';
 import { query } from '../../lib/db';
-import { connectInstagram, disconnectInstagram, login, logout, save, saveSettings } from './actions';
+import { connectInstagram, disconnectInstagram, login, logout, revokeAllSessions, save, saveSettings } from './actions';
 import { getSettings } from '../../lib/settings';
 import { getInstagram } from '../../lib/instagram';
 import KatalogBolumleri from './katalog';
 import Teklifler from './teklifler';
 import Yorumlar from './yorumlar';
 import { BOLUMLER, bolumBul } from './bolumler';
+import Gosterge from './gosterge';
+import Arama from './arama';
 
 export const metadata = { title: 'Yönetim', robots: { index: false, follow: false } };
 export const dynamic = 'force-dynamic';
@@ -18,6 +20,7 @@ const messages = {
   limit: 'Çok fazla giriş denemesi yapıldı. Lütfen daha sonra tekrar deneyin.',
   gecersiz: 'Değişiklik kaydedilemedi. Alanları, kategori adresinin benzersiz olduğunu ve görsel biçimini kontrol edin.',
   kaydedildi: 'Değişiklik kaydedildi.',
+  oturumlar: 'Tüm yönetim oturumları kapatıldı. Yeniden giriş yapmanız gerekir.',
   silindi: 'Kayıt silindi.',
   bagli: 'Bu kayıt başka kayıtlar tarafından kullanıldığı için silinemedi. Önce ona bağlı tasarımları değiştirin.',
   'meta-bagli': 'Instagram hesabı doğrulandı ve bağlandı.',
@@ -143,6 +146,8 @@ async function Instagram() {
 function Bolum({ bolum }) {
   if (bolum.kinds) return <KatalogBolumleri kinds={bolum.kinds} />;
   switch (bolum.id) {
+    case 'genel': return <Gosterge />;
+    case 'arama': return <Arama />;
     case 'talepler': return <Teklifler />;
     case 'yorumlar': return <Yorumlar />;
     case 'icerik': return <Icerik />;
@@ -171,7 +176,10 @@ export default async function Admin({ searchParams }) {
   return <main className="bb-admin bb-admin--panel">
     <header className="bb-admin__ust">
       <div><Link href="/">← Vitrine dön</Link><h1>Beyza Blanc Yönetim</h1></div>
-      <form action={logout}><button className="btn btn--cizgili" type="submit">Çıkış yap</button></form>
+      <div className="bb-admin__eylem">
+        <form action={revokeAllSessions}><button className="btn btn--cizgili" type="submit" title="Bu tarayıcı dahil tüm yönetim oturumlarını kapatır">Tüm oturumları kapat</button></form>
+        <form action={logout}><button className="btn btn--cizgili" type="submit">Çıkış yap</button></form>
+      </div>
     </header>
     <div className="bb-admin__govde">
       <nav className="bb-admin__menu" aria-label="Panel bölümleri">

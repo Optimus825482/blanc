@@ -3,11 +3,23 @@ import Script from 'next/script';
 import { contact, instagram } from '../../lib/seo';
 import { announcement, getSettings, whatsappLink } from '../../lib/settings';
 import MegaMenu from './mega-menu';
+import ZiyaretOlcer from './ziyaret-olcer';
+
+// Arama motoru doğrulama etiketleri panelden (Arama ve analitik bölümü).
+export async function generateMetadata() {
+  const s = await getSettings();
+  const verification = {};
+  if (s.google_site_verification) verification.google = s.google_site_verification;
+  if (s.yandex_verification) verification.yandex = s.yandex_verification;
+  if (s.bing_site_verification) verification.other = { 'msvalidate.01': s.bing_site_verification };
+  return Object.keys(verification).length ? { verification } : {};
+}
 
 export default async function PublicLayout({ children }) {
   const settings = await getSettings();
   const whatsapp = whatsappLink(settings);
   const duyuru = announcement(settings);
+  const ga = /^G-[A-Z0-9]{4,16}$/.test(settings.ga_measurement_id || '') ? settings.ga_measurement_id : null;
   return <div className="vitrin">
     <a className="skip-link" href="#icerik">İçeriğe geç</a>
     <div className="v-serit">Girne · Alsancak <span aria-hidden="true">✦</span> Çikolata ve hediye atölyesi</div>
@@ -24,5 +36,10 @@ export default async function PublicLayout({ children }) {
       <a className="v-metin-link" href={contact}>Atölyeye yaz <span aria-hidden="true">↗</span></a>
     </div></footer>
     <Script src="/assets/js/reveal.js" strategy="afterInteractive" />
+    <ZiyaretOlcer />
+    {ga && <>
+      <Script src={'https://www.googletagmanager.com/gtag/js?id=' + ga} strategy="afterInteractive" />
+      <Script id="ga4" strategy="afterInteractive">{`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${ga}',{anonymize_ip:true});`}</Script>
+    </>}
   </div>;
 }

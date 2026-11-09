@@ -8,6 +8,8 @@ export const settingKeys = [
   // Plan 3.4: vitrin metinleri panelden
   'announcement_text', 'announcement_link', 'announcement_link_text', 'announcement_until',
   'last_order_note', 'delivery_bands', 'studio_corporate_qty_note',
+  // Arama motorları ve analitik (panel: Arama ve analitik)
+  'ga_measurement_id', 'google_site_verification', 'bing_site_verification', 'yandex_verification',
 ];
 
 export const getSettings = cache(async () => {

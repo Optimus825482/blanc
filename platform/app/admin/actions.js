@@ -2,9 +2,10 @@
 
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { clearSession, createSession, equalText, requireAdmin } from '../../lib/auth';
+import { clearAllSessions, clearSession, createSession, equalText, requireAdmin } from '../../lib/auth';
 import { query } from '../../lib/db';
 import { clearInstagramCache, encryptToken, verifyInstagram } from '../../lib/instagram';
 import { VERI_ALANLARI, katalog, slugDeseni } from '../../lib/katalog';
@@ -36,13 +37,16 @@ export async function login(data) {
   const password = data.get('password');
   const expected = process.env.ADMIN_PASSWORD;
   if (typeof password !== 'string' || password.length > 128 || !expected || expected.length < 16) redirect('/admin?durum=giris');
-  await query("DELETE FROM bb_login_limits WHERE bucket < now() - interval '1 day'");
+  // Giriş sınırı IP başına: 15 dakikada en çok 12 deneme. IP, vekilin eklediği en sağdaki X-Forwarded-For adresi.
+  const basliklar = await headers();
+  const ip = (basliklar.get('x-forwarded-for') || '').split(',').pop().trim() || basliklar.get('x-real-ip') || 'bilinmiyor';
+  await query("DELETE FROM bb_login_ip WHERE bucket < now() - interval '1 day'");
   const { rows: [limit] } = await query(`
-    INSERT INTO bb_login_limits(bucket, attempts)
-    VALUES (date_bin(interval '15 minutes', now(), timestamptz '2000-01-01'), 1)
-    ON CONFLICT(bucket) DO UPDATE SET attempts=LEAST(bb_login_limits.attempts+1,13)
+    INSERT INTO bb_login_ip(ip, bucket, attempts)
+    VALUES ($1, date_bin(interval '15 minutes', now(), timestamptz '2000-01-01'), 1)
+    ON CONFLICT(ip, bucket) DO UPDATE SET attempts=LEAST(bb_login_ip.attempts+1,13)
     RETURNING attempts
-  `);
+  `, [ip]);
   if (limit.attempts > 12) redirect('/admin?durum=limit');
   if (!equalText(password, expected)) redirect('/admin?durum=giris');
   await createSession();
@@ -53,6 +57,13 @@ export async function logout() {
   await requireAdmin();
   await clearSession();
   redirect('/admin');
+}
+
+// Tüm oturumları kapatır (bu tarayıcı dahil); parola değişiminin etkisi de aynıdır (bkz. lib/auth.js).
+export async function revokeAllSessions() {
+  await requireAdmin();
+  await clearAllSessions();
+  redirect('/admin?durum=oturumlar');
 }
 
 export async function save(data) {
@@ -126,21 +137,25 @@ const settingLimits = {
   address_region: 60, address_country: 60, maps_url: 400, hours_text: 600, hours_schema: 300,
   announcement_text: 200, announcement_link: 400, announcement_link_text: 60, announcement_until: 10,
   last_order_note: 240, delivery_bands: 600, studio_corporate_qty_note: 240,
+  ga_measurement_id: 20, google_site_verification: 120, bing_site_verification: 120, yandex_verification: 120,
 };
 
 export async function saveSettings(data) {
   await requireAdmin();
+  const geri = data.get('bolum') === 'arama' ? 'arama' : 'ayarlar';
   const rows = [];
   for (const [key, max] of Object.entries(settingLimits)) {
     if (!data.has(key)) continue; // ayarlar birkaç forma bölündü; yalnızca gönderilenler güncellenir
     const value = data.get(key);
-    if (typeof value !== 'string' || value.length > max) redirect('/admin?bolum=ayarlar&durum=gecersiz');
+    if (typeof value !== 'string' || value.length > max) redirect('/admin?bolum=' + geri + '&durum=gecersiz');
     const trimmed = value.trim();
-    if (key === 'maps_url' && trimmed && !/^https:\/\/(www\.)?(google\.[a-z.]+\/maps|maps\.app\.goo\.gl|goo\.gl\/maps)\//.test(trimmed)) redirect('/admin?bolum=ayarlar&durum=gecersiz');
-    if (key === 'contact_email' && trimmed && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) redirect('/admin?bolum=ayarlar&durum=gecersiz');
-    if (key === 'announcement_link' && trimmed && !/^(\/[^\s]*|https:\/\/[^\s]+)$/.test(trimmed)) redirect('/admin?bolum=ayarlar&durum=gecersiz');
-    if (key === 'announcement_until' && trimmed && !/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) redirect('/admin?bolum=ayarlar&durum=gecersiz');
-    if ((key === 'contact_phone' || key === 'contact_whatsapp') && trimmed && !/^\+?[\d\s()-]{10,20}$/.test(trimmed)) redirect('/admin?bolum=ayarlar&durum=gecersiz');
+    if (key === 'maps_url' && trimmed && !/^https:\/\/(www\.)?(google\.[a-z.]+\/maps|maps\.app\.goo\.gl|goo\.gl\/maps)\//.test(trimmed)) redirect('/admin?bolum=' + geri + '&durum=gecersiz');
+    if (key === 'contact_email' && trimmed && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) redirect('/admin?bolum=' + geri + '&durum=gecersiz');
+    if (key === 'announcement_link' && trimmed && !/^(\/[^\s]*|https:\/\/[^\s]+)$/.test(trimmed)) redirect('/admin?bolum=' + geri + '&durum=gecersiz');
+    if (key === 'ga_measurement_id' && trimmed && !/^G-[A-Z0-9]{4,16}$/.test(trimmed)) redirect('/admin?bolum=' + geri + '&durum=gecersiz');
+    if (key.endsWith('_verification') && trimmed && !/^[A-Za-z0-9_\-=.]{8,120}$/.test(trimmed)) redirect('/admin?bolum=' + geri + '&durum=gecersiz');
+    if (key === 'announcement_until' && trimmed && !/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) redirect('/admin?bolum=' + geri + '&durum=gecersiz');
+    if ((key === 'contact_phone' || key === 'contact_whatsapp') && trimmed && !/^\+?[\d\s()-]{10,20}$/.test(trimmed)) redirect('/admin?bolum=' + geri + '&durum=gecersiz');
     rows.push([key, trimmed]);
   }
   await query(
@@ -148,7 +163,7 @@ export async function saveSettings(data) {
     [rows.map(row => row[0]), rows.map(row => row[1])]
   );
   revalidatePath('/', 'layout');
-  redirect('/admin?bolum=ayarlar&durum=kaydedildi');
+  redirect('/admin?bolum=' + geri + '&durum=kaydedildi');
 }
 
 /* ---------------------------------- Katalog (plan 1.3) --------------------------------- */

@@ -202,3 +202,30 @@ CREATE TABLE IF NOT EXISTS bb_reviews (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS bb_reviews_approved_idx ON bb_reviews (approved, created_at DESC);
+
+-- Çerezsiz ziyaret ölçümü (panel göstergesi). visitor_hash günlük döner; kişisel veri yok.
+CREATE TABLE IF NOT EXISTS bb_visits (
+  id bigserial PRIMARY KEY,
+  path text NOT NULL,
+  referrer_host text NOT NULL DEFAULT '',
+  device text NOT NULL DEFAULT 'masaustu',
+  visitor_hash text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS bb_visits_created_idx ON bb_visits (created_at DESC);
+
+-- Yönetim oturumları (plan 3.5): yalnızca belirtecin özeti tutulur; parola izi değişince oturum geçersiz olur.
+CREATE TABLE IF NOT EXISTS bb_sessions (
+  id serial PRIMARY KEY,
+  token_hash text NOT NULL UNIQUE,
+  fingerprint text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  expires_at timestamptz NOT NULL
+);
+-- IP başına giriş denemesi (15 dakikalık pencere).
+CREATE TABLE IF NOT EXISTS bb_login_ip (
+  ip text NOT NULL,
+  bucket timestamptz NOT NULL,
+  attempts integer NOT NULL,
+  PRIMARY KEY (ip, bucket)
+);

@@ -1,6 +1,7 @@
 // Panel bölümleri: kenar menüsü ve hangi katalog türünün hangi bölümde göründüğü.
 // Aksiyonlar kayıttan sonra ilgili bölüme döner (panelBolumu).
 export const BOLUMLER = [
+  { id: 'genel', ad: 'Genel bakış', simge: '◈', aciklama: 'Anlık ziyaretçi, günlük ve haftalık özet, talepler, kurulum durumu' },
   { id: 'talepler', ad: 'Talepler', simge: '✉', aciklama: 'Kurumsal ve bireysel teklif talepleri' },
   { id: 'yorumlar', ad: 'Yorumlar', simge: '★', aciklama: 'Müşteri yorumları; onaylananlar ana sayfada “Sizden gelenler” bölümünde görünür' },
   { id: 'katalog', ad: 'Katalog', simge: '◫', kinds: ['occasion', 'recipient', 'segment', 'product_type'], aciklama: 'Özel günler, alıcılar, segmentler, ürün tipleri' },
@@ -10,6 +11,7 @@ export const BOLUMLER = [
   { id: 'sss', ad: 'Sık sorulanlar', simge: '?', kinds: ['faq'], aciklama: '/sss sayfası ve arama motoru SSS işaretlemesi' },
   { id: 'icerik', ad: 'Sayfa içerikleri', simge: '¶', aciklama: 'Ana sayfa, hakkımızda ve kurumsal metinleri; eski koleksiyon kategorileri' },
   { id: 'ayarlar', ad: 'Ayarlar', simge: '⚙', aciklama: 'İletişim bilgileri, duyuru bandı, hazırlık süreleri, son sipariş notu' },
+  { id: 'arama', ad: 'Arama ve analitik', simge: '◉', aciklama: 'Google Analytics, Google Search Console, Bing ve Yandex doğrulama kayıtları' },
   { id: 'instagram', ad: 'Instagram', simge: '◎', aciklama: 'Hesap bağlantısı ve erişim anahtarı' },
 ];
 
