@@ -7,7 +7,7 @@
 .bb-prose { max-width:62ch; }
 .bb-prose p { white-space:pre-line; }
 .bb-nav { display:flex; flex-wrap:wrap; gap:1rem; }
-.bb-detail-image { border:1px solid var(--v-cizgi); }
+.bb-detail-image { display:block; width:100%; height:auto; aspect-ratio:1; object-fit:cover; border:1px solid var(--v-cizgi); }
 .bb-admin { width:min(100% - 2rem, 70rem); margin:2rem auto; }
 .bb-admin form { display:grid; gap:.8rem; padding:1.25rem; margin-block:1rem; border:1px solid var(--cizgi); background:var(--beyaz); }
 .bb-admin label { display:grid; gap:.25rem; min-width:0; }
@@ -85,7 +85,9 @@
 .bb-menu__tumu { display: inline-block; margin-top: 1rem; font-size: .82rem; font-weight: 600; color: var(--v-bordo); }
 @media (max-width: 760px) {
   .bb-menu { order: 1; width: 100%; border-top: 1px solid var(--v-cizgi); gap: 0 1.1rem; }
-  .bb-menu__panel { position: static; box-shadow: none; border-width: 0 0 1px; padding: .5rem 0 1rem; max-width: none; }
+  .bb-menu { position: relative; }
+  .bb-menu__oge { position: static; }
+  .bb-menu__panel { left: 0; right: 0; min-width: 0; max-width: none; max-height: min(70dvh, 34rem); overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; padding: .75rem 1rem 1.1rem; }
   .bb-menu__sutunlar { grid-template-columns: 1fr; gap: .75rem; }
   .bb-menu__liste { columns: 1; min-width: 0; }
 }
@@ -214,7 +216,8 @@
 @media (max-width: 840px) {
   .bb-admin__govde { grid-template-columns: 1fr; gap: 1rem; }
   .bb-admin__menu { position: static; display: flex; gap: .35rem; overflow-x: auto; padding-bottom: .5rem; -webkit-overflow-scrolling: touch; }
-  .bb-admin__menu a { flex: 0 0 auto; white-space: nowrap; }
+  .bb-admin__menu a { flex: 0 0 auto; white-space: nowrap; scroll-snap-align: start; }
+  .bb-admin__menu { scroll-snap-type: x proximity; scrollbar-width: thin; mask-image: linear-gradient(90deg, #000 calc(100% - 2.5rem), transparent); }
 }
 
 /* --- Duyuru bandı (3.4) --- */

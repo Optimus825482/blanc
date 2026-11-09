@@ -25,7 +25,7 @@ export default async function PublicLayout({ children }) {
   const ga = /^G-[A-Z0-9]{4,16}$/.test(settings.ga_measurement_id || '') ? settings.ga_measurement_id : null;
   return <div className="vitrin">
     <a className="skip-link" href="#icerik">İçeriğe geç</a>
-    <div className="v-serit">Girne · Alsancak <span aria-hidden="true">✦</span> Çikolata ve hediye atölyesi</div>
+    <div className="v-serit">Girne · Alsancak <span aria-hidden="true">✦</span> <span className="v-serit__ek">Çikolata ve hediye atölyesi</span></div>
     {duyuru && <div className="bb-duyuru" role="region" aria-label="Duyuru"><div className="v-kabuk bb-duyuru__ic"><span>📅 {duyuru.text}</span>{duyuru.link && <a href={duyuru.link}>{duyuru.linkText}</a>}</div></div>}
     <header className="v-kabuk v-ust">
       <Link className="v-marka" href="/"><img decoding="async" src="/assets/img/instagram/marka/beyza-blanc-profil.webp" width="38" height="38" alt="" />BEYZA <span className="v-marka-script">Blanc</span></Link>

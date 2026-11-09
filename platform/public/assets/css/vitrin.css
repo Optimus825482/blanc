@@ -97,6 +97,7 @@
 @media (max-width: 40rem) {
   .v-kabuk { width: calc(100% - 2rem); }
   .v-ust > .v-dugme { padding-inline: .6rem; }
+  .v-serit__ek, .v-serit span { display: none; }
   .v-acilis-gorsel img { aspect-ratio: 1.2; }
   .v-ozet { grid-template-columns: 1fr; padding-block: .45rem; }
   .v-ozet span { padding-block: .35rem; text-align: start; }
