@@ -125,7 +125,7 @@ Her iş paketi tek oturumda bitecek büyüklükte, bağımlılığı yazılı. S
 | 0.1 | Git deposu, `.gitignore`, ilk commit; artık dizinleri sil; `_tmp_tr` ve `_scripts`'i `research_notes/kaynak/` altına taşı | kök | `git status` temiz, `.env.local` izlenmiyor |
 | 0.2 | ESLint + `eslint-config-next`, `npm run lint` ve `npm run check` | `package.json` | Lint sıfır hata |
 | 0.3 | Başlıkta "Blanc" script yazı tipi (logo ile uyum); Great Vibes veya Pinyon Script self-host | `app/layout.js`, `app/(public)/layout.js`, `vitrin.css` | Başlık ve alt bilgi logo ile tutarlı, kontrast AA |
-| 0.4 | Yönlendirmelerde sorgu koruma: `koleksiyonlar.html?gun=X` → `/koleksiyonlar?gun=X` | `next.config.mjs` | 20 menü bağlantısı doğru hedefe gider |
+| 0.4 | Koleksiyon sayfası `gun` parametresini okur: eşleşen kategoriye yönlendirir, eşleşmeyene not gösterir; `/sss` ve `/urun` uzantısız açılır | `koleksiyonlar/page.js`, `next.config.mjs` | 20 menü bağlantısı doğru hedefe gider ✔ (9 Kasım) |
 | 0.5 | İletişim sayfası ve JSON-LD: adres, telefon, saat, harita, iki kanal; değerler `bb_settings`'ten | `iletisim/page.js`, `page.js`, şema | Rich Results testi geçer |
 | 0.6 | Docker Compose + Caddy + yedek betiği; VPS'e ilk dağıtım | `Dockerfile`, `compose.yml`, `deploy/` | HTTPS'te açılır, yedek dosyası oluşur |
 

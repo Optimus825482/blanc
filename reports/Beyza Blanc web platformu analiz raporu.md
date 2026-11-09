@@ -6,7 +6,7 @@ Tarih: 9 Kasım 2026 · Kapsam: `D:\PROJECTS\beyza` altındaki `platform/` (Next
 
 Proje iki paralel üründen oluşuyor. `site/` klasörü, araştırma bulgularına göre olgunlaştırılmış, 19 özel gün ve 28 hazır tasarım içeren çok eksenli bir statik vitrin ve canvas tabanlı tasarım stüdyosudur. `platform/` klasörü ise Next.js 16 ve PostgreSQL üzerine kurulmuş, yönetim panelli, veritabanından beslenen yeni vitrindir; ancak bugün yalnızca 4 kategori ve 3 içerik sayfası barındırır, ürün/tasarım kavramı yoktur.
 
-En önemli bulgu şudur: platform, statik sitenin stüdyo, ürün detayı ve SSS sayfalarını `public/` altından olduğu gibi servis ediyor. Bu sayfalar eski üst barı ve `koleksiyonlar.html?gun=…` bağlantılarını kullanıyor; Next bu adresleri `/koleksiyonlar`a 308 ile yönlendirirken sorgu parametresini düşürüyor. Sonuç: ziyaretçi, tasarım detayından bir özel gün kategorisine tıkladığında filtresiz ve yalnızca 4 kartlık bir sayfaya düşüyor. İki içerik kaynağı (veritabanı ve `data.js`) ve iki tasarım kabuğu aynı anda yayında.
+En önemli bulgu şudur: platform, statik sitenin stüdyo, ürün detayı ve SSS sayfalarını `public/` altından olduğu gibi servis ediyor. Bu sayfalar eski üst barı ve `koleksiyonlar.html?gun=…` bağlantılarını kullanıyor; Next bu adresleri `/koleksiyonlar`a 308 ile yönlendiriyor; sorgu korunuyor ama platformun koleksiyon sayfası `gun` parametresini okumuyordu. Sonuç: ziyaretçi, tasarım detayından bir özel gün kategorisine tıkladığında filtresiz ve yalnızca 4 kartlık bir sayfaya düşüyordu. (9 Kasım, paket 0.4 ile düzeltildi: eşleşen kategoriye yönlendirme, eşleşmeyene bilgi notu.) İki içerik kaynağı (veritabanı ve `data.js`) ve iki tasarım kabuğu aynı anda yayında.
 
 Platformun temeli sağlam (güvenli oturum, görsel işleme, SEO uçları, şifreli Instagram anahtarı), fakat ürün kataloğu, çok eksenli kategori mimarisi, sipariş/teklif kaydı, test ve sürüm kontrolü yok. Önerilen yol: önce hijyen ve birleştirme (Faz 0 ve 1), sonra kataloğu veritabanına taşıyıp stüdyoyu platforma entegre etmek (Faz 2), ardından teklif kaydı, kurumsal akış ve ölçüm (Faz 3).
 
@@ -78,7 +78,7 @@ Platformdaki kopyada iletişim kanalı WhatsApp'tan Instagram DM'e (`ig.me/m/bey
 | Ana sayfa, koleksiyonlar, kategori detayı, içerik sayfaları | 200, konsol hatasız, JSON-LD mevcut |
 | Bilinmeyen kategori | 404 (doğru) |
 | `/studyo`, `/urun.html`, `/sss.html` | 200, çalışıyor; ancak eski üst bar ve `.html` bağlantıları |
-| `/koleksiyonlar.html?gun=soz-nisan` | 308 → `/koleksiyonlar`, sorgu kayboluyor |
+| `/koleksiyonlar.html?gun=soz-nisan` | 308 → `/koleksiyonlar?gun=soz-nisan`; sayfa parametreyi okumuyordu (0.4 ile düzeltildi) |
 | `/sss`, `/urun` (uzantısız) | 404; yalnızca `.html` uzantılı adresler çalışıyor |
 | `/sitemap.xml`, `/robots.txt` | 200; `SITE_URL` yer tutucu (`beyzablanc.example`) olduğu için robots "Allow" üretiyor |
 | Güvenlik başlıkları | nosniff, Referrer-Policy, X-Frame-Options var; CSP ve HSTS yok |
@@ -91,7 +91,7 @@ Platformdaki kopyada iletişim kanalı WhatsApp'tan Instagram DM'e (`ig.me/m/bey
 ### Kritik
 
 1. **İki içerik kaynağı, iki kabuk.** Veritabanı 4 kategori sunarken `data.js` 19 özel gün, 8 alıcı ekseni, 28 tasarım taşıyor. `/urun.html` ve `/sss.html` eski "Zarafetin Adresi" üst barıyla, `/` ve `/koleksiyonlar` yeni vitrin kabuğuyla açılıyor. Marka tutarsızlığı ve kırık kullanıcı yolculuğu.
-2. **Yönlendirme sorgu kaybı.** `next.config.mjs` içindeki `koleksiyonlar.html → /koleksiyonlar` yönlendirmesi `?gun=…&kime=…` parametrelerini taşımıyor; platformun koleksiyon sayfası zaten filtre tanımıyor. Stüdyo ve ürün detayındaki 20 menü bağlantısının tamamı etkileniyor.
+2. **Koleksiyon sayfası sorguyu yok sayıyor.** Yönlendirme `?gun=…` parametresini taşıyor, ancak platformun koleksiyon sayfası okumuyor; filtre de tanımıyor. (Paket 0.4 ile geçici çözüm uygulandı; kalıcı çözüm 1.5.) Stüdyo ve ürün detayındaki 20 menü bağlantısının tamamı etkileniyor.
 3. **Ürün kataloğu yok.** Kategori detay sayfası tek görsel ve metinden ibaret; araştırmanın "her kategoride en az 3–6 tasarım" kuralı karşılanamıyor. Yönetim paneli tasarım ekleyemiyor.
 
 ### Yüksek
