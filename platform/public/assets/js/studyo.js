@@ -726,6 +726,15 @@
 
   function cizimTipi(urun) { return urun.tip === 'bar' ? 'bar' : urun.tip === 'tepsi' ? 'tepsi' : 'kutu'; }
 
+  // Ürün değişince yazı/logo başlangıç konumu: kutuda kapak plakası (üst), bar ve tepside orta.
+  function yerlesimiSifirla() {
+    var tip = cizimTipi(UI.urunBul(durum.urun));
+    durum.yerlesim.yazi.x = 0.5;
+    durum.yerlesim.yazi.y = tip === 'kutu' ? 0.2 : 0.5;
+    durum.yerlesim.foto.x = tip === 'bar' ? 0.5 : 0.76;
+    durum.yerlesim.foto.y = tip === 'bar' ? 0.5 : 0.74;
+  }
+
   function sablonGorsel(urun) {
     var yol = urun && urun.altlik;
     if (!yol) return null;
@@ -1322,6 +1331,7 @@
       var h = olay.target;
       if (h.name === 'urun') {
         durum.urun = h.value;
+        yerlesimiSifirla();
         boyutlariCiz();
         temalariCiz();
         sablonlariCiz();
