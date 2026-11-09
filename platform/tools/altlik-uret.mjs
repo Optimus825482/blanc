@@ -99,10 +99,32 @@ for (const [name, body] of [['kutu', kutuSvg], ['bar', barSvg], ['tepsi', tepsiS
   await sharp(Buffer.from(body), { density: 96 }).webp({ quality: 88 }).toFile(new URL(`altlik-${name}.webp`, out).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
   console.log('üretildi:', `altlik-${name}.webp`);
 }
+const ig = (ad) => '/assets/img/instagram/' + ad + '.webp';
 const geometri = {
   kutu: { gorsel: '/assets/img/studyo/altlik-kutu.webp', dis: kutu.dis, ic: kutu.ic },
   bar: { gorsel: '/assets/img/studyo/altlik-bar.webp', bar: { x: bar.x, y: bar.y, g: bar.g, h: bar.h, r: bar.r } },
   tepsi: { gorsel: '/assets/img/studyo/altlik-tepsi.webp', oval: { cx: tepsi.cx, cy: tepsi.cy, rx: tepsi.rx - tepsi.kenar, ry: tepsi.ry - tepsi.kenar } },
+  // Gerçek görsel modu: özel güne (ve varsa ürün tipine) göre atölyenin Instagram fotoğrafı.
+  // Panelden yönetilene kadar bu eşleme kullanılır. Anahtar: özel gün kimliği; değer: tip → dosya.
+  gercek: {
+    varsayilan: { kutu: ig('hediyelik/zarif-hediye-sunumu'), tepsi: ig('nisan/kristal-inci-nisan-tepsisi'), bar: ig('kisiye-ozel/isim-ve-bas-harf-tasarimi') },
+    'soz-nisan': { kutu: ig('nisan/altin-cikolata-aranjmani'), tepsi: ig('nisan/kristal-inci-nisan-tepsisi'), bar: ig('nisan/nisan-hatiralari') },
+    dugun: { kutu: ig('nisan/altin-cikolata-aranjmani'), tepsi: ig('nisan/kristal-inci-nisan-tepsisi') },
+    'evlilik-yildonumu': { kutu: ig('nisan/nisan-hatiralari'), tepsi: ig('nisan/kristal-inci-nisan-tepsisi') },
+    sevgililer: { kutu: ig('nisan/altin-cikolata-aranjmani') },
+    'hos-geldin-bebek': { kutu: ig('bebek/bebek-hediye-kutusu'), tepsi: ig('bebek/isme-ozel-pleksi-kapi-susu'), bar: ig('bebek/bulut-kapi-susu') },
+    'dogum-gunu': { kutu: ig('dogum-gunu/ilk-yas-hatirasi'), bar: ig('kisiye-ozel/fotografli-puzzle-cikolata') },
+    'anneler-babalar': { kutu: ig('hediyelik/musteri-hediye-tasarimi') },
+    'tesekkur-tebrik': { kutu: ig('hediyelik/atolye-hediye-tasarimi') },
+    'yeni-ev': { kutu: ig('hediyelik/zarif-hediye-sunumu') },
+    mezuniyet: { kutu: ig('kisiye-ozel/isim-ve-bas-harf-tasarimi') },
+    'her-zaman': { kutu: ig('kisiye-ozel/tavus-kusu-temali-cikolata') },
+    kurumsal: { kutu: ig('kurumsal/gokhan-turk-motors'), bar: ig('kurumsal/osk-auto'), tepsi: ig('kurumsal/ege-motors') },
+    'is-yildonumu': { kutu: ig('kurumsal/ege-motors'), bar: ig('kurumsal/gokhan-turk-motors') },
+    'ise-baslama': { kutu: ig('kurumsal/osk-auto') },
+    terfi: { kutu: ig('kurumsal/gokhan-turk-motors') },
+    'acilis-toren': { kutu: ig('kurumsal/ege-motors') },
+  },
 };
 await writeFile(new URL('altliklar.json', out), JSON.stringify(geometri, null, 2) + '\n');
 console.log('üretildi: altliklar.json');

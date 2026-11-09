@@ -147,7 +147,7 @@ Her iş paketi tek oturumda bitecek büyüklükte, bağımlılığı yazılı. S
 |---|---|---|---|
 | 2.1 | Stüdyoyu Next istemci bileşenine taşı; seçenekler `/api/studio-options` veya sunucu props | 1.1 | `data.js` bağımlılığı yok, eski davranış korunur |
 | 2.2 | Fiyat aralığı hesaplayıcı (sunucu ve istemci aynı fonksiyon) | 1.1 | Panelde kural değişince stüdyo günceller |
-| 2.3 | Katmanlı gerçek fotoğraf önizlemesi (ürün başına altlık + maske) | 2.1 | 4 ürün tipi için fotoğraflı önizleme — ◐ 9 Kasım: altlık sistemi (`altliklar.json` + render edilmiş kutu/bar/tepsi sahneleri) ve gerçekçi çizim katmanı statik stüdyoda canlı; kalan: panelden altlık fotoğrafı yükleme (1.3 ile) |
+| 2.3 | Katmanlı gerçek fotoğraf önizlemesi (ürün başına altlık + maske) | 2.1 | 4 ürün tipi için fotoğraflı önizleme — ◐ 9 Kasım: altlık sistemi (`altliklar.json` + render edilmiş kutu/bar/tepsi sahneleri) ve gerçekçi çizim katmanı statik stüdyoda canlı; 9 Kasım (2): "Gerçek görsel / Taslak çizim" geçişi — özel güne ve ürün tipine göre atölyenin gerçek fotoğrafı altlık olur, isim/tarih/kurdele/kart/fotoğraf üstüne işlenir ( →  eşlemesi, 16 özel gün); kalan: panelden altlık ve gerçek görsel yükleme (1.3 ile) |
 | 2.4 | Teslim adımı: tarih seçici, son sipariş eşiği, hazırlık bandı uyarıları | 2.1 | Geçmiş veya eşik dışı tarih engellenir |
 | 2.5 | `bb_quotes` + kayıt eylemi + PNG saklama + kod üretimi | 1.1 | Onay sonrası kayıt oluşur, kod gösterilir |
 | 2.6 | Kanal seçimi ve önceden doldurulmuş mesaj (WhatsApp, Instagram) | 2.5 | Her iki kanalda kod ve bağlantı mesajda |

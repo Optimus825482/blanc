@@ -24,6 +24,7 @@
   /* ----------------------------- Başlangıç durumu ----------------------- */
 
   var durum = {
+    gorunum: 'gercek',
     urun: D.studyo.urunTipleri[0].id,
     boyut: D.studyo.urunTipleri[0].boyutlar[1],
     tema: D.temalar[0].id,
@@ -346,6 +347,11 @@
 
     ctx.clearRect(0, 0, OLCO, OLCO);
     var tip = urun.tip === 'bar' ? 'bar' : urun.tip === 'tepsi' ? 'tepsi' : 'kutu';
+    var gercek = durum.gorunum === 'gercek' ? gercekGorsel(tema, tip) : null;
+    if (gercek) {
+      cizGercek(gercek, amb, kur, kart, cik, tema, urun, tip);
+      return;
+    }
     zeminCiz(tip);
 
     if (tip === 'bar') {
@@ -378,8 +384,8 @@
     ctx.textAlign = ortala ? 'center' : 'left';
     ctx.textBaseline = 'alphabetic';
     ctx.font = '500 22px ' + fontCss();
-    ctx.fillStyle = karistir(ana, 128, 0.35);
-    var etiket = tema ? tema.ad.toLocaleUpperCase('tr-TR') : '';
+    ctx.fillStyle = tema && tema.vurgu ? tema.vurgu : karistir(ana, 128, 0.35);
+    var etiket = tema ? ((tema.ikon ? tema.ikon + '  ' : '') + tema.ad.toLocaleUpperCase('tr-TR')) : '';
     ctx.fillText(etiket, x, y);
 
     if (durum.isim) {
@@ -440,7 +446,7 @@
       ctx.fill();
     }, 'rgba(30,15,8,0.35)', 14, 0, 6);
     yuvarlak(ctx, ic.x + 30, kartY + 8, ic.g - 60, kartH - 16, 6);
-    ctx.strokeStyle = 'rgba(169,131,54,0.55)';
+    ctx.strokeStyle = tema && tema.vurgu ? tema.vurgu : 'rgba(169,131,54,0.55)';
     ctx.lineWidth = 1.5;
     ctx.stroke();
     ustBasliklar(tema, ic.x + 54, kartY + 54, ic.g - 108, false, '#3d2016');
@@ -630,7 +636,7 @@
       ctx.fill();
     }, 'rgba(30,15,8,0.4)', 20, 2, 8);
     yuvarlak(ctx, cx - pG / 2 + 6, cy - pH / 2 + 6, pG - 12, pH - 12, 12);
-    ctx.strokeStyle = 'rgba(169,131,54,0.6)';
+    ctx.strokeStyle = tema && tema.vurgu ? tema.vurgu : 'rgba(169,131,54,0.6)';
     ctx.lineWidth = 1.5;
     ctx.stroke();
     ctx.textAlign = 'center';
@@ -744,6 +750,171 @@
     });
     ctx.restore();
   }
+
+  /* ------------------------------ Gerçek görsel modu --------------------- */
+  // Özel güne (ve ürün tipine) göre atölyenin gerçek çalışmasının fotoğrafı altlık olur;
+  // isim, tarih, kurdele rengi, kart ve yüklenen fotoğraf üstüne bindirilir.
+  var gercekImg = {};
+
+  function gercekYol(tema, tip) {
+    var harita = altlikGeo && altlikGeo.gercek;
+    if (!harita) return null;
+    var kayit = (tema && harita[tema.id]) || {};
+    var varsayilan = harita.varsayilan || {};
+    return kayit[tip] || varsayilan[tip] || kayit.kutu || varsayilan.kutu || null;
+  }
+
+  function gercekGorsel(tema, tip) {
+    var yol = gercekYol(tema, tip);
+    if (!yol) return null;
+    if (gercekImg[yol] === undefined) {
+      gercekImg[yol] = null;
+      var img = new Image();
+      img.onload = function () { gercekImg[yol] = img; ciz(); };
+      img.onerror = function () { gercekImg[yol] = false; ciz(); };
+      img.src = yol;
+    }
+    return gercekImg[yol] || null;
+  }
+
+  function kaplaCiz(img, x, y, g, h) {
+    var oran = Math.max(g / img.naturalWidth, h / img.naturalHeight);
+    var sw = g / oran;
+    var sh = h / oran;
+    ctx.drawImage(img, (img.naturalWidth - sw) / 2, (img.naturalHeight - sh) / 2, sw, sh, x, y, g, h);
+  }
+
+  function camPanel(x, y, g, h, r) {
+    golgeli(function () {
+      yuvarlak(ctx, x, y, g, h, r);
+      ctx.fillStyle = 'rgba(255,252,246,0.86)';
+      ctx.fill();
+    }, 'rgba(20,10,5,0.45)', 30, 0, 12);
+    yuvarlak(ctx, x, y, g, h, r);
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  }
+
+  function cizGercek(img, amb, kur, kart, cik, tema, urun, tip) {
+    var vurgu = (tema && tema.vurgu) || '#a98336';
+    kaplaCiz(img, 0, 0, OLCO, OLCO);
+
+    // Alt ve üst karartma: yazı okunurluğu
+    var ust = ctx.createLinearGradient(0, 0, 0, 220);
+    ust.addColorStop(0, 'rgba(20,10,5,0.42)');
+    ust.addColorStop(1, 'rgba(20,10,5,0)');
+    ctx.fillStyle = ust;
+    ctx.fillRect(0, 0, OLCO, 220);
+    var alt = ctx.createLinearGradient(0, OLCO - 420, 0, OLCO);
+    alt.addColorStop(0, 'rgba(20,10,5,0)');
+    alt.addColorStop(1, 'rgba(20,10,5,0.55)');
+    ctx.fillStyle = alt;
+    ctx.fillRect(0, OLCO - 420, OLCO, 420);
+
+    // Özel gün rozeti (sol üst)
+    var etiket = tema ? ((tema.ikon ? tema.ikon + '  ' : '') + tema.ad.toLocaleUpperCase('tr-TR')) : '';
+    ctx.font = '600 22px ' + fontCss();
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    var rg = ctx.measureText(etiket).width + 56;
+    golgeli(function () {
+      yuvarlak(ctx, 48, 44, rg, 50, 25);
+      ctx.fillStyle = vurgu;
+      ctx.fill();
+    }, 'rgba(0,0,0,0.35)', 14, 0, 4);
+    ctx.fillStyle = metinRengi(vurgu) === '#3d2016' ? '#2b1a12' : '#fffaf2';
+    ctx.fillText(etiket, 76, 70);
+
+    // Ürün ve seçim çipi (sağ üst)
+    var adetMetin = /^\d+$/.test(durum.boyut) ? durum.boyut + ' adet' : durum.boyut;
+    var cip = (urun ? urun.ad : '') + ' · ' + adetMetin + ' · ' + (cik ? cik.ad : '') + ' · ' + amb.ad + ' ambalaj';
+    ctx.font = '500 19px ' + fontCss();
+    var cg = ctx.measureText(cip).width + 44;
+    if (48 + rg + 16 + cg < OLCO - 48) {
+      yuvarlak(ctx, OLCO - 48 - cg, 44, cg, 50, 25);
+      ctx.fillStyle = 'rgba(255,252,246,0.9)';
+      ctx.fill();
+      ctx.fillStyle = '#3d2016';
+      ctx.fillText(cip, OLCO - 48 - cg + 22, 70);
+    }
+
+    // İsim plakası (sol alt)
+    var pX = 56, pG = fotograf ? OLCO - 56 - 300 - 32 : OLCO - 112, pH = durum.tarih ? 190 : 150, pY = OLCO - 150 - pH - 24;
+    camPanel(pX, pY, pG, pH, 18);
+    ctx.fillStyle = vurgu;
+    ctx.fillRect(pX, pY + 24, 6, pH - 48);
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    var isim = durum.isim || 'İsminiz burada';
+    var punto = sigdir(68, fontCss(), isim, pG - 80);
+    ctx.font = '500 ' + punto + 'px ' + fontCss();
+    kabartmaYazi(isim, pX + 36, pY + 92, durum.isim ? '#3d2016' : 'rgba(61,32,22,0.45)', 'rgba(255,255,255,0.8)');
+    if (durum.tarih) {
+      ctx.font = '400 26px ' + fontCss();
+      ctx.fillStyle = 'rgba(61,32,22,0.75)';
+      ctx.fillText(tarihYaz(durum.tarih), pX + 36, pY + 136);
+    }
+    ctx.font = '500 15px ' + fontCss();
+    ctx.fillStyle = 'rgba(61,32,22,0.55)';
+    ctx.fillText('ATÖLYEDEN GERÇEK ÇALIŞMA · KİŞİSELLEŞTİRME ÖN İZLEMESİ', pX + 36, pY + pH - 24);
+
+    // Yüklenen fotoğraf (sağ alt, çerçeveli)
+    if (fotograf) {
+      var fG = 300, fX = OLCO - 56 - fG, fY = pY + pH - fG;
+      golgeli(function () {
+        yuvarlak(ctx, fX - 10, fY - 10, fG + 20, fG + 20, 16);
+        ctx.fillStyle = '#fffdf9';
+        ctx.fill();
+      }, 'rgba(20,10,5,0.45)', 26, 0, 10);
+      ctx.save();
+      yuvarlak(ctx, fX, fY, fG, fG, 10);
+      ctx.clip();
+      kaplaCiz(fotograf.img, fX, fY, fG, fG);
+      ctx.restore();
+    }
+
+    // Kurdele: alt kenarda saten bant + fiyonk (kart varsa fiyonk kartın yanında)
+    if (kur.renk) {
+      satenBant(0, OLCO - 118, OLCO, 40, kur.renk, false);
+      fiyonk(OLCO - 120, OLCO - 98, 30, kur.renk);
+    }
+    // Kart notu (bandın üstünde, sağda; fotoğraf varsa sola kayar)
+    if (kart.zemin) kartCiz(kart, fotograf ? pX + pG - 300 : OLCO - 56 - 300, pY - 118 - 24, 300, 112);
+
+    // Filigran
+    ctx.font = '400 20px ' + fontCss();
+    ctx.fillStyle = 'rgba(255,250,242,0.85)';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText(C.marka + ' · tasarım önizlemesi', 56, OLCO - 44);
+    ctx.textAlign = 'right';
+    ctx.fillText(tasarimKodu(), OLCO - 56, OLCO - 44);
+  }
+
+  function gorunumDugmeleri() {
+    var dugmeler = document.querySelectorAll('.onizleme-mod button[data-gorunum]');
+    var aciklama = document.querySelector('.onizleme-alt span');
+    function guncelle() {
+      Array.prototype.forEach.call(dugmeler, function (b) {
+        b.setAttribute('aria-pressed', b.getAttribute('data-gorunum') === durum.gorunum ? 'true' : 'false');
+      });
+      if (aciklama) {
+        aciklama.textContent = durum.gorunum === 'gercek'
+          ? 'Gerçek görsel — atölyenin bu özel gün için yaptığı çalışma; isim, tarih, kurdele ve kart seçimleriniz üstüne işlendi.'
+          : 'Taslak çizim — adet, çikolata tipi ve ambalaj rengini şematik gösterir; birebir üretim provası değildir.';
+      }
+    }
+    Array.prototype.forEach.call(dugmeler, function (b) {
+      b.addEventListener('click', function () {
+        durum.gorunum = b.getAttribute('data-gorunum');
+        guncelle();
+        ciz();
+      });
+    });
+    guncelle();
+  }
+  gorunumDugmeleri();
 
   /* ------------------------------ Özet metni ---------------------------- */
 

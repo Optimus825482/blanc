@@ -40,3 +40,8 @@ body[data-sayfa="studyo"] { background: #f6f0e8; }
 }
 .studio-steps { display:flex; flex-wrap:wrap; align-items:center; gap:.35rem; }
 .studio-steps a { color:#f3d7ab; min-height:44px; display:inline-flex; align-items:center; }
+
+.onizleme-mod { display: inline-flex; border: 1px solid #c9b79c; border-radius: 999px; padding: 2px; background: #fffdf9; }
+.onizleme-mod button { font: 600 .7rem/1 inherit; letter-spacing: .08em; text-transform: uppercase; padding: .55rem .8rem; border: 0; border-radius: 999px; background: transparent; color: #715241; cursor: pointer; min-height: 32px; }
+.onizleme-mod button[aria-pressed="true"] { background: #512730; color: #fffaf5; }
+.onizleme-mod button:focus-visible { outline: 3px solid #806029; outline-offset: 2px; }

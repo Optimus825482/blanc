@@ -34,5 +34,70 @@
       "rx": 374,
       "ry": 274
     }
+  },
+  "gercek": {
+    "varsayilan": {
+      "kutu": "/assets/img/instagram/hediyelik/zarif-hediye-sunumu.webp",
+      "tepsi": "/assets/img/instagram/nisan/kristal-inci-nisan-tepsisi.webp",
+      "bar": "/assets/img/instagram/kisiye-ozel/isim-ve-bas-harf-tasarimi.webp"
+    },
+    "soz-nisan": {
+      "kutu": "/assets/img/instagram/nisan/altin-cikolata-aranjmani.webp",
+      "tepsi": "/assets/img/instagram/nisan/kristal-inci-nisan-tepsisi.webp",
+      "bar": "/assets/img/instagram/nisan/nisan-hatiralari.webp"
+    },
+    "dugun": {
+      "kutu": "/assets/img/instagram/nisan/altin-cikolata-aranjmani.webp",
+      "tepsi": "/assets/img/instagram/nisan/kristal-inci-nisan-tepsisi.webp"
+    },
+    "evlilik-yildonumu": {
+      "kutu": "/assets/img/instagram/nisan/nisan-hatiralari.webp",
+      "tepsi": "/assets/img/instagram/nisan/kristal-inci-nisan-tepsisi.webp"
+    },
+    "sevgililer": {
+      "kutu": "/assets/img/instagram/nisan/altin-cikolata-aranjmani.webp"
+    },
+    "hos-geldin-bebek": {
+      "kutu": "/assets/img/instagram/bebek/bebek-hediye-kutusu.webp",
+      "tepsi": "/assets/img/instagram/bebek/isme-ozel-pleksi-kapi-susu.webp",
+      "bar": "/assets/img/instagram/bebek/bulut-kapi-susu.webp"
+    },
+    "dogum-gunu": {
+      "kutu": "/assets/img/instagram/dogum-gunu/ilk-yas-hatirasi.webp",
+      "bar": "/assets/img/instagram/kisiye-ozel/fotografli-puzzle-cikolata.webp"
+    },
+    "anneler-babalar": {
+      "kutu": "/assets/img/instagram/hediyelik/musteri-hediye-tasarimi.webp"
+    },
+    "tesekkur-tebrik": {
+      "kutu": "/assets/img/instagram/hediyelik/atolye-hediye-tasarimi.webp"
+    },
+    "yeni-ev": {
+      "kutu": "/assets/img/instagram/hediyelik/zarif-hediye-sunumu.webp"
+    },
+    "mezuniyet": {
+      "kutu": "/assets/img/instagram/kisiye-ozel/isim-ve-bas-harf-tasarimi.webp"
+    },
+    "her-zaman": {
+      "kutu": "/assets/img/instagram/kisiye-ozel/tavus-kusu-temali-cikolata.webp"
+    },
+    "kurumsal": {
+      "kutu": "/assets/img/instagram/kurumsal/gokhan-turk-motors.webp",
+      "bar": "/assets/img/instagram/kurumsal/osk-auto.webp",
+      "tepsi": "/assets/img/instagram/kurumsal/ege-motors.webp"
+    },
+    "is-yildonumu": {
+      "kutu": "/assets/img/instagram/kurumsal/ege-motors.webp",
+      "bar": "/assets/img/instagram/kurumsal/gokhan-turk-motors.webp"
+    },
+    "ise-baslama": {
+      "kutu": "/assets/img/instagram/kurumsal/osk-auto.webp"
+    },
+    "terfi": {
+      "kutu": "/assets/img/instagram/kurumsal/gokhan-turk-motors.webp"
+    },
+    "acilis-toren": {
+      "kutu": "/assets/img/instagram/kurumsal/ege-motors.webp"
+    }
   }
 }
