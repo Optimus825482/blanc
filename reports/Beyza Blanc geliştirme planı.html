@@ -429,7 +429,7 @@ tbody tr:nth-child(even) { background: #fffaf5; }
 <td>0.6</td>
 <td>Docker Compose + Caddy + yedek betiği; VPS'e ilk dağıtım</td>
 <td><code>Dockerfile</code>, <code>compose.yml</code>, <code>deploy/</code></td>
-<td>HTTPS'te açılır, yedek dosyası oluşur</td>
+<td>HTTPS'te açılır, yedek dosyası oluşur — ◐ 9 Kasım: Dockerfile (çok aşamalı, standalone), compose.yml (app, db, caddy; migrate profili), Caddyfile (SITE_DOMAIN), .env.example, deploy/yedek.sh (pg_dump, gzip, 14 gün), deploy/README.md. Yerelde docker olmadığı için yalnızca YAML ve betik sözdizimi doğrulandı; VPS ve alan adı bekleniyor</td>
 </tr>
 </tbody></table></div>
 <h3>Faz 1: Katalog veritabanına (5–7 gün)</h3>

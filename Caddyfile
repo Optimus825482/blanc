@@ -1,0 +1,11 @@
+# Alan adı compose.yml'deki SITE_DOMAIN ortam değişkeninden gelir. Caddy HTTPS sertifikasını kendisi alır.
+{$SITE_DOMAIN} {
+	encode zstd gzip
+	# Caddy istemci adresini X-Forwarded-For'un SONUNA ekler; uygulama IP sınırlarında en sağdaki adresi kullanır.
+	reverse_proxy app:3000 {
+		header_up X-Real-IP {remote_host}
+	}
+	header {
+		-Server
+	}
+}

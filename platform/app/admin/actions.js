@@ -48,6 +48,15 @@ export async function login(data) {
     RETURNING attempts
   `, [ip]);
   if (limit.attempts > 12) redirect('/admin?durum=limit');
+  // Genel (tüm IP'ler toplamı) sınır: 15 dakikada en çok 60 deneme; IP yoksa da bu korur.
+  await query("DELETE FROM bb_login_limits WHERE bucket < now() - interval '1 day'");
+  const { rows: [toplam] } = await query(`
+    INSERT INTO bb_login_limits(bucket, attempts)
+    VALUES (date_bin(interval '15 minutes', now(), timestamptz '2000-01-01'), 1)
+    ON CONFLICT(bucket) DO UPDATE SET attempts=LEAST(bb_login_limits.attempts+1,61)
+    RETURNING attempts
+  `);
+  if (toplam.attempts > 60) redirect('/admin?durum=limit');
   if (!equalText(password, expected)) redirect('/admin?durum=giris');
   await createSession();
   redirect('/admin');

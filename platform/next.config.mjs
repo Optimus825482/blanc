@@ -1,5 +1,6 @@
 const config = {
   poweredByHeader: false,
+  output: 'standalone', // Docker imajı için (plan 0.6)
   experimental: { serverActions: { bodySizeLimit: '6mb' } },
   async rewrites() {
     return [
@@ -22,11 +23,11 @@ const config = {
     // Vitrin: satır içi betikler (Next önyükleme, JSON-LD) ve Google Fonts için izin verilir (plan 3.5 ilk adım).
     const vitrinCsp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline'" + (gelistirme ? " 'unsafe-eval'" : ''),
+      "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com" + (gelistirme ? " 'unsafe-eval'" : ''),
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
       "img-src 'self' data: blob: https:",
-      "connect-src 'self'" + (gelistirme ? ' ws:' : ''),
+      "connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com" + (gelistirme ? ' ws:' : ''),
       "frame-src 'none'",
       "object-src 'none'",
       "base-uri 'self'",
