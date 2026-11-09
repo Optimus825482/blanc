@@ -588,13 +588,13 @@ tbody tr:nth-child(even) { background: #fffaf5; }
 <td>3.5</td>
 <td>Güvenlik: IP bazlı giriş sınırı, sunucu tarafı oturum iptali (<code>bb_sessions</code>, parola değişince tüm oturumlar düşer), CSP, HSTS, TOTP (isteğe bağlı), Instagram anahtar yenileme işi</td>
 <td>0.6</td>
-<td>Güvenlik başlıkları testinde A</td>
+<td>Güvenlik başlıkları testinde A — ◐ 9 Kasım: kod tarafı: next.config.mjs güvenlik başlıkları (HSTS, nosniff, Referrer-Policy, Permissions-Policy, CSP: vitrimde script 'unsafe-inline' ile başlandı, yönetimde görseller yalnızca aynı köken, frame-ancestors 'none'); bb_sessions (çerezde rastgele belirteç, sunucuda özet; ADMIN_PASSWORD veya SESSION_SECRET değişince tüm oturumlar düşer); 'Tüm oturumları kapat' düğmesi; giriş sınırı IP başına (en sağdaki X-Forwarded-For, bb_login_ip). Eksik (sahip/sonraki iş): TOTP ve Instagram anahtar yenileme işi yapılmadı; güvenlik başlığı derecesi (A) dış tarayıcıda ölçülmedi; 'Tüm oturumları kapat' tarayıcıda denenmedi. Not: bu kodun bir kısmı aa9d033 commit'ine (başka oturum) karıştı</td>
 </tr>
 <tr>
 <td>3.6</td>
 <td>Ölçüm: Plausible/Umami, huni olayları (seçici, stüdyo adımları, onay, kanal)</td>
 <td>0.6</td>
-<td>Haftalık dönüşüm raporu</td>
+<td>Haftalık dönüşüm raporu — ◐ 9 Kasım: Plausible yerine çerezsiz kendi ölçüm (<code>bb_visits</code>, <code>/api/ziyaret</code> beacon, günlük dönen kimlik) + panel açılışı "Genel bakış" göstergesi (anlık ziyaretçi, bugün/7 gün, 14 günlük grafik, sayfalar, kaynaklar, cihaz, talepler, kurulum durumu; 30 sn yenileme). Panel "Arama ve analitik": GA4 ölçüm kimliği (gtag, anonymize_ip), Google Search Console / Bing / Yandex doğrulama etiketleri. Kalan: huni olayları (stüdyo adımları) ve GA4'e olay gönderimi; 3.5 CSP'de googletagmanager.com'a izin gerekir</td>
 </tr>
 <tr>
 <td>3.7</td>
