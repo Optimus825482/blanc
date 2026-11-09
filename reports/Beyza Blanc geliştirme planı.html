@@ -531,13 +531,13 @@ tbody tr:nth-child(even) { background: #fffaf5; }
 <td>2.7</td>
 <td><code>/takip/[kod]</code> sayfası, ICS indirme</td>
 <td>2.5</td>
-<td>Kod ile durum görülür, kişisel veri maskeli</td>
+<td>Kod ile durum görülür, kişisel veri maskeli — ✅ 9 Kasım: takip sayfası /teklif/[kod] (/takip/[kod] yerine, plan notu); takvim dosyası /teklif/[kod]/takvim.ics?t= (kod+anahtar zorunlu, yalnızca teslim tarihi varsa; tüm gün etkinliği, bir gün önce hatırlatma); takip sayfasında 'Takvime ekle' yalnızca teslim tarihi varsa; alıcı ve yetkili adı maskeli. Kod testinde 200/404 doğrulandı</td>
 </tr>
 <tr>
 <td>2.8</td>
 <td>Paylaşılabilir tasarım bağlantısı <code>/t/[kod]</code> ve Open Graph görseli</td>
 <td>2.5</td>
-<td>Bağlantı WhatsApp'ta önizlemeli açılır</td>
+<td>Bağlantı WhatsApp'ta önizlemeli açılır — ✅ 9 Kasım: ayrı /t/[kod] rotası açılmadı, takip sayfası generateMetadata ile OG başlık/açıklama veriyor (genel metin, kişisel alan yok, noindex kalıyor); görsel (/media/&lt;image_id&gt; ya da &lt;logo_id&gt;) yalnızca geçerli kod+anahtarla eklenir; WhatsApp kart önizlemesi gerçek cihazda doğrulanmadı (test kaydında görsel yoktu)</td>
 </tr>
 <tr>
 <td>2.9</td>

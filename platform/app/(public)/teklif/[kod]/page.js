@@ -7,7 +7,26 @@ import { DURUMLAR, getQuote, sorguIzinli, tarihYaz } from '../../../../lib/tekli
 import { fiyatYaz } from '../../../../lib/katalog-oku';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Teklif takibi', robots: { index: false, follow: false } };
+
+// Kişisel ad maskesi: her kelimenin ilk harfi görünür, geri kalanı yıldızlanır ("Ayşe Yılmaz" → "A*** Y*****").
+const maskele = (ad = '') => String(ad).trim().split(/\s+/).filter(Boolean)
+  .map((p) => p[0] + '*'.repeat(Math.max(p.length - 1, 3))).join(' ');
+
+// Paylaşım önizlemesi (WhatsApp vb.): başlık ve açıklama genel kalır; alıcı, firma ve yetkili adı girmez.
+// Görsel yalnızca geçerli kod+anahtarla gelinirse eklenir.
+export async function generateMetadata({ params, searchParams }) {
+  const [{ kod }, { t }] = await Promise.all([params, searchParams]);
+  const q = await getQuote(kod.toUpperCase(), typeof t === 'string' ? t : '');
+  const gorsel = q?.image_id ? '/media/' + q.image_id : q?.logo_id ? '/media/' + q.logo_id : null;
+  const title = 'Teklif takibi';
+  const description = 'Tasarım teklifinizin durumunu ve teslim bilgisini bu sayfadan takip edin.';
+  return {
+    title,
+    description,
+    robots: { index: false, follow: false },
+    openGraph: { title, description, type: 'website', ...(gorsel ? { images: [{ url: gorsel, alt: 'Beyza Blanc tasarımı' }] } : {}) },
+  };
+}
 
 // Takip sayfası: kod + 128 bitlik anahtar (?t=) birlikte gerekir; kod tek başına yalnızca okunur referanstır.
 export default async function Teklif({ params, searchParams }) {
@@ -42,7 +61,7 @@ export default async function Teklif({ params, searchParams }) {
         <dl className="bb-ozellikler">
           {kurumsal ? <>
             <div><dt>Firma</dt><dd>{f.firma}</dd></div>
-            <div><dt>Yetkili</dt><dd>{f.yetkili}</dd></div>
+            <div><dt>Yetkili</dt><dd>{maskele(f.yetkili)}</dd></div>
             {q.occasion_title && <div><dt>Vesile</dt><dd>{q.occasion_icon} {q.occasion_title}</dd></div>}
             <div><dt>Ürün</dt><dd>{q.product_title || 'Atölye önerisi'}</dd></div>
             <div><dt>Adet</dt><dd>{f.kademe}</dd></div>
@@ -53,7 +72,7 @@ export default async function Teklif({ params, searchParams }) {
             <div><dt>Özel gün</dt><dd>{q.occasion_icon} {q.occasion_title || '—'}</dd></div>
             <div><dt>Ürün</dt><dd>{q.product_title || '—'}{q.size ? ' · ' + q.size : ''}</dd></div>
             <div><dt>Adet</dt><dd>{q.quantity}</dd></div>
-            {q.recipient_name && <div><dt>Alıcı</dt><dd>{q.recipient_name}</dd></div>}
+            {q.recipient_name && <div><dt>Alıcı</dt><dd>{maskele(q.recipient_name)}</dd></div>}
           </>}
           {q.delivery_date && <div><dt>Hedef teslim</dt><dd>{tarihYaz(q.delivery_date)}</dd></div>}
           {q.estimate !== null && <div><dt>Sitedeki tahmin</dt><dd>{fiyatYaz(q.estimate)} (kesin teklif atölyeden)</dd></div>}
@@ -61,6 +80,7 @@ export default async function Teklif({ params, searchParams }) {
         </dl>
         <div className="v-eylemler">
           {wa && <a className="v-dugme" href={wa}>WhatsApp’tan yaz</a>}
+          {q.delivery_date && <a className="v-metin-link" href={'/teklif/' + q.code + '/takvim.ics?t=' + encodeURIComponent(t)} download>Takvime ekle</a>}
           <a className={wa ? 'v-metin-link' : 'v-dugme'} href={contact}>Instagram’dan yaz <span aria-hidden="true">↗</span></a>
           <Link className="v-metin-link" href="/studyo">Yeni tasarım</Link>
         </div>
