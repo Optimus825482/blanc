@@ -7,6 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { clearSession, createSession, equalText, requireAdmin } from '../../lib/auth';
 import { query } from '../../lib/db';
 import { clearInstagramCache, encryptToken, verifyInstagram } from '../../lib/instagram';
+import { katalog, slugDeseni } from '../../lib/katalog';
 
 class InvalidInput extends Error {}
 
@@ -142,4 +143,129 @@ export async function saveSettings(data) {
   );
   revalidatePath('/', 'layout');
   redirect('/admin?durum=kaydedildi');
+}
+
+/* ---------------------------------- Katalog (plan 1.3) --------------------------------- */
+function katalogDeger(alan, data) {
+  const ham = data.get(alan.name);
+  const metin = typeof ham === 'string' ? ham.trim() : '';
+  switch (alan.type) {
+    case 'check': return ham === 'on';
+    case 'number': {
+      const n = Number(metin || '0');
+      if (!Number.isInteger(n) || n < 0 || n > 10000) throw new InvalidInput();
+      return n;
+    }
+    case 'decimal': {
+      if (!metin) { if (alan.nullable) return null; throw new InvalidInput(); }
+      const n = Number(metin.replace(',', '.'));
+      if (!Number.isFinite(n) || n < 0 || n > 1e6) throw new InvalidInput();
+      return n.toFixed(2);
+    }
+    case 'color':
+      if (metin && !/^#[0-9A-Fa-f]{6}$/.test(metin)) throw new InvalidInput();
+      return metin;
+    case 'tags':
+      if (metin.length > (alan.max || 300)) throw new InvalidInput();
+      return metin.split(',').map((p) => p.trim()).filter(Boolean).slice(0, 30);
+    case 'json': {
+      if (!metin) return '{}';
+      if (metin.length > 2000) throw new InvalidInput();
+      try {
+        const nesne = JSON.parse(metin);
+        if (!nesne || typeof nesne !== 'object' || Array.isArray(nesne)) throw new InvalidInput();
+        return JSON.stringify(nesne);
+      } catch { throw new InvalidInput(); }
+    }
+    case 'select':
+      if (!metin) { if (alan.nullable) return null; if (alan.required) throw new InvalidInput(); return ''; }
+      if (!slugDeseni.test(metin) || metin.length > 72) throw new InvalidInput();
+      if (Array.isArray(alan.options) && !alan.options.some(([v]) => v === metin)) throw new InvalidInput();
+      return metin;
+    default:
+      if (alan.required && !metin) throw new InvalidInput();
+      if (metin.length > (alan.max || 4000)) throw new InvalidInput();
+      return metin;
+  }
+}
+
+// Satırın anahtarı: slug; stüdyo seçeneklerinde (grup, slug) çifti.
+function katalogAnahtar(tanim, data) {
+  const key = field(data, 'key', 72);
+  if (!slugDeseni.test(key)) throw new InvalidInput();
+  if (!tanim.group) return { key, where: ['slug'], values: [key] };
+  const grup = field(data, tanim.group.name, 30);
+  if (!tanim.group.options.some(([g]) => g === grup)) throw new InvalidInput();
+  return { key, where: ['slug', tanim.group.name], values: [key, grup] };
+}
+
+const kosul = (where, offset) => where.map((w, i) => `${w}=$${offset + i + 1}`).join(' AND ');
+const veritabaniHatasi = (error) => ['23503', '22P02', '23514', '23505'].includes(error?.code);
+
+export async function saveCatalog(data) {
+  await requireAdmin();
+  let kind;
+  try {
+    kind = field(data, 'kind', 20);
+    const tanim = katalog[kind];
+    if (!tanim) throw new InvalidInput();
+    const anahtar = katalogAnahtar(tanim, data);
+    const yeni = data.get('new') === '1';
+    const sutunlar = [];
+    const degerler = [];
+    let gorsel = null;
+    for (const alan of tanim.fields) {
+      if (alan.type === 'image') {
+        gorsel = await processImage(data.get('image'));
+        if (gorsel) { sutunlar.push('image'); degerler.push('/media/' + gorsel.id); }
+        continue;
+      }
+      sutunlar.push(alan.name);
+      degerler.push(katalogDeger(alan, data));
+    }
+    const n = degerler.length;
+    let sql;
+    if (yeni) {
+      const tum = [...sutunlar, ...anahtar.where];
+      sql = `INSERT INTO ${tanim.table}(${tum.join(',')}) VALUES (${tum.map((_, i) => '$' + (i + 1)).join(',')}) ON CONFLICT DO NOTHING`;
+    } else {
+      const set = sutunlar.map((s, i) => `${s}=$${i + 1}`);
+      if (tanim.table !== 'bb_segments') set.push('updated_at=now()');
+      sql = `UPDATE ${tanim.table} SET ${set.join(',')} WHERE ${kosul(anahtar.where, n)}`;
+    }
+    const sonuc = await query(sql, [...degerler, ...anahtar.values]);
+    if (!sonuc.rowCount) throw new InvalidInput();
+    if (gorsel) await query('INSERT INTO bb_media(id,bytes,width,height) VALUES ($1,$2,$3,$4)', [gorsel.id, gorsel.data, gorsel.width, gorsel.height]);
+    for (const iliski of tanim.relations || []) {
+      const secili = data.getAll(iliski.name).filter((s) => typeof s === 'string' && slugDeseni.test(s)).slice(0, 50);
+      await query(`DELETE FROM ${iliski.table} WHERE design_slug=$1`, [anahtar.key]);
+      if (secili.length) {
+        await query(`INSERT INTO ${iliski.table}(design_slug,${iliski.column}) SELECT $1, unnest($2::text[]) ON CONFLICT DO NOTHING`, [anahtar.key, secili]);
+      }
+    }
+  } catch (error) {
+    if (!(error instanceof InvalidInput) && !veritabaniHatasi(error)) throw error;
+    redirect('/admin?durum=gecersiz#' + (kind || ''));
+  }
+  revalidatePath('/', 'layout');
+  redirect('/admin?durum=kaydedildi#' + kind);
+}
+
+export async function deleteCatalog(data) {
+  await requireAdmin();
+  let kind;
+  try {
+    kind = field(data, 'kind', 20);
+    const tanim = katalog[kind];
+    if (!tanim) throw new InvalidInput();
+    const anahtar = katalogAnahtar(tanim, data);
+    const sonuc = await query(`DELETE FROM ${tanim.table} WHERE ${kosul(anahtar.where, 0)}`, anahtar.values);
+    if (!sonuc.rowCount) throw new InvalidInput();
+  } catch (error) {
+    if (error?.code === '23503') redirect('/admin?durum=bagli#' + kind);
+    if (!(error instanceof InvalidInput)) throw error;
+    redirect('/admin?durum=gecersiz#' + (kind || ''));
+  }
+  revalidatePath('/', 'layout');
+  redirect('/admin?durum=silindi#' + kind);
 }

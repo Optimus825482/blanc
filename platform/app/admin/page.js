@@ -4,6 +4,7 @@ import { query } from '../../lib/db';
 import { connectInstagram, disconnectInstagram, login, logout, save, saveSettings } from './actions';
 import { getSettings } from '../../lib/settings';
 import { getInstagram } from '../../lib/instagram';
+import KatalogBolumleri from './katalog';
 
 export const metadata = { title: 'Yönetim', robots: { index: false, follow: false } };
 export const dynamic = 'force-dynamic';
@@ -14,6 +15,8 @@ const messages = {
   limit: 'Çok fazla giriş denemesi yapıldı. Lütfen daha sonra tekrar deneyin.',
   gecersiz: 'Değişiklik kaydedilemedi. Alanları, kategori adresinin benzersiz olduğunu ve görsel biçimini kontrol edin.',
   kaydedildi: 'Değişiklik kaydedildi.',
+  silindi: 'Kayıt silindi.',
+  bagli: 'Bu kayıt başka kayıtlar tarafından kullanıldığı için silinemedi. Önce ona bağlı tasarımları değiştirin.',
   'meta-bagli': 'Instagram hesabı doğrulandı ve bağlandı.',
   'meta-kaldirildi': 'Instagram bağlantısı kaldırıldı.',
   'meta-hata': 'Hesap doğrulanamadı. Beyza Blanc için Instagram Login erişim anahtarını ve izinlerini kontrol edin.',
@@ -109,6 +112,7 @@ export default async function Admin({ searchParams }) {
       <h2>Koleksiyon kategorileri</h2>
       {categories.rows.map(item => <details key={item.slug}><summary>{item.title} · {item.published ? 'Yayında' : 'Taslak'}</summary><Editor item={item} category /></details>)}
       <details><summary>Yeni kategori ekle</summary><Editor category isNew /></details>
+      <KatalogBolumleri />
     </>}
   </main>;
 }

@@ -56,3 +56,12 @@
 .bb-contact-list dt { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--v-soluk); }
 .bb-contact-list dd { margin: 0; display: grid; gap: .2rem; }
 .bb-contact-list dd a { color: inherit; min-height: 44px; display: inline-flex; align-items: center; }
+.bb-katalog { margin-block: 2rem; }
+.bb-katalog h3 { margin-block: 1.5rem .5rem; font-size: 1.5rem; }
+.bb-katalog h3 small { font-size: .9rem; color: #6e5a50; font-weight: 400; }
+.bb-katalog details { background: #fffdfa; border: 1px solid #dfd0be; margin-block: .5rem; }
+.bb-katalog summary { padding: .9rem 1rem; color: #3d2016; }
+.bb-admin select { width: 100%; font: inherit; color: inherit; padding: .55rem; border: 1px solid #89746b; background: white; border-radius: 4px; }
+.bb-admin fieldset { display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); gap: 0 1rem; border: 1px solid #dfd0be; padding: .5rem 1rem; }
+.bb-admin fieldset .bb-check { min-height: 36px; }
+.bb-admin .bb-actions { display: flex; gap: .75rem; flex-wrap: wrap; }

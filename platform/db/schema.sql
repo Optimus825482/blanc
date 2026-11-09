@@ -145,3 +145,6 @@ CREATE INDEX IF NOT EXISTS bb_designs_published_idx ON bb_designs (published, po
 CREATE INDEX IF NOT EXISTS bb_designs_occasion_idx ON bb_designs (occasion_slug);
 CREATE INDEX IF NOT EXISTS bb_designs_product_idx ON bb_designs (product_type_slug);
 CREATE INDEX IF NOT EXISTS bb_price_rules_lookup_idx ON bb_price_rules (kind, product_type_slug, size, min_qty);
+-- 1.3: ürün tipine altlık fotoğrafı (stüdyo gerçek görsel zemini)
+ALTER TABLE bb_product_types ADD COLUMN IF NOT EXISTS image text NOT NULL DEFAULT '';
+ALTER TABLE bb_product_types ADD COLUMN IF NOT EXISTS alt text NOT NULL DEFAULT '';
