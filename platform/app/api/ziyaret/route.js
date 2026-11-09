@@ -11,7 +11,7 @@ export async function POST(request) {
   if (!sorguIzinli('ziyaret|' + ip, 120, 60000)) return new Response(null, { status: 429 });
   let veri;
   try { veri = await request.json(); } catch { return new Response(null, { status: 400 }); }
-  const yol = typeof veri?.yol === 'string' && /^\/[^\s?#]{0,200}$/.test(veri.yol) ? veri.yol : null;
+  const yol = typeof veri?.yol === 'string' && /^\/(?![/\\])[^\s?#\\]{0,200}$/.test(veri.yol) ? veri.yol : null;
   if (!yol || yol.startsWith('/admin') || yol.startsWith('/api')) return new Response(null, { status: 204 });
   let kaynak = '';
   try {
