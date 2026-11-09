@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beyza Blanc geliştirme planı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --krem: #fff8f3;
+  --krem-koyu: #f6ebdc;
+  --kahve: #3d2016;
+  --kahve-soluk: #6b4a3a;
+  --altin: #cfb56a;
+  --altin-koyu: #a98336;
+  --cizgi: #e6d9c8;
+  --beyaz: #fffdfa;
+  --yesil: #2e5a4b;
+  --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--krem);
+  color: var(--kahve);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--altin-koyu); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { color: var(--kahve); }
+code {
+  background: var(--krem-koyu);
+  border: 1px solid var(--cizgi);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 0.86em;
+}
+.duzen { max-width: 1420px; margin: 0 auto; padding: 0 24px; display: grid; gap: 40px; }
+@media (min-width: 1080px) { .duzen { grid-template-columns: 288px minmax(0, 1fr); } }
+
+/* Kapak */
+.kapak { border-bottom: 1px solid var(--cizgi); background: var(--beyaz); }
+.kapak__ic { max-width: 1420px; margin: 0 auto; padding: 40px 24px 32px; }
+.kapak__marka {
+  font-family: var(--serif); font-size: 0.95rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--altin-koyu); margin: 0 0 14px;
+}
+.kapak h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(1.9rem, 3.4vw, 2.9rem); line-height: 1.15; margin: 0 0 12px; }
+.kapak__alt { color: var(--kahve-soluk); max-width: 80ch; margin: 0; }
+.kapak__etiketler { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.etiket {
+  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  border: 1px solid var(--cizgi); background: var(--krem-koyu);
+  border-radius: 999px; padding: 4px 12px; color: var(--kahve-soluk);
+}
+
+/* İçindekiler */
+.icindekiler { position: sticky; top: 24px; align-self: start; padding: 24px 0; }
+.icindekiler h2 {
+  font-family: var(--sans); font-size: 0.74rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--kahve-soluk); margin: 0 0 12px;
+}
+.icindekiler ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+.icindekiler li { counter-increment: toc; margin-bottom: 7px; }
+.icindekiler a {
+  color: var(--kahve); text-decoration: none; font-size: 0.92rem;
+  display: flex; gap: 10px; padding: 5px 10px; border-radius: 8px;
+  border-left: 2px solid transparent;
+}
+.icindekiler a::before { content: counter(toc); color: var(--altin-koyu); font-size: 0.78rem; min-width: 14px; }
+.icindekiler a:hover { background: var(--krem-koyu); border-left-color: var(--altin); }
+.yazdirma-notu {
+  margin-top: 20px; padding: 12px 14px; border: 1px dashed var(--cizgi);
+  border-radius: 10px; font-size: 0.8rem; color: var(--kahve-soluk); background: var(--beyaz);
+}
+
+/* İçerik */
+.icerik { padding: 24px 0 96px; min-width: 0; }
+.icerik h2 {
+  font-family: var(--serif); font-weight: 600; font-size: clamp(1.5rem, 2.4vw, 2.05rem);
+  line-height: 1.2; margin: 56px 0 16px; padding-top: 20px; border-top: 1px solid var(--cizgi);
+}
+.icerik h2:first-child { margin-top: 8px; border-top: 0; padding-top: 0; }
+.icerik h3 { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; margin: 34px 0 10px; }
+.icerik h4 { font-family: var(--sans); font-size: 1rem; margin: 24px 0 8px; }
+.icerik p { margin: 0 0 16px; }
+.icerik ul { margin: 0 0 16px; padding-left: 22px; }
+.icerik li { margin-bottom: 8px; }
+.icerik hr { border: 0; border-top: 1px solid var(--cizgi); margin: 36px 0; }
+.belge-ustbaslik { display: none; }
+blockquote {
+  margin: 0 0 24px; padding: 16px 20px; background: var(--beyaz);
+  border: 1px solid var(--cizgi); border-left: 3px solid var(--altin); border-radius: 10px;
+}
+blockquote p { margin: 0; font-size: 0.94rem; color: var(--kahve-soluk); }
+
+/* Tablolar */
+.tablo-sarmal { overflow-x: auto; margin: 0 0 28px; border: 1px solid var(--cizgi); border-radius: 12px; background: var(--beyaz); }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; min-width: 560px; }
+thead th {
+  text-align: left; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--kahve-soluk); background: var(--krem-koyu);
+  padding: 11px 14px; border-bottom: 1px solid var(--cizgi); white-space: nowrap;
+}
+tbody td { padding: 11px 14px; border-bottom: 1px solid var(--cizgi); vertical-align: top; }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:nth-child(even) { background: #fffaf5; }
+
+/* Alt bilgi */
+.sayfa-alti { border-top: 1px solid var(--cizgi); background: var(--beyaz); }
+.sayfa-alti__ic {
+  max-width: 1420px; margin: 0 auto; padding: 24px;
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between;
+  font-size: 0.82rem; color: var(--kahve-soluk);
+}
+
+/* Yazdırma */
+@media print {
+  @page { size: A4; margin: 14mm 12mm; }
+  body { background: #fff; font-size: 10.5pt; }
+  .duzen { display: block; max-width: none; padding: 0; }
+  .icindekiler, .yazdirma-notu, .kapak__etiketler { display: none; }
+  .kapak__ic { padding: 0 0 12px; }
+  .icerik { padding: 0; }
+  .icerik h2 { page-break-after: avoid; margin-top: 26px; }
+  .icerik h3, table { page-break-inside: avoid; }
+  .tablo-sarmal { overflow: visible; border-color: #ddd; }
+  table { min-width: 0; font-size: 9pt; }
+  thead th { background: #f2f2f2; }
+  a { color: #000; text-decoration: none; }
+  .sayfa-alti { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="kapak">
+  <div class="kapak__ic">
+    <p class="kapak__marka">Beyza Blanc — Araştırma dosyası</p>
+    <h1>Beyza Blanc geliştirme planı</h1>
+    <p class="kapak__alt">Kararlar, hedef deneyim, modüller ve fazlar · 9 Kasım 2026</p>
+    <div class="kapak__etiketler">
+      <span class="etiket">Türkçe</span>
+      <span class="etiket">Kaynaklı</span>
+      <span class="etiket"></span>
+      <span class="etiket">Yazdırmaya hazır</span>
+    </div>
+  </div>
+</header>
+
+<div class="duzen">
+  <nav class="icindekiler" aria-label="İçindekiler">
+    <h2>İçindekiler</h2>
+    <ol><li><a href="#1-alinan-kararlar">1. Alınan kararlar</a></li>
+<li><a href="#2-hedef-deneyim-neden-geldigini-bilen-mutlu-ayrilan-ziyaretc">2. Hedef deneyim: &quot;neden geldiğini bilen, mutlu ayrılan ziyaretçi&quot;</a></li>
+<li><a href="#3-rakip-kiyasi-ve-fark-yaratacak-ozellikler">3. Rakip kıyası ve fark yaratacak özellikler</a></li>
+<li><a href="#4-modul-plani">4. Modül planı</a></li>
+<li><a href="#5-veri-modeli-ozeti">5. Veri modeli özeti</a></li>
+<li><a href="#6-fazlar-ve-is-paketleri">6. Fazlar ve iş paketleri</a></li>
+<li><a href="#7-calisma-duzeni-haftalik-kullanim-siniri-icin">7. Çalışma düzeni (haftalık kullanım sınırı için)</a></li>
+<li><a href="#8-sahibinden-gerekenler">8. Sahibinden gerekenler</a></li>
+<li><a href="#9-riskler">9. Riskler</a></li></ol>
+    <p class="yazdirma-notu">
+      Yazdırmak için <strong>Ctrl+P</strong> (Mac: ⌘+P). Yazdırma düzeninde menü ve
+      etiketler gizlenir, tablolar sayfa taşmasına karşı korunur.
+    </p>
+  </nav>
+  <main class="icerik">
+<p class="belge-ustbaslik">Araştırma raporu</p>
+<p>Tarih: 9 Kasım 2026 · Durum: onaylı kararlara göre hazırlanmış uygulama planı. Henüz kod yazılmadı. Analiz için bkz. <code>Beyza Blanc web platformu analiz raporu.md</code>.</p>
+<h2 id="1-alinan-kararlar">1. Alınan kararlar</h2>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Karar</th>
+<th>Seçim</th>
+<th>Plana etkisi</th>
+</tr></thead><tbody>
+<tr>
+<td>Teklif kanalı</td>
+<td>Önce platforma kayıt, sonra müşteri WhatsApp veya Instagram DM seçer</td>
+<td><code>bb_quotes</code> tablosu, takip kodu, iki kanal için önceden doldurulmuş mesaj, panelde talep listesi</td>
+</tr>
+<tr>
+<td>Katalog yönetimi</td>
+<td>Yönetim paneli, PostgreSQL</td>
+<td><code>data.js</code> tek seferlik seed olur; özel gün, alıcı, ürün tipi, tasarım ve stüdyo seçenekleri tablolara taşınır</td>
+</tr>
+<tr>
+<td>Fiyat</td>
+<td>Segment + "X TL'den başlayan" + stüdyoda canlı tahmini aralık</td>
+<td>Fiyat kuralları tablosu, stüdyoda adet ve seçeneklere göre hesaplama, teklif kaydında tahmini aralık</td>
+</tr>
+<tr>
+<td>Yayın</td>
+<td>Tek VPS, Docker</td>
+<td>Docker Compose (Next + PostgreSQL + Caddy), bellek içi önbellekler kalabilir (tek süreç), yedekleme cron</td>
+</tr>
+<tr>
+<td>Çalışma biçimi</td>
+<td>Fable planlar, uygulama ayrı oturumlarda ve küçük parçalarda</td>
+<td>Her fazın işleri bağımsız, kısa oturumlarda bitecek büyüklükte yazıldı</td>
+</tr>
+</tbody></table></div>
+<h2 id="2-hedef-deneyim-neden-geldigini-bilen-mutlu-ayrilan-ziyaretc">2. Hedef deneyim: "neden geldiğini bilen, mutlu ayrılan ziyaretçi"</h2>
+<p>Platform bir tanıtım sitesi değil, özel gün hediyesi için karar ve tasarım aracı. Ziyaretçi dört niyetten biriyle gelir; her niyetin net bir giriş yolu ve net bir "mutlu çıkış" sonucu olmalı.</p>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Niyet</th>
+<th>Giriş</th>
+<th>Yol</th>
+<th>Mutlu çıkış</th>
+</tr></thead><tbody>
+<tr>
+<td>"Yaklaşan bir gün var, fikir arıyorum"</td>
+<td>Ana sayfada "Kim için, hangi gün, ne zaman?" üçlü seçici</td>
+<td>Filtrelenmiş koleksiyon, 3–6 tasarım, segment ve başlayan fiyat</td>
+<td>Beğenilenler listesi veya seçilen tasarımla stüdyoya geçiş</td>
+</tr>
+<tr>
+<td>"Ne istediğimi biliyorum, kendim tasarlayacağım"</td>
+<td>Stüdyo</td>
+<td>Örnekle başla → ürün, renk, yazı, fotoğraf → canlı önizleme → fiyat aralığı → teslim → onay</td>
+<td>Takip kodu, görsel ve özet elinde; WhatsApp veya Instagram'dan devam</td>
+</tr>
+<tr>
+<td>"Kurumsal hediye, adet çok"</td>
+<td>Kurumsal sayfası</td>
+<td>Adet aralığı, logo yükleme, tarih, kademeli fiyat tablosu</td>
+<td>Kurumsal teklif kaydı, numune talebi, 1 iş günü yanıt taahhüdü</td>
+</tr>
+<tr>
+<td>"Daha önce sipariş verdim / durumunu merak ediyorum"</td>
+<td>Takip sayfası</td>
+<td>Kod ile sorgulama</td>
+<td>Durum ve tahmini teslim; sonraki özel gün için hatırlatıcı</td>
+</tr>
+</tbody></table></div>
+<p>Çıkışta her ziyaretçiye tek bir kalıcı değer bırakılır: takip kodu, kaydedilmiş tasarım bağlantısı, beğeni listesi veya özel gün hatırlatıcısı. Hiçbir yol "bize yazın" ile bitmez; hepsi somut bir sonuçla biter.</p>
+<h2 id="3-rakip-kiyasi-ve-fark-yaratacak-ozellikler">3. Rakip kıyası ve fark yaratacak özellikler</h2>
+<p>Araştırma raporlarındaki emsallerden (Compartés "Make Your Own", Sugarfina "Design Your Own", Baked by Melissa 4 adımlı hediye akışı, Godiva TR okazyon menüsü, Choc on Choc alıcı ekseni, Chococraft fotoğraf baskı) alınan ve üstüne çıkılacak noktalar:</p>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Alan</th>
+<th>Sektör standardı</th>
+<th>Beyza Blanc hedefi</th>
+</tr></thead><tbody>
+<tr>
+<td>Navigasyon</td>
+<td>Özel gün + alıcı menüsü</td>
+<td>Üç eksen menü + niyet seçici + URL'de filtre durumu (statik sitede hazır, platforma taşınacak)</td>
+</tr>
+<tr>
+<td>Kişiselleştirme</td>
+<td>İsim/tarih formu, çoğunda statik önizleme</td>
+<td>Gerçek ürün fotoğrafı üzerine katmanlı canlı önizleme, fotoğraf yükleme, yazı tipi ve renk seçimi, taslak kaydetme, paylaşılabilir tasarım bağlantısı</td>
+</tr>
+<tr>
+<td>Fiyat</td>
+<td>Sabit fiyat veya hiç yok</td>
+<td>Segment + başlayan fiyat + stüdyoda seçime göre anlık aralık</td>
+</tr>
+<tr>
+<td>Teslim</td>
+<td>Tarih seçici</td>
+<td>Tarih seçici + son sipariş eşiği + hazırlık bandı + KKTC içi aynı gün bilgisi; geçmiş tarih seçilemez</td>
+</tr>
+<tr>
+<td>Onay</td>
+<td>Sepet özeti</td>
+<td>Üretim öncesi onay ekranı, yazım teyidi, "birebir basılacak" kutusu (statik sitede hazır)</td>
+</tr>
+<tr>
+<td>Sipariş sonrası</td>
+<td>E-posta onayı</td>
+<td>Takip kodu sayfası, durum çizelgesi, takvime ekle (ICS), bir sonraki özel gün hatırlatıcısı</td>
+</tr>
+<tr>
+<td>Kurumsal</td>
+<td>Form</td>
+<td>Logo yükleme + adet kademesi + anlık tahmini bütçe + numune talebi</td>
+</tr>
+<tr>
+<td>Güven</td>
+<td>Yorum ve rozet</td>
+<td>Gerçek müşteri yorumları (panelden onaylı), "neyi garanti ediyoruz" bloğu, Instagram canlı akış</td>
+</tr>
+</tbody></table></div>
+<p>Sektörde görülmeyen ve butik ölçekte yapılabilir üç fark: <strong>paylaşılabilir tasarım bağlantısı</strong> (eş, arkadaş onayı için), <strong>özel gün hatırlatıcısı</strong> (yıl dönümü, doğum günü; e-posta veya WhatsApp ile 10 gün önce), <strong>takip kodu ile durum sayfası</strong>.</p>
+<h2 id="4-modul-plani">4. Modül planı</h2>
+<h3>4.1 Vitrin ve katalog</h3>
+<ul>
+<li>Ana sayfa: niyet seçici (kim için / hangi gün / ne zaman), öne çıkan tasarımlar, taahhüt bloğu, teslim bantları, Instagram akışı, gerçek yorumlar (varsa).</li>
+<li>Mega menü veritabanından: Özel Güne Göre, Kime Göre, Ürün Tipi, Kurumsal, Yeni &amp; Çok Satan, Stüdyo. Mobilde akordeon.</li>
+<li><code>/koleksiyonlar</code>: dört eksenli filtre, sıralama, sayaç, kırıntı, URL durumu; sunucu tarafı render.</li>
+<li><code>/koleksiyonlar/[slug]</code>: kategori metni + tasarım ızgarası + "stüdyoda bu temayla başla".</li>
+<li><code>/tasarim/[slug]</code>: tasarım detayı, segment, başlayan fiyat, kişiselleştirme seçenekleri, benzer tasarımlar, "bu tasarımla stüdyoya git".</li>
+<li><code>/sss</code>, <code>/iletisim</code> (adres, telefon, saat, harita, iki kanal), <code>/hakkimizda</code>, <code>/kurumsal</code>.</li>
+<li>Eski <code>.html</code> adresleri için sorgu koruyan yönlendirmeler.</li>
+</ul>
+<h3>4.2 Tasarım stüdyosu v3</h3>
+<p>Mevcut canvas çizimi (madlen kutusu, bar, tepsi) korunur; üstüne şunlar eklenir:</p>
+<p>1. <strong>Giriş:</strong> boş başla veya gerçek örnekle başla (Instagram görselleri), ya da tasarım sayfasından devralınan seçimlerle başla. 2. <strong>Adımlar:</strong> ürün → özel gün ve alıcı → ambalaj rengi, kurdele, kart → yazı (isim, tarih, mesaj, yazı tipi) → fotoğraf veya logo → adet ve segment → teslim (tarih, şekil, alıcı adı, not) → onay. 3. <strong>Canlı önizleme:</strong> katmanlı render; gerçek ürün fotoğrafı altlık, üstüne renk maskesi, yazı ve fotoğraf. Mobilde yapışkan önizleme. 4. <strong>Fiyat aralığı:</strong> <code>bb_price_rules</code> tablosundan ürün tipi × adet kademesi × ekstralar; "tahmini 1.250–1.450 TL" biçiminde, teklifte netleşir notu. 5. <strong>Taslak ve paylaşım:</strong> <code>localStorage</code> taslağı korunur; "tasarımı kaydet" sunucuya yazar ve <code>/t/[kod]</code> bağlantısı üretir; bağlantı önizleme görseli ile açılır. 6. <strong>Onay ekranı:</strong> mevcut 13 satırlık özet + yazım teyidi kutusu + fiyat aralığı + teslim tarihi kontrolü (son sipariş eşiğini aşarsa uyarı ve alternatif tarih). 7. <strong>Gönderim:</strong> önce <code>bb_quotes</code> kaydı (PNG <code>bb_media</code>'ya), sonra kanal seçimi: WhatsApp (<code>wa.me</code>) veya Instagram (<code>ig.me</code>), mesajda kod + özet + bağlantı. Masaüstünde görsel indirme yedeği kalır. 8. <strong>Sonuç sayfası:</strong> <code>/takip/[kod]</code> kod, görsel, özet, durum çizelgesi, takvime ekle, hatırlatıcı kur.</p>
+<p>Erişilebilirlik: her adım klavye ile tamamlanabilir, canvas için metin özeti, renk seçimlerinde isim etiketi, <code>prefers-reduced-motion</code>.</p>
+<h3>4.3 Teklif kaydı ve takip</h3>
+<ul>
+<li><code>bb_quotes</code>: kod (BB-XXXX-YY), tür (bireysel/kurumsal), tasarım referansı, seçimler JSON, görsel, adet, tahmini aralık, teslim bilgileri, iletişim tercihi, durum, zaman damgaları, panel notları.</li>
+<li>Durumlar: yeni → teklif verildi → onaylandı → üretimde → hazır → teslim edildi / iptal.</li>
+<li><code>/takip/[kod]</code>: herkese açık ama yalnızca kodla; kişisel veri gösterilmez (alıcı adı maskelenir).</li>
+<li>Panelde talep listesi: filtre, durum değiştirme, not, WhatsApp/Instagram'a tek tık yanıt bağlantısı.</li>
+</ul>
+<h3>4.4 Kurumsal</h3>
+<ul>
+<li>Kademeli fiyat tablosu (panelden), logo yükleme, adet ve tarih, anlık tahmini bütçe, numune talebi, "1 iş günü içinde dönüş" taahhüdü.</li>
+<li>Aynı <code>bb_quotes</code> tablosu, <code>type=corporate</code>; referans işler galerisi (Gökhan Türk Motors, OSK Auto, Ege Motors).</li>
+</ul>
+<h3>4.5 Hatırlatıcı ve yorumlar</h3>
+<ul>
+<li><code>bb_reminders</code>: e-posta veya WhatsApp numarası (onaylı), özel gün tipi, tarih, yıllık tekrar; 10 gün önce gönderim. Faz 3; e-posta için Resend benzeri ücretsiz kademe.</li>
+<li><code>bb_reviews</code>: ad, metin, puan, fotoğraf, onay durumu; teslimattan 7 gün sonra kod sahibine yorum bağlantısı. Yalnızca onaylılar yayınlanır.</li>
+</ul>
+<h3>4.6 Yönetim paneli</h3>
+<p>Bugünkü tek sayfa panel sekmelere ayrılır: Talepler, Tasarımlar, Kategoriler (özel gün, alıcı, ürün tipi), Stüdyo seçenekleri, Fiyat kuralları, İçerik sayfaları, Yorumlar, Ayarlar (duyuru bandı, son sipariş notu, teslim bantları, iletişim bilgileri, kanal numaraları), Instagram. Taslak önizleme, silme, sürükle-bırak sıralama. Giriş sınırı IP bazlı; isteğe bağlı TOTP ikinci faktör.</p>
+<h3>4.7 Altyapı (VPS)</h3>
+<ul>
+<li>Docker Compose: <code>web</code> (Next standalone), <code>db</code> (PostgreSQL 16, volume), <code>caddy</code> (otomatik HTTPS). Günlük <code>pg_dump</code> ve medya yedeği cron, 14 gün saklama, haftalık geri yükleme denemesi.</li>
+<li>Ortam: <code>SITE_URL</code>, PG değişkenleri, <code>ADMIN_PASSWORD</code>, <code>SESSION_SECRET</code>, <code>WHATSAPP_NUMBER</code>, <code>INSTAGRAM_HANDLE</code>.</li>
+<li>Güvenlik başlıkları: CSP (fontlar self-host edilince <code>'self'</code> ağırlıklı), HSTS, mevcut başlıklar.</li>
+<li>Gözlem: Caddy erişim günlükleri, uygulama hata günlüğü dosyaya, Plausible veya Umami (self-host) ile sayfa ve huni ölçümü.</li>
+<li>CI: GitHub Actions ile lint + test + build; <code>main</code>'e birleşince VPS'e SSH ile dağıtım.</li>
+</ul>
+<h2 id="5-veri-modeli-ozeti">5. Veri modeli özeti</h2>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Tablo</th>
+<th>Amaç</th>
+</tr></thead><tbody>
+<tr>
+<td><code>bb_occasions</code></td>
+<td>19 özel gün; slug, ad, kısa, açıklama, ikon, kök (ozel-gun / mevsim / kurumsal), sıra, yayın</td>
+</tr>
+<tr>
+<td><code>bb_recipients</code></td>
+<td>8 alıcı ekseni</td>
+</tr>
+<tr>
+<td><code>bb_product_types</code></td>
+<td>madlen kutu, bar, tepsi, hediye kutusu; stüdyo çizim tipi</td>
+</tr>
+<tr>
+<td><code>bb_designs</code></td>
+<td>28 tasarım; slug, başlık, metin, görsel, ürün tipi, segment, başlayan fiyat, öne çıkan, çok satan, yeni, yayın, sıra</td>
+</tr>
+<tr>
+<td><code>bb_design_occasions</code>, <code>bb_design_recipients</code></td>
+<td>çoktan çoğa etiketler</td>
+</tr>
+<tr>
+<td><code>bb_studio_options</code></td>
+<td>çikolata tipi, ambalaj rengi, kurdele, kart, yazı tipi, adet, ekstra; grup + değer + görsel/renk</td>
+</tr>
+<tr>
+<td><code>bb_price_rules</code></td>
+<td>ürün tipi × adet kademesi taban fiyat, ekstra ek ücretleri</td>
+</tr>
+<tr>
+<td><code>bb_quotes</code></td>
+<td>teklif talepleri (bireysel ve kurumsal)</td>
+</tr>
+<tr>
+<td><code>bb_saved_designs</code></td>
+<td>paylaşılabilir tasarım bağlantıları</td>
+</tr>
+<tr>
+<td><code>bb_reviews</code>, <code>bb_reminders</code>, <code>bb_settings</code></td>
+<td>yorumlar, hatırlatıcılar, anahtar-değer ayarlar</td>
+</tr>
+<tr>
+<td>Mevcut: <code>bb_media</code>, <code>bb_content</code>, <code>bb_categories</code>, <code>bb_login_limits</code>, <code>bb_instagram</code></td>
+<td><code>bb_categories</code> → <code>bb_occasions</code>'a göç eder</td>
+</tr>
+</tbody></table></div>
+<h2 id="6-fazlar-ve-is-paketleri">6. Fazlar ve iş paketleri</h2>
+<p>Her iş paketi tek oturumda bitecek büyüklükte, bağımlılığı yazılı. Süreler tahmini geliştirme günüdür.</p>
+<h3>Faz 0: Hijyen ve hızlı kazanımlar (2 gün)</h3>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>No</th>
+<th>İş</th>
+<th>Dosyalar</th>
+<th>Kabul ölçütü</th>
+</tr></thead><tbody>
+<tr>
+<td>0.1</td>
+<td>Git deposu, <code>.gitignore</code>, ilk commit; artık dizinleri sil; <code>_tmp_tr</code> ve <code>_scripts</code>'i <code>research_notes/kaynak/</code> altına taşı</td>
+<td>kök</td>
+<td><code>git status</code> temiz, <code>.env.local</code> izlenmiyor</td>
+</tr>
+<tr>
+<td>0.2</td>
+<td>ESLint + <code>eslint-config-next</code>, <code>npm run lint</code> ve <code>npm run check</code></td>
+<td><code>package.json</code></td>
+<td>Lint sıfır hata</td>
+</tr>
+<tr>
+<td>0.3</td>
+<td>Başlıkta "Blanc" script yazı tipi (logo ile uyum); Great Vibes veya Pinyon Script self-host</td>
+<td><code>app/layout.js</code>, <code>app/(public)/layout.js</code>, <code>vitrin.css</code></td>
+<td>Başlık ve alt bilgi logo ile tutarlı, kontrast AA</td>
+</tr>
+<tr>
+<td>0.4</td>
+<td>Yönlendirmelerde sorgu koruma: <code>koleksiyonlar.html?gun=X</code> → <code>/koleksiyonlar?gun=X</code></td>
+<td><code>next.config.mjs</code></td>
+<td>20 menü bağlantısı doğru hedefe gider</td>
+</tr>
+<tr>
+<td>0.5</td>
+<td>İletişim sayfası ve JSON-LD: adres, telefon, saat, harita, iki kanal; değerler <code>bb_settings</code>'ten</td>
+<td><code>iletisim/page.js</code>, <code>page.js</code>, şema</td>
+<td>Rich Results testi geçer</td>
+</tr>
+<tr>
+<td>0.6</td>
+<td>Docker Compose + Caddy + yedek betiği; VPS'e ilk dağıtım</td>
+<td><code>Dockerfile</code>, <code>compose.yml</code>, <code>deploy/</code></td>
+<td>HTTPS'te açılır, yedek dosyası oluşur</td>
+</tr>
+</tbody></table></div>
+<h3>Faz 1: Katalog veritabanına (5–7 gün)</h3>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>No</th>
+<th>İş</th>
+<th>Bağımlılık</th>
+<th>Kabul ölçütü</th>
+</tr></thead><tbody>
+<tr>
+<td>1.1</td>
+<td>Şema: occasions, recipients, product_types, designs, bağlantı tabloları, studio_options, price_rules, settings</td>
+<td>0.1</td>
+<td><code>db:seed</code> idempotent çalışır</td>
+</tr>
+<tr>
+<td>1.2</td>
+<td><code>data.js</code>'den seed göçü; <code>bb_categories</code> → <code>bb_occasions</code></td>
+<td>1.1</td>
+<td>19 özel gün, 8 alıcı, 28 tasarım panelde görünür</td>
+</tr>
+<tr>
+<td>1.3</td>
+<td>Panel: sekmeler, tasarım CRUD, çoklu etiket, sıralama, silme, taslak önizleme</td>
+<td>1.2</td>
+<td>Yeni tasarım 2 dakikada eklenebilir</td>
+</tr>
+<tr>
+<td>1.4</td>
+<td>Mega menü ve niyet seçici veritabanından</td>
+<td>1.2</td>
+<td>Menü 6 kök, mobil akordeon</td>
+</tr>
+<tr>
+<td>1.5</td>
+<td><code>/koleksiyonlar</code> filtre + sıralama + URL durumu, <code>/koleksiyonlar/[slug]</code> tasarım ızgarası</td>
+<td>1.2</td>
+<td>Statik sitedeki tüm filtre kombinasyonları çalışır</td>
+</tr>
+<tr>
+<td>1.6</td>
+<td><code>/tasarim/[slug]</code>, <code>/sss</code> Next sayfası; eski <code>urun.html</code> ve <code>sss.html</code> kaldırılır</td>
+<td>1.5</td>
+<td>Tek kabuk, noindex yok, sitemap'te</td>
+</tr>
+<tr>
+<td>1.7</td>
+<td>ISR: <code>revalidateTag</code> ile katalog önbelleği; <code>next/image</code></td>
+<td>1.5</td>
+<td>Ana sayfa TTFB &lt; 200 ms yerelde</td>
+</tr>
+</tbody></table></div>
+<h3>Faz 2: Stüdyo v3 ve teklif kaydı (8–10 gün)</h3>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>No</th>
+<th>İş</th>
+<th>Bağımlılık</th>
+<th>Kabul ölçütü</th>
+</tr></thead><tbody>
+<tr>
+<td>2.1</td>
+<td>Stüdyoyu Next istemci bileşenine taşı; seçenekler <code>/api/studio-options</code> veya sunucu props</td>
+<td>1.1</td>
+<td><code>data.js</code> bağımlılığı yok, eski davranış korunur</td>
+</tr>
+<tr>
+<td>2.2</td>
+<td>Fiyat aralığı hesaplayıcı (sunucu ve istemci aynı fonksiyon)</td>
+<td>1.1</td>
+<td>Panelde kural değişince stüdyo günceller</td>
+</tr>
+<tr>
+<td>2.3</td>
+<td>Katmanlı gerçek fotoğraf önizlemesi (ürün başına altlık + maske)</td>
+<td>2.1</td>
+<td>4 ürün tipi için fotoğraflı önizleme</td>
+</tr>
+<tr>
+<td>2.4</td>
+<td>Teslim adımı: tarih seçici, son sipariş eşiği, hazırlık bandı uyarıları</td>
+<td>2.1</td>
+<td>Geçmiş veya eşik dışı tarih engellenir</td>
+</tr>
+<tr>
+<td>2.5</td>
+<td><code>bb_quotes</code> + kayıt eylemi + PNG saklama + kod üretimi</td>
+<td>1.1</td>
+<td>Onay sonrası kayıt oluşur, kod gösterilir</td>
+</tr>
+<tr>
+<td>2.6</td>
+<td>Kanal seçimi ve önceden doldurulmuş mesaj (WhatsApp, Instagram)</td>
+<td>2.5</td>
+<td>Her iki kanalda kod ve bağlantı mesajda</td>
+</tr>
+<tr>
+<td>2.7</td>
+<td><code>/takip/[kod]</code> sayfası, ICS indirme</td>
+<td>2.5</td>
+<td>Kod ile durum görülür, kişisel veri maskeli</td>
+</tr>
+<tr>
+<td>2.8</td>
+<td>Paylaşılabilir tasarım bağlantısı <code>/t/[kod]</code> ve Open Graph görseli</td>
+<td>2.5</td>
+<td>Bağlantı WhatsApp'ta önizlemeli açılır</td>
+</tr>
+<tr>
+<td>2.9</td>
+<td>Panel: talep listesi, durum, not, tek tık yanıt</td>
+<td>2.5</td>
+<td>Durum değişince takip sayfası güncellenir</td>
+</tr>
+<tr>
+<td>2.10</td>
+<td>Playwright uçtan uca: ana sayfa → tasarım → stüdyo → onay → kod</td>
+<td>2.7</td>
+<td>Mobil ve masaüstünde yeşil</td>
+</tr>
+</tbody></table></div>
+<h3>Faz 3: Kurumsal, güven ve büyüme (5–7 gün)</h3>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>No</th>
+<th>İş</th>
+<th>Bağımlılık</th>
+<th>Kabul ölçütü</th>
+</tr></thead><tbody>
+<tr>
+<td>3.1</td>
+<td>Kurumsal teklif akışı: logo, adet kademesi, tahmini bütçe, numune</td>
+<td>2.5</td>
+<td>Kurumsal talep panelde ayrı görünür</td>
+</tr>
+<tr>
+<td>3.2</td>
+<td>Yorum toplama ve onay; ana sayfada "Sizden gelenler"</td>
+<td>2.9</td>
+<td>Onaysız yorum yayınlanmaz</td>
+</tr>
+<tr>
+<td>3.3</td>
+<td>Özel gün hatırlatıcısı (e-posta ilk, WhatsApp sonra)</td>
+<td>2.5</td>
+<td>10 gün önce mesaj gider, tek tık iptal</td>
+</tr>
+<tr>
+<td>3.4</td>
+<td>Panel ayarları: duyuru bandı, son sipariş notu, teslim bantları, iletişim</td>
+<td>1.3</td>
+<td>Kod değişmeden içerik yönetilir</td>
+</tr>
+<tr>
+<td>3.5</td>
+<td>Güvenlik: IP bazlı giriş sınırı, CSP, HSTS, TOTP (isteğe bağlı), Instagram anahtar yenileme işi</td>
+<td>0.6</td>
+<td>Güvenlik başlıkları testinde A</td>
+</tr>
+<tr>
+<td>3.6</td>
+<td>Ölçüm: Plausible/Umami, huni olayları (seçici, stüdyo adımları, onay, kanal)</td>
+<td>0.6</td>
+<td>Haftalık dönüşüm raporu</td>
+</tr>
+<tr>
+<td>3.7</td>
+<td>CI/CD: GitHub Actions lint + test + build + SSH dağıtım</td>
+<td>0.1</td>
+<td><code>main</code>'e birleşince canlıya çıkar</td>
+</tr>
+</tbody></table></div>
+<h2 id="7-calisma-duzeni-haftalik-kullanim-siniri-icin">7. Çalışma düzeni (haftalık kullanım sınırı için)</h2>
+<ul>
+<li>Her iş paketi ayrı, kısa oturumda; oturum başında yalnızca ilgili dosyalar okunur. Bu plan ve analiz raporu bağlam kaynağıdır, tekrar keşif yapılmaz.</li>
+<li>Önerilen sıra: 0.1 → 0.4 → 0.3 → 0.5 → 1.1 → 1.2 → 1.3 → 1.5 → 1.6 → 2.1 → 2.5 → 2.6 → 2.7 → geri kalanlar.</li>
+<li>Her paket sonunda: lint, ilgili test, kısa tarayıcı doğrulaması, commit. Uzun açıklama yok, değişiklik listesi var.</li>
+<li>Uygulama oturumları Sonnet gibi daha ucuz bir modelle yürütülebilir; tasarım kararı gerektiren paketler (2.3 önizleme, 4.1 niyet seçici) bu modelde kalır.</li>
+</ul>
+<h2 id="8-sahibinden-gerekenler">8. Sahibinden gerekenler</h2>
+<p>1. Gerçek işletme bilgileri: telefon, WhatsApp hattı, tam adres, çalışma saatleri, alan adı. 2. Fiyat kademeleri: 4 ürün tipi × adet aralıkları için başlangıç fiyatları ve ekstra ücretler (fotoğraf baskı, logo, kurdele). 3. Ürün başına yüksek çözünürlüklü altlık fotoğrafları (kare, krem zemin) stüdyo önizlemesi için. 4. VPS erişimi ve alan adı DNS yetkisi; Instagram Login erişim anahtarı. 5. Kurumsal kademe tablosu ve numune politikası.</p>
+<h2 id="9-riskler">9. Riskler</h2>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Risk</th>
+<th>Önlem</th>
+</tr></thead><tbody>
+<tr>
+<td>Katalog göçünde içerik kaybı</td>
+<td>Seed idempotent, <code>data.js</code> arşivde kalır, panelde karşılaştırma listesi</td>
+</tr>
+<tr>
+<td>Stüdyo yeniden yazımında davranış kırılması</td>
+<td>Eski canvas fonksiyonları birebir taşınır, Playwright akışı ilk gün yazılır</td>
+</tr>
+<tr>
+<td>Fiyat aralığının yanlış beklenti yaratması</td>
+<td>"Tahmini, teklifte netleşir" ifadesi ve üst sınır gösterimi</td>
+</tr>
+<tr>
+<td>Hatırlatıcı mesajlarının izinsiz sayılması</td>
+<td>Açık onay, tek tık iptal, yalnızca kullanıcı tarihleri</td>
+</tr>
+<tr>
+<td>VPS tek nokta arızası</td>
+<td>Günlük yedek, haftalık geri yükleme denemesi, Caddy sağlık kontrolü</td>
+</tr>
+</tbody></table></div>
+  </main>
+</div>
+
+<footer class="sayfa-alti">
+  <div class="sayfa-alti__ic">
+    <span>Beyza Blanc — Beyza Blanc geliştirme planı</span>
+    <span>Kaynak: araştırma notları (research_notes) · </span>
+  </div>
+</footer>
+
+</body>
+</html>

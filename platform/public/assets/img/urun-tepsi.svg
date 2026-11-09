@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="İsim plakalı nişan tepsisi illüstrasyonu">
+  <defs>
+    <radialGradient id="madlenTepsi" cx="35%" cy="30%" r="75%">
+      <stop offset="0" stop-color="#8a5a35"/>
+      <stop offset="1" stop-color="#5c351c"/>
+    </radialGradient>
+    <radialGradient id="tepsiZemin" cx="35%" cy="28%" r="80%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f0e2ce"/>
+    </radialGradient>
+    <g id="madlenT">
+      <circle r="42" fill="url(#madlenTepsi)"/>
+      <path d="M-24 6 A24 24 0 0 1 8 -20" fill="none" stroke="#ffffff45" stroke-width="5" stroke-linecap="round"/>
+      <circle r="42" fill="none" stroke="#3d201622" stroke-width="1.5"/>
+    </g>
+  </defs>
+
+  <rect width="800" height="600" fill="#f6ebdc"/>
+
+  <ellipse cx="400" cy="330" rx="330" ry="230" fill="url(#tepsiZemin)" stroke="#cfb56a" stroke-width="10"/>
+
+  <use href="#madlenT" x="400" y="128"/>
+  <use href="#madlenT" x="290" y="152"/>
+  <use href="#madlenT" x="510" y="152"/>
+  <use href="#madlenT" x="216" y="228"/>
+  <use href="#madlenT" x="584" y="228"/>
+  <use href="#madlenT" x="192" y="322"/>
+  <use href="#madlenT" x="608" y="322"/>
+  <use href="#madlenT" x="222" y="416"/>
+  <use href="#madlenT" x="578" y="416"/>
+  <use href="#madlenT" x="296" y="480"/>
+  <use href="#madlenT" x="504" y="480"/>
+  <use href="#madlenT" x="400" y="500"/>
+
+  <g transform="translate(400 322)">
+    <rect x="-150" y="-66" width="300" height="132" rx="14" fill="#fffdf9" stroke="#3d201622" stroke-width="1.5"/>
+    <text x="0" y="-8" fill="#3d2016" font-family="Georgia, serif" font-size="38" text-anchor="middle">Elif &amp; Mert</text>
+    <text x="0" y="34" fill="#3d201699" font-family="Georgia, serif" font-size="22" text-anchor="middle" letter-spacing="3">14 HAZİRAN 2026</text>
+  </g>
+</svg>

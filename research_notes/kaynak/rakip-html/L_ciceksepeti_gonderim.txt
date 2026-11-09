@@ -1,0 +1,184 @@
+Çiçek ve Gurme Lezzetler	/
+Hediye ve Milyonlarca Ürün	/
+Kurumsal Hediye	/s/kurumsal-hediyeler
+Yardım	/s/destek
+Çiçeksepeti'nde Satış Yap	/s/ciceksepetinde-satis-yap
+Öğretmenler Günü	/d/ogretmenler-gunu
+Çiçek	/d/cicek
+Tüm Ürünleri Gör	/d/cicek
+Kasımpatı	/d/kasimpati
+Öğretmenler Günü	/d/ogretmenler-gunu-cicekleri
+Trend Çiçekler	/d/via-bonte
+Çiçek & Gurme Lezzetler	/d/cicek-cikolata
+Çiçek Buketleri	/d/cicek-buketleri
+Saksı Çiçekleri	/d/saksi-cicekleri
+Güller	/d/guller
+Orkide	/d/orkide
+Vazoda Çiçek	/d/vazoda-cicek
+Lilyum & Zambak	/d/lilyum-zambak
+Çiçek & Hediye	/d/cicek-hediye
+Kişiye Özel Çiçekler	/d/kisiye-ozel-cicekler
+Kutuda Güller	/d/kutuda-guller
+Tüm Ürünleri Gör	/d/via-bonte
+Saksı Bitkileri	/d/viabonte-saksi-bitkileri
+Papatya & Gerbera	/d/viabonte-papatya-gerbera
+Güller	/d/viabonte-guller
+Tüm Ürünleri Gör	/d/cicek-buketleri
+Karışık Buketler	/d/karisik-buketler
+Gül Buketleri	/d/gul-buketleri
+Papatya Buketi	/d/papatya-buketleri
+Tüm Ürünleri Gör	/d/saksi-cicekleri
+Salon Çiçekleri	/d/salon-bitkileri
+Sukulent	/d/sukulentler
+Para Ağacı	/d/para-agaci
+Atatürk Çiçeği - Ponsetya	/d/ataturk-cicegi
+Barış Çiçeği	/d/spatifilyum-cicegi
+Antoryum	/d/antoryum
+Bonsai	/d/bonsai
+Starliçe	/d/starlice
+Kaktüs	/d/kaktus
+Dağ Palmiyesi	/d/dag-palmiyesi
+Zeytin Ağacı	/d/zeytin-agaci
+Yuka (Yucca)	/d/yucca-cicegi
+Kalanchoe	/d/kalanso
+Deve Tabanı	/d/deve-tabani
+Difenbahya	/d/difenbahya-cicegi
+Guzmanya	/d/guzmania-cicegi
+Şeflera	/d/schefflera-cicegi
+Haworthia	/d/haworthia
+Tüm Ürünleri Gör	/d/guller
+Kırmızı Gül	/d/kirmizi-gul
+Beyaz Gül	/d/beyaz-gul
+Vazoda Gül	/d/vazoda-guller
+Pembe Gül	/d/pembe-gul
+Lila Gül	/d/lila-gul
+Saksıda Gül	/d/saksida-gul
+Çardak Güller	/d/cardak-guller
+Turuncu Gül	/d/turuncu-gul
+Tüm Ürünleri Gör	/d/orkide
+Beyaz Orkide	/d/beyaz-orkide
+Mor Orkide	/d/mor-orkide
+Ateş Orkide	/d/kirmizi-orkide
+Mini Orkide	/d/mini-orkide
+Tüm Ürünleri Gör	/d/renkli-cicekler
+Karışık Renkli Çiçekler	/d/cicek-aranjmanlari
+Mor Çiçekler	/d/mor-cicekler
+Pembe Çiçekler	/d/pembe-cicekler
+Beyaz Çiçekler	/d/beyaz-cicekler
+Turuncu Çiçekler	/d/turuncu-cicekler
+Kırmızı Çiçekler	/d/kirmizi-cicekler
+Sarı Çiçekler	/d/sari-cicekler
+Yeşil Çiçekler	/d/yesil-cicekler
+Tüm Ürünleri Gör	/d/celenk
+Düğün Çelenkleri	/d/dugun-celenkleri
+Ferforje Aranjmanlar	/d/ferforje-cicekler
+Cenaze Çelenkleri	/d/cenaze-cicekleri
+Tüm Ürünleri Gör	/d/bonnyfood
+Doğum Günü	/d/dogum-gunu-kek-kurabiye
+İçimden Geldi	/d/icimden-geldi-kek-kurabiye
+Sevgiliye	/d/sevgiliye-kek-kurabiye
+Yeni Bebek	/d/bebek-kek-kurabiyesi
+Yeni İş/Terfi	/d/yeni-ise-kek-kurabiye
+Kişiye Özel	/d/kisiye-ozel-bonnyfood
+Kek -Kurabiye	/d/kek-buketi
+Geçmiş Olsun	/d/gecmis-olsun-kek-kurabiye
+Özür Dilerim	/d/ozur-dilerim-kek-kurabiye
+Yıl Dönümü	/d/yildonumu-kek-kurabiye
+Gurme Lezzetler	/d/cikolata
+Tüm Ürünleri Gör	/d/cikolata
+Doğum Günü	/d/dogum-gunu-cikolata
+Sevgiliye Gurme Lezzetler	/d/sevgiliye-cikolata
+Trüf Gurme Lezzetler	/d/truf-kek-cikolata
+Geçmiş Olsun	/d/gecmis-olsun-cikolatasi
+Söz ve Nişan	/d/soz-nisan-cikolatasi
+Anneye Gurme Lezzetler	/d/anneye-cikolata
+Bebeğe Gurme Lezzetler	/d/bebek-cikolatasi
+Kız İsteme	/d/kiz-isteme-cikolatasi
+Yenilebilir Çiçek	/d/bonnyfood
+Doğum Günü	/d/dogum-gunu-cicekleri
+Gönderim Amacı	/d/gonderim-amaci-cicek
+Tüm Ürünleri Gör	/d/gonderim-amaci-cicek
+Yeni İş, Terfi	/d/yeni-ise-cicek
+Geçmiş Olsun	/d/gecmis-olsun-cicekleri
+Yeni Doğan	/d/yeni-bebek-cicekleri
+İçimden Geldi	/d/icimden-geldi-cicek
+Yıl Dönümü	/d/yildonumu-cicekleri
+Özür Dilerim	/d/ozur-cicekleri
+Sevgili	/d/sevgiliye-cicek
+Tebrik	/d/tebrik-cicegi
+Açılış, Tören	/d/acilis-toren-cicekleri
+Söz, Nişan, Düğün	/d/soz-nisan-dugun-cicekleri
+Teşekkür	/d/tesekkur-cicegi
+Kendim İçin	/d/kendim-icin-cicek
+Cenaze	/d/cenaze-cicekleri
+Evlilik Teklifi	/d/evlilik-teklifi-cicegi
+Orkide / Saksı Çiçekleri	/d/saksi-cicekleri
+Hediye	/d/hediye
+Hediye Setleri	/d/hediyelik-set
+Kişiye Özel	/d/kisiye-ozel-hediyelik
+El Yapımı Hediye	/d/el-yapimi-urunler
+Çiçeksepeti.com	/
+Gönderim Amacı	/d/gonderim-amaci
+özür dilerim hediyelikleri	https://www.ciceksepeti.com/d/ozur-hediyeleri
+peluş oyuncaklar	https://www.ciceksepeti.com/d/pelus-oyuncaklar
+açılış tören çiçekleri ve hediyeleri	https://www.ciceksepeti.com/d/acilis-toren
+Arkadaşa	https://www.ciceksepeti.com/d/arkadasa
+Anneye	https://www.ciceksepeti.com/d/anneye
+Yeni İş	https://www.ciceksepeti.com/d/yeni-is
+Öğretmenler Günü	https://www.ciceksepeti.com/d/ogretmenler-gunu
+Kadınlar Günü	https://www.ciceksepeti.com/d/kadinlar-gunu
+Yıl dönümü Hediyeleri	https://www.ciceksepeti.com/d/yildonumu-hediyeleri
+Yeni İş Hediyeleri	https://www.ciceksepeti.com/d/yeni-is-hediyeleri
+İçimden Geldi Hediye	https://www.ciceksepeti.com/d/icimden-geldi-hediye
+Sevgiliye Hediye	https://www.ciceksepeti.com/d/sevgiliye-hediye
+Özür Hediyeleri	https://www.ciceksepeti.com/d/ozur-hediyeleri
+Bebek Hediyeleri	https://www.ciceksepeti.com/d/yeni-bebek-hediyelik
+buradan	https://www.ciceksepeti.com/s/kvkk-aydinlatma-metni
+Faydalı Bilgiler	/s/cicek-bakimi
+Çiçek Bakımı	/s/cicek-bakimi
+Çiçek Eşliğinde Notlar	/s/cicek-notlari
+Çiçek Anlamları	/s/cicek-anlamlari
+Özel Günler	/s/cicek-icin-ozel-gunler
+Mevsimlere Göre Çiçekler	/s/mevsimlere-gore-cicekler
+Yenilebilir Çiçek Saklama Koşulları	/s/bonnyfood-saklama-kosullari
+Site Haritası	/s/site-haritasi
+Ürün Sıralama Kriterleri	/s/urun-siralama-kriterleri
+Teslimat İpuçları	/s/teslimat-ipuclari
+Sipariş Güncelleme Süreçleri	/s/siparis-guncelleme-surecleri
+Sipariş Görsel Onay	/s/siparis-gorsel-onay
+Kurumsal	/s/hakkimizda
+Hakkımızda	/s/hakkimizda
+Çiçeksepeti Müşteri Politikası	/s/musteri-politikalari
+Ürün Güvenliği	/s/urun-guvenligi
+Kurumsal Müşterilerimiz	/kurumsal-musterilerimiz
+Reklamlarımız	/s/tv-reklamlarimiz
+Kampanya Detayları	/s/kampanya-detaylari
+Duyarlı Pazarlama Hareketi	/s/duyarli-pazarlama
+Bilgi Toplumu Hizmetleri	https://e-sirket.mkk.com.tr/esir/Dashboard.jsp#/sirketbilgileri/15355
+Çiçeksepeti Üyelik Sözleşmesi	/s/ciceksepeti-uyelik-sozlesmesi
+Kişisel Verilerin Korunması ve Gizlilik Politikası	/s/kvkk-ve-gizlilik-politikasi
+Mesafeli Satış Sözleşmesi - Çiçek	/s/mesafeli-satis-sozlesmesi-cicek
+Mesafeli Satış Sözleşmesi - Hediye & Extra	/s/mesafeli-satis-sozlesmesi
+Çerez Politikası	/s/cerez-politikasi
+Bilgi Güvenliği Politikası	/s/bilgi-guvenligi-politikasi
+Yeşil IT Politikası	/s/yesil-it-politikasi
+İletişim	/s/bize-ulasin
+Bize Ulaşın	/s/bize-ulasin
+Sıkça Sorulan Sorular	/s/destek
+Kolay İade	/s/kolay-iade
+Çiçeksepeti Pazaryeri Kolaylıkları	/s/pazaryeri-kolayliklari
+Ödeme Seçenekleri	/s/odeme-secenekleri
+Özel Günler	/d/ozel-gun-hediyeleri
+Sevgililer Günü Hediyeleri	/d/sevgililer-gunu-hediyeleri
+Kadınlar Günü Hediyeleri	/d/kadinlar-gunu-hediyeleri
+Anneler Günü Hediyeleri	/d/anneler-gunu-hediyeleri
+Babalar Günü Hediyeleri	/d/babalar-gunu-hediyeleri
+Öğretmenler Günü Hediyeleri	/d/ogretmenler-gunu-hediyeleri
+Yılbaşı Hediyeleri	/d/yilbasi-hediyeleri
+Black Friday	/d/black-friday
+Tıp Bayramı Hediyeleri	/d/tip-bayrami
+Avukatlar Günü Hediyeleri	/d/avukata-hediye
+Hemşireler Günü Hediyeleri	/d/hemsirelere-ozel
+Eczacılık Günü Hediyeleri	/d/eczacilar-gunu
+Diş Hekimleri Günü Hediyeleri	/d/dis-hekimlerine-ozel
+#TOTAL=183

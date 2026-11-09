@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Özel Gün Hediye Sitelerinden Kategori Haritası Çıkar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --krem: #fff8f3;
+  --krem-koyu: #f6ebdc;
+  --kahve: #3d2016;
+  --kahve-soluk: #6b4a3a;
+  --altin: #cfb56a;
+  --altin-koyu: #a98336;
+  --cizgi: #e6d9c8;
+  --beyaz: #fffdfa;
+  --yesil: #2e5a4b;
+  --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--krem);
+  color: var(--kahve);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--altin-koyu); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { color: var(--kahve); }
+code {
+  background: var(--krem-koyu);
+  border: 1px solid var(--cizgi);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 0.86em;
+}
+.duzen { max-width: 1420px; margin: 0 auto; padding: 0 24px; display: grid; gap: 40px; }
+@media (min-width: 1080px) { .duzen { grid-template-columns: 288px minmax(0, 1fr); } }
+
+/* Kapak */
+.kapak { border-bottom: 1px solid var(--cizgi); background: var(--beyaz); }
+.kapak__ic { max-width: 1420px; margin: 0 auto; padding: 40px 24px 32px; }
+.kapak__marka {
+  font-family: var(--serif); font-size: 0.95rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--altin-koyu); margin: 0 0 14px;
+}
+.kapak h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(1.9rem, 3.4vw, 2.9rem); line-height: 1.15; margin: 0 0 12px; }
+.kapak__alt { color: var(--kahve-soluk); max-width: 80ch; margin: 0; }
+.kapak__etiketler { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.etiket {
+  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  border: 1px solid var(--cizgi); background: var(--krem-koyu);
+  border-radius: 999px; padding: 4px 12px; color: var(--kahve-soluk);
+}
+
+/* İçindekiler */
+.icindekiler { position: sticky; top: 24px; align-self: start; padding: 24px 0; }
+.icindekiler h2 {
+  font-family: var(--sans); font-size: 0.74rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--kahve-soluk); margin: 0 0 12px;
+}
+.icindekiler ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+.icindekiler li { counter-increment: toc; margin-bottom: 7px; }
+.icindekiler a {
+  color: var(--kahve); text-decoration: none; font-size: 0.92rem;
+  display: flex; gap: 10px; padding: 5px 10px; border-radius: 8px;
+  border-left: 2px solid transparent;
+}
+.icindekiler a::before { content: counter(toc); color: var(--altin-koyu); font-size: 0.78rem; min-width: 14px; }
+.icindekiler a:hover { background: var(--krem-koyu); border-left-color: var(--altin); }
+.yazdirma-notu {
+  margin-top: 20px; padding: 12px 14px; border: 1px dashed var(--cizgi);
+  border-radius: 10px; font-size: 0.8rem; color: var(--kahve-soluk); background: var(--beyaz);
+}
+
+/* İçerik */
+.icerik { padding: 24px 0 96px; min-width: 0; }
+.icerik h2 {
+  font-family: var(--serif); font-weight: 600; font-size: clamp(1.5rem, 2.4vw, 2.05rem);
+  line-height: 1.2; margin: 56px 0 16px; padding-top: 20px; border-top: 1px solid var(--cizgi);
+}
+.icerik h2:first-child { margin-top: 8px; border-top: 0; padding-top: 0; }
+.icerik h3 { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; margin: 34px 0 10px; }
+.icerik h4 { font-family: var(--sans); font-size: 1rem; margin: 24px 0 8px; }
+.icerik p { margin: 0 0 16px; }
+.icerik ul { margin: 0 0 16px; padding-left: 22px; }
+.icerik li { margin-bottom: 8px; }
+.icerik hr { border: 0; border-top: 1px solid var(--cizgi); margin: 36px 0; }
+.belge-ustbaslik { display: none; }
+blockquote {
+  margin: 0 0 24px; padding: 16px 20px; background: var(--beyaz);
+  border: 1px solid var(--cizgi); border-left: 3px solid var(--altin); border-radius: 10px;
+}
+blockquote p { margin: 0; font-size: 0.94rem; color: var(--kahve-soluk); }
+
+/* Tablolar */
+.tablo-sarmal { overflow-x: auto; margin: 0 0 28px; border: 1px solid var(--cizgi); border-radius: 12px; background: var(--beyaz); }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; min-width: 560px; }
+thead th {
+  text-align: left; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--kahve-soluk); background: var(--krem-koyu);
+  padding: 11px 14px; border-bottom: 1px solid var(--cizgi); white-space: nowrap;
+}
+tbody td { padding: 11px 14px; border-bottom: 1px solid var(--cizgi); vertical-align: top; }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:nth-child(even) { background: #fffaf5; }
+
+/* Alt bilgi */
+.sayfa-alti { border-top: 1px solid var(--cizgi); background: var(--beyaz); }
+.sayfa-alti__ic {
+  max-width: 1420px; margin: 0 auto; padding: 24px;
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between;
+  font-size: 0.82rem; color: var(--kahve-soluk);
+}
+
+/* Yazdırma */
+@media print {
+  @page { size: A4; margin: 14mm 12mm; }
+  body { background: #fff; font-size: 10.5pt; }
+  .duzen { display: block; max-width: none; padding: 0; }
+  .icindekiler, .yazdirma-notu, .kapak__etiketler { display: none; }
+  .kapak__ic { padding: 0 0 12px; }
+  .icerik { padding: 0; }
+  .icerik h2 { page-break-after: avoid; margin-top: 26px; }
+  .icerik h3, table { page-break-inside: avoid; }
+  .tablo-sarmal { overflow: visible; border-color: #ddd; }
+  table { min-width: 0; font-size: 9pt; }
+  thead th { background: #f2f2f2; }
+  a { color: #000; text-decoration: none; }
+  .sayfa-alti { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="kapak">
+  <div class="kapak__ic">
+    <p class="kapak__marka">Beyza Blanc — Araştırma dosyası</p>
+    <h1>Özel Gün Hediye Sitelerinden Kategori Haritası Çıkar</h1>
+    <p class="kapak__alt">Dünyada en çok ziyaret edilen hediye siteleri, kategori mimarileri, ölçülmüş tasarım değerleri ve kullanıcı yorumları — ve bunların Beyza Blanc sitesine uygulanacak karşılıkları.</p>
+    <div class="kapak__etiketler">
+      <span class="etiket">Türkçe</span>
+      <span class="etiket">Kaynaklı</span>
+      <span class="etiket">9 Kasım 2026</span>
+      <span class="etiket">Yazdırmaya hazır</span>
+    </div>
+  </div>
+</header>
+
+<div class="duzen">
+  <nav class="icindekiler" aria-label="İçindekiler">
+    <h2>İçindekiler</h2>
+    <ol><li><a href="#kategori-uc-olcek-katmanina-bolunuyor-ve-lider-etsy-40-kat-o">Kategori üç ölçek katmanına bölünüyor ve lider Etsy 40 kat önde</a></li>
+<li><a href="#kategori-mimarisi-iki-uc-eksen-menuye-alti-eksen-filtreye">Kategori mimarisi: iki üç eksen menüye, altı eksen filtreye</a></li>
+<li><a href="#tasarim-krem-zemin-evrensel-altin-serif-ise-azinlik">Tasarım: krem zemin evrensel, &quot;altın + serif&quot; ise azınlık</a></li>
+<li><a href="#kullanicilar-kaliteyi-ovuyor-operasyonu-teslimat-hizmet-iade">Kullanıcılar kaliteyi övüyor, operasyonu (teslimat/hizmet/iade) batırıyor</a></li>
+<li><a href="#turkiye-ve-kktc-kategori-taksonomisi-kanitli-cekirdek-acikca">Türkiye ve KKTC kategori taksonomisi: kanıtlı çekirdek, açıkça işaretli boşluklar</a></li>
+<li><a href="#beyza-blanc-icin-onerilen-kategori-haritasi">Beyza Blanc için önerilen kategori haritası</a></li>
+<li><a href="#mevcut-beyza-blanc-sitesine-uygulanacak-somut-degisiklikler-">Mevcut Beyza Blanc sitesine uygulanacak somut değişiklikler (öncelik sırasına göre)</a></li>
+<li><a href="#sonuc">Sonuç</a></li></ol>
+    <p class="yazdirma-notu">
+      Yazdırmak için <strong>Ctrl+P</strong> (Mac: ⌘+P). Yazdırma düzeninde menü ve
+      etiketler gizlenir, tablolar sayfa taşmasına karşı korunur.
+    </p>
+  </nav>
+  <main class="icerik">
+<p class="belge-ustbaslik">Araştırma raporu</p>
+<p>Beyza Blanc'ın iş modeline (özel güne özel, kişiselleştirilmiş çikolata ve hediyelik) en yakın trafik lideri <strong>Etsy</strong> olmakla birlikte, gerçek kıyas kümesi <strong>zChocolat, Prezzybox ve Sugarfina-altı butik</strong> ölçeğidir; çünkü kategoride trafik ile premium çikolata markası neredeyse iki ayrı evrendir. Kategori mimarisi tarafında tek kazanan model net: <strong>2–3 eksen gerçek "kategori" (menüde gezilebilir), kalan 4–6 eksen filtre/facet</strong>, ve en güçlü ikili <strong>"Özel Güne Göre" + "Kime Göre"</strong>dir (<a href="https://www.fortnumandmason.com/gifts-occasions" target="_blank" rel="noopener">Fortnum &amp; Mason</a>, <a href="https://choconchoc.co.uk/" target="_blank" rel="noopener">Choc on Choc</a>). Türkiye/KKTC'de ise özel gün ekseni belirgin biçimde <strong>düğün/nişan + bayram + yılbaşı</strong> üçlüsüne kayıyor; Godiva TR "Okazyona Göre Hediyeler", Çiçeksepeti "Özel Günler" + "Gönderim Amacı" ve Pelit <code>/dugun/*</code> klasörü bunu kanıtlıyor. Tasarımda sektör <strong>krem/beyaz zemin + tek doygun aksan + minimal gölge + 48–96px bölüm boşluğu</strong> üzerinde uzlaşıyor; ancak "krem + altın + serif" üçlüsü hakim değil — altın yalnızca 4/13 sitede, serif başlık azınlıkta. Beyza Blanc'ın mevcut yapısı (sticky header, yüzen WhatsApp, prefers-reduced-motion, uppercase+tracking) sektörle büyük ölçüde hizalı; asıl boşluk <strong>kategori ekseni çeşitliliği (yalnızca "özel gün" ekseni var), facet/filtre katmanı ve kart tipografisi/yarıçapı</strong>dır. Aşağıda kategori haritası ve öncelikli uygulama listesi bunu kapatacak şekilde kurulmuştur.</p>
+<blockquote><p><strong>Yöntem ve veri uyarıları (rapor boyunca geçerli).</strong> Tüm aylık ziyaret rakamları <strong>Eylül 2026</strong> görüntülemesidir ve <strong>Similarweb/Semrush panel-tahminidir, ölçüm değildir</strong>; çelişen kaynaklar belirtilmiştir. Ciro rakamları kaynak <strong>yılıyla</strong> verilmiştir (denetlenmiş SEC/LSE finansalı ile üçüncü taraf tahmini ayrılmıştır). <strong>Bu araştırmada hiçbir ekran görüntüsü alınmamıştı</strong>; renk/font/boşluk değerleri <strong>indirilen kaynak koddan (HTML/CSS)</strong> ölçülmüştür, render doğrulaması yapılmamıştır. Notlardaki "doğrulanamadı / tahmin / çelişkili / Gaps" işaretleri burada korunmuştur.</p></blockquote>
+<hr>
+<h2 id="kategori-uc-olcek-katmanina-bolunuyor-ve-lider-etsy-40-kat-o">Kategori üç ölçek katmanına bölünüyor ve lider Etsy 40 kat önde</h2>
+<p>"En başarılı ve en çok ziyaret edilen" sorusunun cevabı üçe ayrılıyor: (1) tek başına tüm rakiplerin toplamından kat kat büyük <strong>Etsy (~380–455M/ay)</strong>; (2) 1–10M bandındaki <strong>kişiselleştirme/occasion platformları</strong> (Zazzle, Shutterfly, Moonpig, 1-800-Flowers, Not On The High Street, Uncommon Goods, Interflora, PersonalizationMall, Harry &amp; David, Funky Pigeon); (3) 0,02–0,7M bandındaki <strong>butik/niş çikolata-kart markaları</strong> (thortful, godiva.com, Patchi, zChocolat, Prezzybox) (<a href="https://www.semrush.com/trending-websites/global/retail" target="_blank" rel="noopener">Semrush Eylül 2026</a>; <a href="https://www.similarweb.com/top-websites/lifestyle/gifts-and-flowers" target="_blank" rel="noopener">Similarweb</a>). Similarweb'in "Gifts and Flowers" kategorisinde Eylül 2026'da <strong>en popüler sitenin print-on-demand kişiselleştirme sitesi <code>printerval.com</code></strong> çıkması kritik bir sinyal: kategoride trafik havuzu "çikolata" değil "kişiselleştirilmiş baskı/hediye" ekseninde tanımlanıyor — yani <strong>Beyza Blanc'ın trafikteki rakipleri çikolata markaları değil, kişiselleştirme platformlarıdır</strong> (<a href="https://www.similarweb.com/top-websites/lifestyle/gifts-and-flowers" target="_blank" rel="noopener">Similarweb</a>).</p>
+<p><strong>Tahmini aylık ziyaret sıralaması (Eylül 2026; aksi belirtilmedikçe tahmin):</strong></p>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>#</th>
+<th>Site</th>
+<th>Aylık ziyaret (tahmin)</th>
+<th>Kaynak</th>
+<th>Not / çelişki</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td><strong>Etsy</strong> (etsy.com)</td>
+<td><strong>~380,6M</strong></td>
+<td>Semrush küresel retail (<a href="https://www.semrush.com/trending-websites/global/retail" target="_blank" rel="noopener">Semrush</a>)</td>
+<td>Alternatif: ~454,6M (<a href="https://www.printful.com/blog/etsy-statistics" target="_blank" rel="noopener">Printful</a>) — 2. sıradan <strong>~40 kat</strong> büyük</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Zazzle</strong></td>
+<td>~9,27M – 15–20M</td>
+<td>Semrush 9,27M (<a href="https://www.semrush.com/website/zazzle.com/overview" target="_blank" rel="noopener">Semrush</a>) vs Similarweb 15–20M (<a href="https://merchtitans.com/blog/zazzle-vs-redbubble-comparison" target="_blank" rel="noopener">Merch Titans</a>)</td>
+<td><strong>Kaynaklar çelişiyor</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Shutterfly</strong></td>
+<td>~7,8M – 9,1M</td>
+<td>Exploding Topics 7,8M (<a href="https://analytics.explodingtopics.com/website/shutterfly.com" target="_blank" rel="noopener">Exploding Topics</a>)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Moonpig</strong></td>
+<td>~3,58M – 3,96M</td>
+<td>Similarweb (<a href="https://tavily.com/knowledge/company/6IozSNWQxgev" target="_blank" rel="noopener">Tavily</a>)</td>
+<td>UK kategori <strong>#1</strong>; sayfa/ziyaret 9,25</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>1-800-Flowers</strong></td>
+<td>~2,0M</td>
+<td>Semrush (<a href="https://www.semrush.com/website/1800flowers.com/overview" target="_blank" rel="noopener">Semrush</a>)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Not On The High Street</strong></td>
+<td>~1,88M</td>
+<td>Tavily/Similarweb (<a href="https://tavily.com/knowledge/company/L1MWPvXdyIo0" target="_blank" rel="noopener">Tavily</a>)</td>
+<td>Kategori #3</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Uncommon Goods</strong></td>
+<td>~1,65M</td>
+<td>Semrush (<a href="https://www.semrush.com/website/uncommongoods.com/overview" target="_blank" rel="noopener">Semrush</a>)</td>
+<td>"Yükselen yıldız"</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Interflora</strong> (FR)</td>
+<td>~1,05M</td>
+<td>Tavily/Similarweb (<a href="https://tavily.com/knowledge/company/YxIzFyKqwARq" target="_blank" rel="noopener">Tavily</a>)</td>
+<td>FR kategori #2</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>PersonalizationMall.com</strong></td>
+<td>~0,89M</td>
+<td>Tavily/Similarweb (<a href="https://tavily.com/knowledge/company/HIYmqsQi0zbf" target="_blank" rel="noopener">Tavily</a>)</td>
+<td>Aylık %24–35 düşüş eğilimi</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>Harry &amp; David</strong></td>
+<td>~0,68M</td>
+<td>Exploding Topics (<a href="https://analytics.explodingtopics.com/website/harryanddavid.com" target="_blank" rel="noopener">Exploding Topics</a>)</td>
+<td>1-800-Flowers gurme kolunun amiral markası</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>Funky Pigeon</strong></td>
+<td>~0,63M</td>
+<td>Tavily/Similarweb (<a href="https://tavily.com/knowledge/company/SDbHzl7yknGm" target="_blank" rel="noopener">Tavily</a>)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>thortful</strong></td>
+<td>~0,34M – 0,7M</td>
+<td>PG Buzz 0,34M (<a href="https://www.pgbuzz.net/moonpig-tops-online-traffic" target="_blank" rel="noopener">PG Buzz</a>) vs ~0,7M</td>
+<td><strong>Kaynaklar çelişiyor</strong></td>
+</tr>
+<tr>
+<td>13</td>
+<td><strong>Godiva</strong> (godiva.com)</td>
+<td>~0,16M</td>
+<td>AdLibrarySpy/SimilarWeb (<a href="https://adlibraryspy.com/answers/store/godiva.com" target="_blank" rel="noopener">AdLibrarySpy</a>)</td>
+<td>Yalnızca ABD host'u</td>
+</tr>
+<tr>
+<td>14</td>
+<td><strong>Patchi</strong></td>
+<td>~0,08M</td>
+<td>Tavily/Similarweb (<a href="https://tavily.com/knowledge/company/99RV1swW4ebI" target="_blank" rel="noopener">Tavily</a>)</td>
+<td>Butik düzeyde</td>
+</tr>
+<tr>
+<td>15</td>
+<td><strong>zChocolat</strong></td>
+<td>~0,029M</td>
+<td>Tavily/Similarweb (<a href="https://tavily.com/knowledge/company/1Pa9OD0yohEO" target="_blank" rel="noopener">Tavily</a>)</td>
+<td>244 ülkeye kargo; sayfa/ziyaret 7,31</td>
+</tr>
+<tr>
+<td>16</td>
+<td><strong>Prezzybox</strong></td>
+<td>~0,023M</td>
+<td>Crunchbase (<a href="https://www.crunchbase.com/organization/prezzybox-com" target="_blank" rel="noopener">Crunchbase</a>)</td>
+<td>Yoğun mevsimsel: 15K→100K+/gün</td>
+</tr>
+</tbody></table></div>
+<p>Ölçek ile ciro ilişkisi, "en başarılı" sorusunu trafikten ayırıyor: halka açık veriye göre katmanın en büyük ciroları <strong>Cimpress (~$3,4 mlr, FY2025)</strong>, <strong>Etsy (~$2,85 mlr, 12 ay/30 Eyl 2025)</strong>, <strong>1-800-Flowers (~$1,5–1,7 mlr, FY2025–26)</strong> ve <strong>Moonpig Group (~£373M, FY2026)</strong>'tur (<a href="https://www.sec.gov/Archives/edgar/data/1262976/000162828025039200/cmpr-20250630.htm" target="_blank" rel="noopener">SEC 10-K Cimpress</a>; <a href="https://www.sec.gov/Archives/edgar/data/1370637/000137063725000100/etsy-20250930.htm" target="_blank" rel="noopener">SEC 10-Q Etsy</a>; <a href="https://www.sec.gov/Archives/edgar/data/1084869/000108486925000017/flws-20250629.htm" target="_blank" rel="noopener">SEC 10-K FLWS</a>; <a href="https://www.moonpig.group/media/poxcvmvk/moonpig-group-plc-annual-report-2025-financial-statements.pdf" target="_blank" rel="noopener">Moonpig AR</a>). Buna karşın <strong>Godiva'nın ABD e-ticaret GMV'si yalnızca ~$20M</strong> (marka 100+ ülkede ağırlıkla mağaza/duty-free ile dönüyor) ve <strong>zChocolat $1–10M</strong> — yani marka bilinirliği ile web cirosu arasında korelasyon zayıf (<a href="https://ecdb.com/resources/sample-data/retailer/godiva" target="_blank" rel="noopener">ECDB Godiva</a>; <a href="https://leadiq.com/c/zchocolatcom/5a1da73a23000053009aaf7b" target="_blank" rel="noopener">LeadIQ zChocolat</a>). <strong>Kaynak güvenilirlik sırası:</strong> denetlenmiş SEC/LSE finansalları ≫ Comscore panel (gerçek panel verisi) ≫ Similarweb/Semrush (panel-tahmin) ≫ LeadIQ/ZoomInfo/Growjo (sık çelişir, tek başına kullanılmamalı).</p>
+<hr>
+<h2 id="kategori-mimarisi-iki-uc-eksen-menuye-alti-eksen-filtreye">Kategori mimarisi: iki üç eksen menüye, altı eksen filtreye</h2>
+<p>Kategorinin raporun merkezi olan bulgusu şudur: <strong>olgun siteler eksen başına menü açmıyor; 2–4 "birincil gezinme ekseni"ni kategori, kalan eksenleri (fiyat, mevsim, tema, diyet, kurumsal, yeni/popüler) filtre veya "More Ways to Shop" alt kırılımı olarak bağlıyor.</strong> En net kanıt Fortnum &amp; Mason: tek "Gifts &amp; Occasions" sayfası 1.873 ürünü tek listede tutup eksenleri filtreye çeviriyor — Occasion facet (Birthday 714, Christmas 678, Thank You 524, Housewarming 482, Anniversary 440, Corporate Gift 337, Wedding 337, New Baby 290), Recipient facet (For Someone Else 1497, For Her 1285, For Him 1075, For a Colleague 912, For a Couple 851, For a Child 94), artı Price/Colour/Delivery/Brand/Format/Size/Dietary/Product Type/Country/flavour (<a href="https://www.fortnumandmason.com/gifts-occasions" target="_blank" rel="noopener">fortnumandmason.com/gifts-occasions</a>). Ders: "For a Child" <strong>94 üründe kaldığı için facet olmuş, menüye çıkarılmamış</strong> — yani bir ekseni menüye taşımak, o eksende ürün hacmi yeterliyse anlamlı.</p>
+<p><strong>Dokuz eksen ve sektördeki kuruluşu:</strong></p>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Eksen</th>
+<th>Menüde mi, filtre mi?</th>
+<th>Gerçek kategori adı örnekleri (orijinal → Türkçe)</th>
+<th>Kanıt</th>
+</tr></thead><tbody>
+<tr>
+<td>(a) <strong>Özel gün</strong></td>
+<td>Birincil (menü)</td>
+<td>"Birthday, Wedding/Engagement, New Home, Graduation/Exams, Thank You, Congratulations, Get Well Soon, Anniversary" → Doğum Günü, Düğün/Nişan, Yeni Ev, Mezuniyet, Teşekkür, Tebrik, Geçmiş Olsun, Yıl Dönümü</td>
+<td><a href="https://choconchoc.co.uk/" target="_blank" rel="noopener">choconchoc.co.uk</a></td>
+</tr>
+<tr>
+<td>(b) <strong>Kime/alıcı</strong></td>
+<td>Birincil (menü)</td>
+<td>"Gifts For Her / Him / Kids / Adults / Teachers" → Ona / Ona(erkek) / Çocuklara / Yetişkinlere / Öğretmenlere</td>
+<td><a href="https://choconchoc.co.uk/collections/chocolate-gifts-for-her" target="_blank" rel="noopener">choconchoc.co.uk</a></td>
+</tr>
+<tr>
+<td>(c) <strong>Ürün tipi</strong></td>
+<td>Birincil (menü)</td>
+<td>"BY CATEGORY: Truffles, Chocolate Bars, Drinking Chocolate, Gift Sets" → Trüf, Çikolata Bar, İçilecek Çikolata, Hediye Seti</td>
+<td><a href="https://www.vosgeschocolate.com/" target="_blank" rel="noopener">vosgeschocolate.com</a></td>
+</tr>
+<tr>
+<td>(d) <strong>Fiyat</strong></td>
+<td>Filtre + kısmen menü</td>
+<td>"BY PRICE: $25 &amp; Under / $50 &amp; Under / $100 &amp; Over" → 25$/50$/100$ ve altı / üstü</td>
+<td><a href="https://www.vosgeschocolate.com/" target="_blank" rel="noopener">vosgeschocolate.com</a>, <a href="https://www.sugarfina.com/gift-shop" target="_blank" rel="noopener">sugarfina.com</a></td>
+</tr>
+<tr>
+<td>(e) <strong>Mevsim/tatil</strong></td>
+<td>Koleksiyon (hub)</td>
+<td>"Christmas, Hanukkah, Easter, Diwali, Eid, Nowruz, Ramadan, Lunar New Year" → Noel, Hanuka, Paskalya, Diwali, Ramazan, Nevruz</td>
+<td><a href="https://compartes.com/sitemap.xml" target="_blank" rel="noopener">compartes.com</a>, <a href="https://www.godiva.com/sitemap.xml" target="_blank" rel="noopener">godiva.com</a></td>
+</tr>
+<tr>
+<td>(f) <strong>Tema/ilgi</strong></td>
+<td>Birincil (menü)</td>
+<td>"Sports, Foods, Music, Animals, Crafting, Alcohol" → Spor, Yemek, Müzik, Hayvanlar, El Sanatları, Alkol</td>
+<td><a href="https://choconchoc.co.uk/collections/sports" target="_blank" rel="noopener">choconchoc.co.uk/collections/sports</a></td>
+</tr>
+<tr>
+<td>(g) <strong>Kişiselleştirme</strong></td>
+<td>Ayrı dünya</td>
+<td>"Personalised Cards" vs "Gifts"; Godiva "Personalised" (163 ürün facet)</td>
+<td><a href="https://www.moonpig.com/uk/" target="_blank" rel="noopener">moonpig.com/uk</a>, <a href="https://www.fortnumandmason.com/gifts-occasions" target="_blank" rel="noopener">fortnumandmason.com</a></td>
+</tr>
+<tr>
+<td>(h) <strong>Kurumsal</strong></td>
+<td>Kök seviye menü</td>
+<td>"CORPORATE GIFTING: Client Gifts, Employee Gifts, Instant Gifts" → Müşteri/Yönetici Hediyeleri, Çalışan Hediyeleri, Anında Hediye</td>
+<td><a href="https://www.vosgeschocolate.com/" target="_blank" rel="noopener">vosgeschocolate.com</a>, <a href="https://www.sugarfina.com/corporate-gifting" target="_blank" rel="noopener">sugarfina.com</a></td>
+</tr>
+<tr>
+<td>(i) <strong>Yeni/çok satan</strong></td>
+<td>Neredeyse evrensel</td>
+<td>"shop-best-sellers" + "new-chocolate-gifts" → Çok Satanlar + Yeni Gelenler</td>
+<td><a href="https://compartes.com/sitemap.xml" target="_blank" rel="noopener">compartes.com</a>, <a href="https://www.godiva.com/sitemap.xml" target="_blank" rel="noopener">godiva.com</a></td>
+</tr>
+</tbody></table></div>
+<p><strong>URL kalıpları üç aileye dağılıyor:</strong> Shopify siteleri <code>/collections/{occasion}</code> (Compartés <code>/collections/birthday-chocolate</code>, Godiva <code>/collections/anniversary-gifts</code>), path-tabanlı taksonomiler <code>/gifts/shop-by-occasion/…</code> ve <code>/christmas/christmas-gifts/gifts-for-…</code> (Not On The High Street), platform-bağımsız düz slug <code>/gifts-occasions/gifting-ideas/personalised-gifts</code> (Fortnum) (<a href="https://compartes.com/sitemap.xml" target="_blank" rel="noopener">compartes.com</a>; <a href="https://www.godiva.com/sitemap.xml" target="_blank" rel="noopener">godiva.com</a>; <a href="https://www.notonthehighstreet.com/" target="_blank" rel="noopener">notonthehighstreet.com</a>). SEO açısından en verimli kalıp, slug'a <strong>hem niyet hem alıcı/özel gün anahtar kelimesini</strong> koymak (<code>birthday-chocolate</code>, <code>chocolate-gifts-for-mum</code>) ve <strong>sayı eklemek</strong> (<code>gifts-under-20</code>); bu, yüksek niyetli uzun kuyruk trafiği yakalıyor.</p>
+<p><strong>Mega menü</strong> tasarımı 4–8 kolona oturuyor; kolonlar eksen başlıklarıyla ("BY CATEGORY", "By Price") etiketleniyor ve görsel/ürün kutucukları yalnızca bazı kolonlarda (Sugarfina corporate, NOTHS banner) kullanılıyor (<a href="https://choconchoc.co.uk/" target="_blank" rel="noopener">choconchoc.co.uk</a> HTML — 6 <code>&lt;ul&gt;</code>, 37 <code>&lt;li&gt;</code>; <a href="https://www.vosgeschocolate.com/" target="_blank" rel="noopener">vosgeschocolate.com</a> HTML — 11 <code>&lt;ul&gt;</code>, 60 <code>&lt;li&gt;</code>). Sektör benchmark'ı: ABD üst e-ticaret sitelerinin <strong>%88'i mega menü</strong> kullanıyor, <strong>%61'inde hover gecikmesi yok</strong> (en yaygın kusur — 300–500 ms öneriliyor), kategoriler <strong>~10 öğeyi geçince bölünmeli</strong> ve en derin seviyede <strong>en az ~10 ürün</strong> hedeflenmeli; aşırı kategorizasyon (overcategorization) terk oranını artırıyor ve sitelerin <strong>%75'i bunu yanlış yapıyor</strong> (<a href="https://baymard.com/blog/ecommerce-ux-best-practices" target="_blank" rel="noopener">Baymard</a>; <a href="https://baymard.com/research-articles/ecommerce-navigation-best-practice" target="_blank" rel="noopener">Baymard navigasyon</a>).</p>
+<p><strong>Kategori sayfası şablonu</strong> (Fortnum en zengin örnek): ürün ızgarası + filtre rayı + <strong>"Showing 48 (1873)", "Items per page: 48/100", "Sort By:"</strong>, 10 filtre grubu + "Show All Filters"/"Clear All", üstte katlanabilir kategori açıklaması (SEO için değerli) ve sayfalama (<a href="https://www.fortnumandmason.com/gifts-occasions" target="_blank" rel="noopener">fortnumandmason.com/gifts-occasions</a>). "Aynı ürün birden çok koleksiyonda" bu sektörde <strong>kural, istisna değil</strong> — Godiva/Compartés'te bir çikolata kutusu hem "Birthday" hem "Gifts Under $50" hem "Corporate" hem "Dark Chocolate"da görünüyor; bu yüzden kategori mimarisi aslında bir <strong>matris</strong> (ürün × [özel gün + alıcı + fiyat + mevsim + diyet]) (<a href="https://www.godiva.com/sitemap.xml" target="_blank" rel="noopener">godiva.com</a>; <a href="https://compartes.com/sitemap.xml" target="_blank" rel="noopener">compartes.com</a>).</p>
+<p><strong>Kaç kategori yönetilebilir?</strong> Büyük oyuncular sitemap düzeyinde ~80–180 koleksiyon yönetiyor (Vosges ~180, Milk Bar ~140, Godiva ~105, Compartés ~80, Baked by Melissa ~78), ama <strong>menüde yalnızca 5–12 kök</strong> gösteriyor; menü kök sayıları Fortnum 10, NOTHS 11, Moonpig ~13, Sugarfina 8 ([sitemap sayımları, 9 Kas 2026] — kaynaklar KQ2/KQ9). Butik eşiği pratikte <strong>menüde 5–8 kök, toplam 20–40 koleksiyon</strong>; her koleksiyonda en az 3–6 ürün. Bu, büyük-oyuncu verisinden türetilmiş bir öneridir, marka verisi değildir.</p>
+<ul>
+<li><strong>Gaps:</strong> Hiçbir sitede eksen başına <strong>trafik/dönüşüm payı</strong> kamuya açık değil; butik ölçekli (10–60 SKU) bir markanın "doğru kategori sayısına" dair benchmark bulunamadı. Mobil (hamburger) menü listeleri JS ile yüklendiği için doğrulanamadı.</li>
+</ul>
+<hr>
+<h2 id="tasarim-krem-zemin-evrensel-altin-serif-ise-azinlik">Tasarım: krem zemin evrensel, "altın + serif" ise azınlık</h2>
+<p>13 siteden kaynak koddan ölçülen sonuç, "özel gün sitesi = krem + altın + serif" genellemesini kırıyor. <strong>Zemin 13/13 beyaz veya çok açık krem/bej</strong> (<code>#ffffff</code>, <code>#fefefd</code>, <code>#f2e9db</code>, <code>#f5efe6</code>, <code>#ffefda</code>, <code>#f4eee6</code>) ve <strong>metin saf siyah değil, sıcak/soğuk near-black</strong> (<code>#111111</code>, <code>#1a1612</code>, <code>#231f20</code>, <code>#3b3b41</code>, <code>#030712</code>). Ama <strong>tek altın aksan yalnızca 4/13 sitede</strong> (Godiva TR <code>#cfb56a</code>, Bateel <code>#c4a577</code>, See's <code>#96701b</code>, kısmen Compartés <code>#c9a75a</code>); dokuz site canlı marka rengi kullanıyor (Choc on Choc magenta <code>#d80073</code>, Milk Bar pembe <code>#e83a87</code>, Baked by Melissa <code>#e20063</code>, Vosges mor <code>#3d1152</code>, Sugarfina teal <code>#6ad1e3</code>, Patchi yeşil <code>#143d34</code>, NOTHS <code>#51285f</code>, Moonpig mavi <code>#0054c8</code>). <strong>Serif başlık da azınlık (~6/13)</strong> — çoğunluk markaya özel geometrik/condensed sans kullanıyor (Gotham, proxima-nova, Garnett, Brown, Moonpig, NOTHS Sans, brandon-grotesque, Figtree). Gövde punto aralığı dar ve tutarlı: <strong>14–16px</strong>, h1 <strong>28–48px</strong>, mikro etiket <strong>10–12px</strong>; gövde line-height 1.4–1.6, başlık 1–1.2; uppercase + geniş letter-spacing (<code>.02–0.42em</code>) lüks başlık/etiket aracı.</p>
+<p><strong>Ölçüm tablosu (kaynak koddan, tahmin değil):</strong></p>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Ölçü</th>
+<th>Sektör değeri (ölçülen)</th>
+<th>Beyza Blanc (mevcut <code>style.css</code>)</th>
+<th>Değerlendirme</th>
+</tr></thead><tbody>
+<tr>
+<td>Zemin</td>
+<td>13/13 beyaz/krem (<code>#fff8f3</code>…<code>#f2e9db</code>)</td>
+<td><code>--krem #fff8f3</code></td>
+<td><strong>Uyumlu</strong></td>
+</tr>
+<tr>
+<td>Metin</td>
+<td>near-black, saf siyah değil</td>
+<td><code>--kahve #3d2016</code></td>
+<td><strong>Uyumlu</strong></td>
+</tr>
+<tr>
+<td>Aksan</td>
+<td>tek doygun renk (altın 4/13, canlı 9/13)</td>
+<td><code>--altin #cfb56a</code></td>
+<td><strong>Uyumlu</strong> (altın, lüks uçta)</td>
+</tr>
+<tr>
+<td>Font</td>
+<td>serif başlık + sans gövde (en yaygın kalıp)</td>
+<td>Cormorant Garamond + Inter</td>
+<td><strong>Uyumlu</strong> (ZChocolat ile birebir model)</td>
+</tr>
+<tr>
+<td>Konteyner</td>
+<td>1140–1280px (NOTHS 1440, Vosges 1360)</td>
+<td><code>--genislik 1180px</code></td>
+<td><strong>Uyumlu</strong></td>
+</tr>
+<tr>
+<td>Bölüm dikey boşluğu</td>
+<td>48–96px (See's 94–104px uç)</td>
+<td><code>--s-7 3rem</code>(48px)/<code>--s-8 4rem</code>(64px)</td>
+<td><strong>Uyumlu</strong></td>
+</tr>
+<tr>
+<td>Kart radiusu</td>
+<td>iki uç: köşeli 0–4px veya yuvarlak 8–10px + pill 999px</td>
+<td><code>--r-3 16px</code> (kartlarda yaygın)</td>
+<td><strong>Yüksek</strong> — lüks uca göre 8–10px'e çekilebilir</td>
+</tr>
+<tr>
+<td>Gölge</td>
+<td>çoğunlukla <code>none</code>/çok hafif; ayrım 1px çizgi + inset border</td>
+<td><code>--golge-2 0 8px 24px</code></td>
+<td><strong>Belirgin</strong> — hafifletilebilir</td>
+</tr>
+<tr>
+<td>Kart oranı</td>
+<td>1:1 veya dikey 3:4/2:3/4:5</td>
+<td><code>aspect-ratio: 4/3</code></td>
+<td><strong>Farklı</strong> — dikey (3/4) paketli kutuya daha uygun</td>
+</tr>
+<tr>
+<td>Sticky header</td>
+<td>yaygın (ZChocolat 17, Choc on Choc 13, Godiva 12)</td>
+<td><strong>VAR</strong> (<code>.ustbar position:sticky</code>)</td>
+<td><strong>Uyumlu</strong> (mevcut)</td>
+</tr>
+<tr>
+<td>Yüzen WhatsApp</td>
+<td>8/13 sitede</td>
+<td><strong>VAR</strong> (<code>.wa-sabit position:fixed</code>)</td>
+<td><strong>Uyumlu</strong> (mevcut)</td>
+</tr>
+<tr>
+<td>Micro-type (10–12px)</td>
+<td>evrensel etiket katmanı</td>
+<td>Kısmen (0.68rem/0.75rem, 4× uppercase)</td>
+<td><strong>Zayıf</strong> — etiket katmanı güçlendirilmeli</td>
+</tr>
+<tr>
+<td>prefers-reduced-motion</td>
+<td>standart erişilebilirlik</td>
+<td><strong>VAR</strong> (media query)</td>
+<td><strong>Uyumlu</strong> (mevcut)</td>
+</tr>
+</tbody></table></div>
+<p><strong>Önemli düzeltme:</strong> Ölçüm notu, Beyza Blanc için "sticky header, yüzen WhatsApp, ürün kartı aspect-ratio, uppercase+tracking" kalemlerini "sektörde yaygın ama Beyza'da teyit edilecek" diye işaretlemişti. Site kaynak kodu incelendiğinde <strong>sticky header, yüzen WhatsApp ve prefers-reduced-motion zaten mevcut</strong>; uppercase+tracking ve micro-type kısmen var. Gerçek boşluklar: <strong>kart radiusu/gölgesi, ürün kartı oranı, güçlü bir micro-type etiket katmanı ve facet/filtre mimarisi</strong>. Bu düzeltme raporun öneri bölümüne taşınmıştır.</p>
+<ul>
+<li><strong>Gaps:</strong> Ekran görüntüsü/render olmadığı için "hangi renk nerede, hangi oran görsel olarak nasıl" yalnızca kod düzeyinde; token tabanlı temalarda çözümlenmiş (computed) px alınamadı; masaüstü kolon sayısı render gerektirdiği için ölçülemedi; Leonidas, Harry &amp; David, Prezzybox (Menkind) için hiçbir tasarım verisi elde edilemedi.</li>
+</ul>
+<hr>
+<h2 id="kullanicilar-kaliteyi-ovuyor-operasyonu-teslimat-hizmet-iade">Kullanıcılar kaliteyi övüyor, operasyonu (teslimat/hizmet/iade) batırıyor</h2>
+<p>Yorumlarda övgülerin merkezinde <strong>kişiselleştirmenin kolaylığı, ürün kalitesi/lezzeti ve zamanında teslim</strong> var. Moonpig için "kişisel fotoğraf ve mesajlarla <strong>özel kart tasarlamak son derece kolay</strong>", Funky Pigeon için "<strong>kişisel mesaj ekleme kolaylığı</strong>", Personalization Mall için "<strong>kullanıcı dostu site ve akıcı sipariş süreci</strong>" öne çıkıyor (<a href="https://www.trustpilot.com/review/moonpig.com" target="_blank" rel="noopener">Trustpilot Moonpig</a>; <a href="https://www.trustpilot.com/review/www.personalizationmall.com" target="_blank" rel="noopener">Trustpilot Personalization Mall</a>). Compartés müşterisi "o kadar güzel ki <strong>paketlemeye gerek yok</strong>… her kutu teslim edildi" derken, Çiçeksepeti'nden uluslararası gönderim yapan bir müşteri "ürünün <strong>gerçek fotoğrafını onayım için gönderdiler</strong>" diyor — bu, <strong>"onay/önizleme" mekanizmasının güven yarattığını</strong> kanıtlıyor (<a href="https://www.trustpilot.com/review/compartes.com" target="_blank" rel="noopener">Trustpilot Compartés</a>; <a href="https://www.trustpilot.com/review/www.ciceksepeti.com" target="_blank" rel="noopener">Trustpilot Çiçeksepeti</a>).</p>
+<p>Şikâyetler ise sırayla <strong>teslimat gecikmesi/teslim edilmeme</strong>, <strong>erime/kırılma/bozulma</strong>, <strong>müşteri hizmetine ulaşamama</strong> ve <strong>iade reddi</strong> üzerinde düğümleniyor; hepsinin ortak paydası <strong>özel gün kaçırıldığında duygusal zararın katlanması</strong> (<a href="https://www.trustpilot.com/review/www.funkypigeon.com" target="_blank" rel="noopener">Trustpilot Funky Pigeon</a>; <a href="https://sharis-berries.pissedconsumer.com/review.html" target="_blank" rel="noopener">PissedConsumer Shari's Berries</a>; <a href="https://www.trustpilot.com/review/www.goldbelly.com" target="_blank" rel="noopener">Trustpilot Goldbelly</a>). Ölçek büyüklüğü ile puan ters ilişkili: en çok yorumlanan markalar (Moonpig 4.3/5, ~603K yorum; Funky Pigeon 4.0/5, ~334K yorum) yüksekken, kırılgan ürün/çiçek-çikolata markaları 1.2–2.4 bandına düşüyor (Harry &amp; David 1.2/5; Shari's Berries 1.6/5; Çiçeksepeti 2.0/5) (<a href="https://www.trustpilot.com/review/moonpig.com" target="_blank" rel="noopener">Trustpilot Moonpig</a>; <a href="https://www.trustpilot.com/review/harryanddavid.com" target="_blank" rel="noopener">Trustpilot Harry &amp; David</a>; <a href="https://www.trustpilot.com/review/www.berries.com" target="_blank" rel="noopener">Trustpilot berries.com</a>). Dikkat: <strong>puan platforma göre dramatik değişiyor</strong> — Moonpig Trustpilot 4.3 iken Reviews.io 1.5; bu, sipariş-sonrası davet edilen memnun müşteri kitlesi ile kendiliğinden şikâyet yazan kitlenin farklı olduğunu gösteriyor (<a href="https://www.reviews.io/company-reviews/store/moonpig-com" target="_blank" rel="noopener">Reviews.io Moonpig</a>).</p>
+<p><strong>Yorum tema tablosu (yön + sıklık + örnek + kaynak):</strong></p>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Yön</th>
+<th>Tema</th>
+<th>Sıklık</th>
+<th>Kısa örnek</th>
+<th>Kaynak</th>
+</tr></thead><tbody>
+<tr>
+<td>➕</td>
+<td>Kişiselleştirme kolaylığı</td>
+<td>Yüksek</td>
+<td>"extremely simple to design bespoke cards using their own personal photos"</td>
+<td><a href="https://www.trustpilot.com/review/moonpig.com" target="_blank" rel="noopener">Moonpig/Trustpilot</a></td>
+</tr>
+<tr>
+<td>➕</td>
+<td>Ürün kalitesi / lezzet</td>
+<td>Yüksek</td>
+<td>"delivered perfectly and everyone has LOVED every box"</td>
+<td><a href="https://www.trustpilot.com/review/compartes.com" target="_blank" rel="noopener">Compartés/Trustpilot</a></td>
+</tr>
+<tr>
+<td>➕</td>
+<td>Zamanında teslim</td>
+<td>Orta</td>
+<td>"packages regularly arrive right on schedule"</td>
+<td><a href="https://www.trustpilot.com/review/moonpig.com" target="_blank" rel="noopener">Moonpig/Trustpilot</a></td>
+</tr>
+<tr>
+<td>➕</td>
+<td>Paketleme / görsel sunum</td>
+<td>Orta</td>
+<td>"no wrapping needed... delivered perfectly"</td>
+<td><a href="https://www.trustpilot.com/review/compartes.com" target="_blank" rel="noopener">Compartés/Trustpilot</a></td>
+</tr>
+<tr>
+<td>➕</td>
+<td>Site/ödeme kolaylığı</td>
+<td>Orta</td>
+<td>"user-friendly website and the smooth ordering process"</td>
+<td><a href="https://www.trustpilot.com/review/www.personalizationmall.com" target="_blank" rel="noopener">Personalization Mall/Trustpilot</a></td>
+</tr>
+<tr>
+<td>➕</td>
+<td>Şeffaf önizleme/onay</td>
+<td>Düşük</td>
+<td>"sent a photo... for my approval before it left the shop"</td>
+<td><a href="https://www.trustpilot.com/review/www.ciceksepeti.com" target="_blank" rel="noopener">Çiçeksepeti/Trustpilot</a></td>
+</tr>
+<tr>
+<td>➖</td>
+<td>(a) Kargo/teslimat gecikmesi</td>
+<td><strong>Çok yüksek</strong></td>
+<td>"both time arrived late with no explanation"</td>
+<td><a href="https://www.trustpilot.com/review/www.funkypigeon.com" target="_blank" rel="noopener">Funky Pigeon/Trustpilot</a></td>
+</tr>
+<tr>
+<td>➖</td>
+<td>(b) Erime/kırılma/bozulma</td>
+<td><strong>Çok yüksek</strong></td>
+<td>"smelled like liquor... fuzzy with mold... all crushed"</td>
+<td><a href="https://sharis-berries.pissedconsumer.com/complaints/RT-P.html" target="_blank" rel="noopener">Shari's Berries/PissedConsumer</a></td>
+</tr>
+<tr>
+<td>➖</td>
+<td>(c) Kişiselleştirme hatası</td>
+<td>Yüksek</td>
+<td>"previewed a card... it arrived completely blank inside"</td>
+<td><a href="https://www.reviews.io/company-reviews/store/moonpig-com" target="_blank" rel="noopener">Moonpig/Reviews.io</a></td>
+</tr>
+<tr>
+<td>➖</td>
+<td>(d) Site/ödeme sorunları</td>
+<td>Orta</td>
+<td>"saved progress was lost unexpectedly"</td>
+<td><a href="https://www.trustpilot.com/review/www.funkypigeon.com" target="_blank" rel="noopener">Funky Pigeon/Trustpilot</a></td>
+</tr>
+<tr>
+<td>➖</td>
+<td>(e) Müşteri hizmetine ulaşamama</td>
+<td><strong>Çok yüksek</strong></td>
+<td>"Impossible to get customer service"</td>
+<td><a href="https://www.trustpilot.com/review/www.goldbelly.com" target="_blank" rel="noopener">Goldbelly/Trustpilot</a></td>
+</tr>
+<tr>
+<td>➖</td>
+<td>(f) İade/iptal reddi</td>
+<td>Yüksek</td>
+<td>"they refused to give me a refund"</td>
+<td><a href="https://www.reviews.io/company-reviews/store/www-funkypigeon-com" target="_blank" rel="noopener">Funky Pigeon/Reviews.io</a></td>
+</tr>
+<tr>
+<td>➖</td>
+<td>(g) Fiyat/beklenti karşılanmaması</td>
+<td>Yüksek</td>
+<td>"over $7.00 each with shipping"</td>
+<td><a href="https://www.trustpilot.com/review/www.berries.com" target="_blank" rel="noopener">Shari's Berries/Trustpilot</a></td>
+</tr>
+<tr>
+<td>➖</td>
+<td>(h) Stok/envanter</td>
+<td>Orta</td>
+<td>"Stokta Olmayan... ürün kargoya verilmedi"</td>
+<td><a href="https://www.sikayetvar.com/ciceksepeti" target="_blank" rel="noopener">Çiçeksepeti/Şikayetvar</a></td>
+</tr>
+<tr>
+<td>➖</td>
+<td>(i) Abonelik/tekrarlayan ödeme</td>
+<td>Orta</td>
+<td>"billing charges tied to the Fruit-of-the-Month Club subscription"</td>
+<td><a href="https://www.19pine.ai/customer-service/meal-kit-and-food-delivery/how-to-contact-harry-and-david-customer-service" target="_blank" rel="noopener">Pine AI</a></td>
+</tr>
+<tr>
+<td>➖</td>
+<td>UX: önizleme ≠ teslim edilen</td>
+<td>Yüksek</td>
+<td>"No preview shown when ordered"</td>
+<td><a href="https://ca.trustpilot.com/review/www.myphotowallet.co.uk?page=5" target="_blank" rel="noopener">MyPhotoWallet/Trustpilot</a></td>
+</tr>
+<tr>
+<td>➖</td>
+<td>UX: takip numarası/izleme</td>
+<td>Orta</td>
+<td>"when trying to track order it states request blocked"</td>
+<td><a href="https://www.trustpilot.com/review/www.funkypigeon.com" target="_blank" rel="noopener">Funky Pigeon/Trustpilot</a></td>
+</tr>
+</tbody></table></div>
+<p><strong>Tasarımla önlenebilecek şikâyetler (korunan liste).</strong> En kritik tasarım boşluğu, <strong>yüklenen fotoğraf/metin ile basılacak sonucun birebir aynı olduğunu gösteren, kaydı koruyan, gerçek zamanlı bir önizleme</strong> ve <strong>sipariş öncesi son onay ekranı</strong>dır. Öncelikli liste: (1) net ve gerçekçi teslim tarihi/saat aralığı + "son sipariş tarihi" kesme uyarısı; (2) üretim öncesi müşteri onaylı önizleme; (3) yazım/isim doğrulama katmanı ("aynen böyle basılacak, onaylıyor musunuz?"); (4) üretim sonrası dijital "proof" fotoğrafı; (5) çikolata için soğuk zincir/kırılma önleme ve şeffaf "erime garantisi" (KKTC sıcak iklimi); (6) WhatsApp'ı tek kanal olmaktan çıkarıp e-posta/telefon/takip sayfası paralel çalıştırma; (7) takip (tracking) görünürlüğü + "request blocked" tipi kilitlenmeleri önleme; (8) şeffaf iade/iptal politikası ve işletme hatasında otomatik telafi taahhüdü; (9) stok/satışa kapalı ürün yönetimi; (10) site görseli ≠ gerçek ürün şikâyetini baştan kesme (stüdyo abartısı yok); (11) fotoğraf yükleme kalite uyarıları; (12) özel gün öncesi kapasite/son tarih yönetimi (<a href="https://www.reviews.io/company-reviews/store/moonpig-com" target="_blank" rel="noopener">Reviews.io Moonpig</a>; <a href="https://www.sikayetvar.com/ciceksepeti" target="_blank" rel="noopener">Şikayetvar ÇiçekSepeti</a>; <a href="https://www.nytimes.com/wirecutter/reviews/best-photo-gifts" target="_blank" rel="noopener">NYT Wirecutter</a>).</p>
+<ul>
+<li><strong>Gaps:</strong> KKTC/Girne yerel işletmelerinin Google Yorumlar puanları, Sitejabber marka sayfaları, App Store/Play Store yorumları erişilemedi; düşük yorum hacimli markalarda (Sugarfina 2, See's 40, Çiçeksepeti 41) ortalamalar <strong>temsili değil</strong>.</li>
+</ul>
+<hr>
+<h2 id="turkiye-ve-kktc-kategori-taksonomisi-kanitli-cekirdek-acikca">Türkiye ve KKTC kategori taksonomisi: kanıtlı çekirdek, açıkça işaretli boşluklar</h2>
+<p>Kategori analizi klasöründe <strong>Türkiye/KKTC'ye ayrı bir kategori not dosyası yoktur</strong> (bu rapor için klasör kontrol edildi; 5 dosya var, hiçbiri TR/KKTC taksonomisi değil). Bu nedenle TR bölümü iki mevcut kaynaktan kurulmuştur: önceki turun Türkiye/KKTC notu ve Godiva TR ölçümü. Kanıtlı çekirdek şudur: Türkiye'de özel gün ekseni <strong>düğün/nişan + bayram + yılbaşı</strong> üçlüsünde yoğunlaşıyor. <strong>Godiva TR</strong> menüsü çok eksenli — <code>Çikolata Çeşitleri (tip)</code> + <code>Özel Koleksiyonlar</code> + <code>Fiyat (1.000 TL ve Altı / 1.000–2.000 TL / 2.000 TL ve Üzeri)</code> + <strong>"Okazyona Göre Hediyeler"</strong> + <code>Kurumsal Satış</code>; "Okazyona Göre Hediyeler" alt kalemleri: Söz &amp; Nişan, Doğum Günü, Kurumsal, Teşekkür ve Tebrik, Ev Hediyeleri, Geçmiş Olsun, Yenidoğan Çikolatası, Yıl Dönümü, Öğretmenler Günü, Sevgililer Günü, Bayram (<a href="https://www.godiva.com.tr" target="_blank" rel="noopener">godiva.com.tr</a>; önceki tur ölçümü, 9 Kas 2026). <strong>Çiçeksepeti</strong> kişiye özel kategorisinde iki eksen kuruyor: <strong>"Özel Günler"</strong> (Sevgililer, Kadınlar, Anneler, Babalar, Öğretmenler Günü, Yılbaşı, Black Friday, Tıp Bayramı, Avukatlar/Hemşireler/Eczacılık/Diş Hekimleri Günü) ve <strong>"Gönderim Amacı"</strong> (Doğum Günü, Geçmiş Olsun, Yeni Doğan, Yıl Dönümü, Özür Dilerim, Sevgili, Tebrik, Açılış/Tören, Söz/Nişan/Düğün, Teşekkür, Kendim İçin, Cenaze, Evlilik Teklifi) (<a href="https://www.ciceksepeti.com/d/cicek-cikolata" target="_blank" rel="noopener">ciceksepeti.com</a>). <strong>Pelit</strong> ise URL kalıbıyla kanıtlı: <code>/dugun/</code> (<code>nikah-sekerleri</code>, <code>soz-ve-nisan-pastalari</code>, <code>dugun-pastalari</code>), <code>/hediye-onerileri/</code>, <code>/organizasyon/</code> (<a href="https://www.pelit.com.tr" target="_blank" rel="noopener">pelit.com.tr</a>).</p>
+<p><strong>KKTC tarafı</strong> (önceki tur): Kıbrıs Hediye Sepeti (OpenCart) kategori menüsü — Premium Kutu Çikolata, Doğum Günü, Yıl Dönümü, Yeni Bebek, Anneler/Babalar Günü, Tebrik Ederim, Helyum Balon; "Aktif WhatsApp Sipariş", "Lefkoşa-Girne-Güzelyurt Aynı Gün" (<a href="https://www.kibrishediyesepeti.com" target="_blank" rel="noopener">kibrishediyesepeti.com</a>). Hediye Kıbrıs "kendi hediye kutunu oluştur" aracı ve Lefkoşa/Girne/Gazimağusa/İskele/Güzelyurt'a aynı gün teslimat (<a href="https://hediyekibris.com" target="_blank" rel="noopener">hediyekibris.com</a>). Caramel Chocolate (Girne) Instagram story highlight'ları Noel dışı özel günleri vurguluyor: Halloween, Graduation, Father's Day, Mother's Day, Easter, Women's Day (<a href="https://www.instagram.com/caramelchocolate_cyprus/" target="_blank" rel="noopener">Instagram @caramelchocolate_cyprus</a>). Türkiye'de küçük "kişiye özel" markaların çoğu <strong>kendi sitesini işletmiyor, Instagram DM/WhatsApp + pazaryeri (Hepsiburada/Trendyol)</strong> üzerinden satıyor — bu, Beyza Blanc'ın "site + DM/WhatsApp" melez modeline doğrudan emsal ([turkiye-ve-kktc-pazari.md] önceki tur; <a href="https://www.hepsiburada.com/kisiye-ozel-cikolata-x-s62516" target="_blank" rel="noopener">Hepsiburada kişiye özel çikolata</a>).</p>
+<ul>
+<li><strong>Boşluk / doğrulanamadı:</strong> TR/KKTC için <strong>ayrı bir taksonomi benchmark dosyası araştırmacı hatası nedeniyle hazırlanamadı</strong>; yukarıdaki liste mevcut iki kaynağın kanıtladığı kadarıyla verilmiştir. <strong>"Hediye Sepeti" ve "Buket Sepeti"</strong> adlı platformlar bu isimle doğrulanamadı; <strong>Godiva/Pelit/Bolçi/Merve/Tuna/Bifa/Krispi</strong> için e-ticaret işlevleri tek tek doğrulanmadı; <strong>KKTC'ye özgü Şikayetvar/Ekşi başlığı bulunamadı</strong> (TR verisi KKTC için yalnızca dolaylı gösterge); Caramel Chocolate dışındaki KKTC markalarının Instagram takipçileri (login duvarı) ve kategori mimarisi doğrulanamadı. <strong>Uydurma kategori adı eklenmemiştir.</strong></li>
+</ul>
+<hr>
+<h2 id="beyza-blanc-icin-onerilen-kategori-haritasi">Beyza Blanc için önerilen kategori haritası</h2>
+<p>Mevcut site tek eksende (<code>temalar</code>, 15 kayıt) kurulu; öneri, kanıtlı modeli uygulayarak <strong>özel gün eksenini koruyup üstüne "kime", "ürün tipi" ve "yeni/çok satan" eksenlerini menüye, fiyat/kişiselleştirme alanlarını filtreye</strong> taşımak. Mevcut 15 temadan <strong>çıkarılması önerilen yoktur</strong>; ancak <code>sade</code> bir özel gün değil ürün-tipi/lifestyle kategorisidir ve ekseni doğru yere taşınmalıdır. <code>terfi</code>, <code>ise-baslama</code>, <code>is-yildonumu</code> birebir kanıtlı iş/çalışan alt günleridir ve "Kurumsal &amp; İş" kökü altında toplanmalıdır.</p>
+<p><strong>Önerilen kategori haritası (ekle/çıkar + isim + slug + alt sınır):</strong></p>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Eksen</th>
+<th>Kategori (hedef ad)</th>
+<th>Slug</th>
+<th>Kaynak/gerekçe</th>
+<th>Min. ürün/tasarım</th>
+</tr></thead><tbody>
+<tr>
+<td>Özel gün</td>
+<td>Doğum Günü &amp; Yaş Günü</td>
+<td><code>/koleksiyonlar/dogum-gunu</code></td>
+<td><strong>mevcut</strong></td>
+<td>4+</td>
+</tr>
+<tr>
+<td>Özel gün</td>
+<td>Hoş Geldin Bebek</td>
+<td><code>/koleksiyonlar/hos-geldin-bebek</code></td>
+<td><strong>mevcut</strong> (Godiva "Yenidoğan Çikolatası")</td>
+<td>4+</td>
+</tr>
+<tr>
+<td>Özel gün</td>
+<td>Söz &amp; Nişan</td>
+<td><code>/koleksiyonlar/soz-nisan</code></td>
+<td><strong>mevcut</strong> (TR çekirdeği)</td>
+<td>4+</td>
+</tr>
+<tr>
+<td>Özel gün</td>
+<td>Düğün &amp; Nikâh</td>
+<td><code>/koleksiyonlar/dugun</code></td>
+<td><strong>mevcut</strong> (Pelit <code>/dugun/*</code>)</td>
+<td>4+</td>
+</tr>
+<tr>
+<td>Özel gün</td>
+<td>Evlilik Yıl Dönümü</td>
+<td><code>/koleksiyonlar/evlilik-yildonumu</code></td>
+<td><strong>mevcut</strong></td>
+<td>3+</td>
+</tr>
+<tr>
+<td>Özel gün</td>
+<td><strong>Teşekkür &amp; Tebrik</strong></td>
+<td><code>/koleksiyonlar/tesekkur-tebrik</code></td>
+<td><strong>EKLENMELİ</strong> — Godiva TR "Teşekkür ve Tebrik"; Choc on Choc "Thank You/Congratulations"; Harry &amp; David (<a href="https://www.godiva.com.tr" target="_blank" rel="noopener">godiva.com.tr</a>)</td>
+<td>3+</td>
+</tr>
+<tr>
+<td>Özel gün</td>
+<td><strong>Geçmiş Olsun</strong></td>
+<td><code>/koleksiyonlar/gecmis-olsun</code></td>
+<td><strong>EKLENMELİ</strong> — Godiva TR "Geçmiş Olsun"; Çiçeksepeti "Geçmiş Olsun"; Choc on Choc "Get Well Soon"</td>
+<td>3+</td>
+</tr>
+<tr>
+<td>Özel gün</td>
+<td><strong>Öğretmenler Günü</strong></td>
+<td><code>/koleksiyonlar/ogretmenler-gunu</code></td>
+<td><strong>EKLENMELİ</strong> — Godiva TR + Çiçeksepeti + Etsy "Gifts for Teachers" (<a href="https://www.etsy.com/gifts" target="_blank" rel="noopener">etsy.com/gifts</a>)</td>
+<td>3+</td>
+</tr>
+<tr>
+<td>Özel gün</td>
+<td><strong>Açılış &amp; Tören</strong></td>
+<td><code>/koleksiyonlar/acilis-toren</code></td>
+<td><strong>EKLE (opsiyonel)</strong> — Çiçeksepeti "Açılış/Tören"</td>
+<td>2+ (yoksa kurumsal altında)</td>
+</tr>
+<tr>
+<td>Özel gün</td>
+<td>Mezuniyet</td>
+<td><code>/koleksiyonlar/mezuniyet</code></td>
+<td><strong>mevcut</strong></td>
+<td>3+</td>
+</tr>
+<tr>
+<td>Özel gün</td>
+<td>Sevgililer Günü</td>
+<td><code>/koleksiyonlar/sevgililer</code></td>
+<td><strong>mevcut</strong></td>
+<td>3+</td>
+</tr>
+<tr>
+<td>Özel gün</td>
+<td>Anneler &amp; Babalar Günü</td>
+<td><code>/koleksiyonlar/anneler-babalar</code></td>
+<td><strong>mevcut</strong></td>
+<td>3+</td>
+</tr>
+<tr>
+<td>Özel gün</td>
+<td>Bayram &amp; Yılbaşı</td>
+<td><code>/koleksiyonlar/bayram</code></td>
+<td><strong>mevcut</strong> (TR çekirdeği)</td>
+<td>3+</td>
+</tr>
+<tr>
+<td>Özel gün</td>
+<td>Yeni Ev (Ev Hediyesi)</td>
+<td><code>/koleksiyonlar/yeni-ev</code></td>
+<td><strong>mevcut</strong> (Godiva "Ev Hediyeleri"; Choc on Choc "New Home")</td>
+<td>3+</td>
+</tr>
+<tr>
+<td>Kurumsal &amp; İş</td>
+<td>Kurumsal Hediyeler</td>
+<td><code>/kurumsal</code></td>
+<td><strong>mevcut</strong></td>
+<td>3+</td>
+</tr>
+<tr>
+<td>Kurumsal &amp; İş</td>
+<td>İş Yıl Dönümü</td>
+<td><code>/koleksiyonlar/is-yildonumu</code></td>
+<td><strong>mevcut</strong> (kurumsal altına taşı)</td>
+<td>2+</td>
+</tr>
+<tr>
+<td>Kurumsal &amp; İş</td>
+<td>İşe Başlama &amp; Hoş Geldin</td>
+<td><code>/koleksiyonlar/ise-baslama</code></td>
+<td><strong>mevcut</strong> (kurumsal altına taşı)</td>
+<td>2+</td>
+</tr>
+<tr>
+<td>Kurumsal &amp; İş</td>
+<td>Terfi &amp; Tebrik</td>
+<td><code>/koleksiyonlar/terfi</code></td>
+<td><strong>mevcut</strong> (kurumsal altına taşı)</td>
+<td>2+</td>
+</tr>
+<tr>
+<td>Kime göre</td>
+<td><strong>Kime Göre</strong> (hub)</td>
+<td><code>/koleksiyonlar/kime-gore</code></td>
+<td><strong>EKLENMELİ</strong> — Choc on Choc "Gifts For Her/Him/Kids/Adults/Teachers"; Etsy "Gifts for Her/Him/Kids/Couples/Teachers/Friends/Pets"; Fortnum "For Her/For Him/For a Couple/For a Child" (<a href="https://choconchoc.co.uk/" target="_blank" rel="noopener">choconchoc.co.uk</a>, <a href="https://www.etsy.com/gifts" target="_blank" rel="noopener">etsy.com/gifts</a>)</td>
+<td>hub</td>
+</tr>
+<tr>
+<td>Kime göre</td>
+<td>Eş / Sevgili İçin</td>
+<td><code>/koleksiyonlar/kime-gore/es-sevgili</code></td>
+<td>EKLENMELİ</td>
+<td>3+</td>
+</tr>
+<tr>
+<td>Kime göre</td>
+<td>Anne İçin</td>
+<td><code>/koleksiyonlar/kime-gore/anne</code></td>
+<td>EKLENMELİ</td>
+<td>3+</td>
+</tr>
+<tr>
+<td>Kime göre</td>
+<td>Baba İçin</td>
+<td><code>/koleksiyonlar/kime-gore/baba</code></td>
+<td>EKLENMELİ</td>
+<td>3+</td>
+</tr>
+<tr>
+<td>Kime göre</td>
+<td>Arkadaş İçin</td>
+<td><code>/koleksiyonlar/kime-gore/arkadas</code></td>
+<td>EKLENMELİ</td>
+<td>2+</td>
+</tr>
+<tr>
+<td>Kime göre</td>
+<td>Çocuk / Bebek İçin</td>
+<td><code>/koleksiyonlar/kime-gore/cocuk-bebek</code></td>
+<td>EKLENMELİ</td>
+<td>3+</td>
+</tr>
+<tr>
+<td>Kime göre</td>
+<td>Öğretmen İçin</td>
+<td><code>/koleksiyonlar/kime-gore/ogretmen</code></td>
+<td>EKLENMELİ</td>
+<td>2+</td>
+</tr>
+<tr>
+<td>Ürün tipi</td>
+<td><strong>Ürün Tipi</strong> (hub)</td>
+<td><code>/koleksiyonlar/urun-tipi</code></td>
+<td><strong>EKLENMELİ</strong> — Vosges "BY CATEGORY" (<a href="https://www.vosgeschocolate.com/" target="_blank" rel="noopener">vosgeschocolate.com</a>)</td>
+<td>hub</td>
+</tr>
+<tr>
+<td>Ürün tipi</td>
+<td>Madlen Kutusu / Çikolata Bar / Tepsi / Hediye Kutusu</td>
+<td><code>/koleksiyonlar/urun-tipi/madlen-kutu</code> vb.</td>
+<td><strong>EKLENMELİ</strong> (stüdyo <code>urunTipleri</code> ile birebir)</td>
+<td>3+</td>
+</tr>
+<tr>
+<td>Ürün tipi</td>
+<td>Sade &amp; Klasik</td>
+<td><code>/koleksiyonlar/sade</code></td>
+<td><strong>mevcut <code>sade</code> buraya taşınmalı</strong> (özel gün değil)</td>
+<td>2+</td>
+</tr>
+<tr>
+<td>Yeni/çok satan</td>
+<td>Çok Satanlar</td>
+<td><code>/koleksiyonlar/cok-satanlar</code></td>
+<td><strong>EKLENMELİ</strong> — evrensel "Bestsellers" (<a href="https://www.godiva.com/sitemap.xml" target="_blank" rel="noopener">godiva.com</a>)</td>
+<td>4+</td>
+</tr>
+<tr>
+<td>Yeni/çok satan</td>
+<td>Yeni Tasarımlar</td>
+<td><code>/koleksiyonlar/yeni</code></td>
+<td><strong>EKLENMELİ</strong> — "New Arrivals" evrensel</td>
+<td>3+</td>
+</tr>
+<tr>
+<td>Filtre (menüye çıkmaz)</td>
+<td>Fiyat / Segment</td>
+<td>filtre</td>
+<td>Godiva TR + Vosges "BY PRICE" (<a href="https://www.godiva.com.tr" target="_blank" rel="noopener">godiva.com.tr</a>)</td>
+<td>facet</td>
+</tr>
+<tr>
+<td>Filtre (menüye çıkmaz)</td>
+<td>Kişiselleştirme tipi (isim/tarih, fotoğraf, logo, el yazısı)</td>
+<td>filtre</td>
+<td>Admin/erişim pattern'i</td>
+<td>facet</td>
+</tr>
+</tbody></table></div>
+<p><strong>Birinci/ikinci seviye menü önerisi (5–7 kök, ≤8 kuralı):</strong> (1) <strong>Özel Güne Göre</strong> → alt seviyede yukarıdaki özel günler; (2) <strong>Kime Göre</strong> → eş/anne/baba/arkadaş/çocuk-öğretmen; (3) <strong>Ürün Tipi</strong> → madlen/bar/tepsi/hediye kutusu/sade; (4) <strong>Kurumsal &amp; İş</strong> → kurumsal/iş yıl dönümü/onboarding/terfi; (5) <strong>Mevsim &amp; Takvim</strong> → bayram, yılbaşı, sevgililer, anneler-babalar, öğretmenler; (6) <strong>Yeni &amp; Çok Satan</strong>; (7) <strong>Hakkımızda / SSS / İletişim</strong> (içerik). Menü hover gecikmesi 300–500 ms, her kolonda ~10 link sınırı.</p>
+<p><strong>Yönetilebilirlik eşiği:</strong> menüde <strong>5–7 kök</strong>, toplam <strong>20–40 koleksiyon</strong>, her koleksiyonda <strong>en az 3–6 ürün</strong>; bir ekseni menüye taşımadan önce o eksende <strong>≥4 ürün</strong> olduğundan emin ol (aksi halde Baymard'ın "aşırı kategorizasyon" uyarısı devreye girer — sitelerin %75'i bunu yanlış yapıyor). Sığ kalan eksenler (ör. Açılış/Tören, Arkadaş İçin) menü yerine <strong>filtre/etiket</strong> olarak kalmalı.</p>
+<hr>
+<h2 id="mevcut-beyza-blanc-sitesine-uygulanacak-somut-degisiklikler-">Mevcut Beyza Blanc sitesine uygulanacak somut değişiklikler (öncelik sırasına göre)</h2>
+<p>Site <code>D:\PROJECTS\beyza\site</code> klasöründe statik HTML/CSS/JS bir vitrin + canvas tabanlı tasarım stüdyosudur; veriler <code>assets/js/data.js</code> içindeki <strong>15 <code>temalar</code></strong> ve <strong>18 <code>tasarımlar</code></strong> kaydından, marka bilgileri <code>assets/js/config.js</code>'ten gelir; online ödeme yoktur, WhatsApp'tan fiyat teklifi akışı vardır (<code>main.js</code> içinde <code>wa.me/&lt;no&gt;?text=</code> ön-doldurma zaten kurulu).</p>
+<p><strong>Uygulama öncelik tablosu:</strong></p>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Öncelik</th>
+<th>Değişiklik</th>
+<th>Nereye</th>
+<th>Dayanak</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>P0</strong></td>
+<td><code>data.js</code>'e yeni alanlar: <code>kime</code> (alıcı ekseni), <code>urunTipi</code>, <code>etiketler</code> (3–5 çapraz etiket). Mevcut 18 tasarımı bu eksenlerle etiketle (matris modeli).</td>
+<td><code>assets/js/data.js</code></td>
+<td>Godiva/Fortnum matris modeli</td>
+</tr>
+<tr>
+<td><strong>P0</strong></td>
+<td>Eksik özel günleri <code>temalar</code>'a ekle: <strong>Teşekkür &amp; Tebrik</strong>, <strong>Geçmiş Olsun</strong>, <strong>Öğretmenler Günü</strong>, (ops.) <strong>Açılış &amp; Tören</strong>; <code>sade</code>'yi ürün-tipi eksenine taşı.</td>
+<td><code>assets/js/data.js</code></td>
+<td>Godiva TR "Okazyona Göre Hediyeler"</td>
+</tr>
+<tr>
+<td><strong>P0</strong></td>
+<td>2 seviyeli üst menü / mega menü kur (5–7 kök, hover 300–500 ms). Şu an <code>.ustbar</code> tek satırlık basit menü.</td>
+<td><code>main.js</code> <code>ustbarKur()</code>, <code>style.css</code></td>
+<td>Baymard %88 mega menü</td>
+</tr>
+<tr>
+<td><strong>P0</strong></td>
+<td>Kategori sayfası şablonu: filtre (kime / özel gün / ürün tipi / fiyat), sıralama (Öne çıkan / Fiyat ↑↓ / Yeni), ürün sayısı ("N tasarım"), kategori açıklaması. <code>koleksiyonlar.html</code> şu an yalnızca tema filtresi gösteriyor.</td>
+<td><code>koleksiyonlar.html</code>, <code>main.js</code>, <code>style.css</code></td>
+<td>Fortnum kategori şablonu</td>
+</tr>
+<tr>
+<td><strong>P1</strong></td>
+<td>Kart <strong>radiusu 16px → 8–10px</strong> ve <strong>gölgeyi hafiflet</strong> (<code>--golge-2 0 8px 24px</code> → daha yumuşak ya da 1px çizgi + inset border).</td>
+<td><code>style.css</code> token'ları</td>
+<td>Sektör kart 0–10px, minimal gölge</td>
+</tr>
+<tr>
+<td><strong>P1</strong></td>
+<td>Ürün kartı <strong><code>aspect-ratio: 4/3</code> → <code>1/1</code> veya <code>3/4</code> (dikey)</strong>; paketli kutu dikey kompozisyona uygun.</td>
+<td><code>.tasarim-kart__gorsel</code></td>
+<td>Sektör 1:1/dikey 3:4</td>
+</tr>
+<tr>
+<td><strong>P1</strong></td>
+<td><strong>Micro-type etiket katmanı</strong> güçlendir: 10–12px uppercase + <code>letter-spacing</code> ile badge/etiket/fiyat üstü etiketler (mevcut 0.68rem/0.75rem seyrek).</td>
+<td><code>style.css</code></td>
+<td>Sektör mikro etiket 10–12px</td>
+</tr>
+<tr>
+<td><strong>P1</strong></td>
+<td>Stüdyoya <strong>canlı önizleme her adımda</strong> + <strong>sipariş öncesi son onay ekranı</strong> (yazım/isim/renk/konum teyidi). Canvas önizleme var; onay ekranı yok.</td>
+<td><code>studyo.html</code>, <code>studyo.js</code></td>
+<td>Moonpig "previewed→blank" şikâyeti</td>
+</tr>
+<tr>
+<td><strong>P1</strong></td>
+<td>Hediye akışını genişlet: <strong>alıcı adresi + hediye notu + tercih edilen teslim tarihi</strong> alanları studyo formuna eklensin (şu an ürün/adet/özel gün/yazı/fotoğraf/ambalaj var).</td>
+<td><code>studyo.js</code>, <code>data.js</code></td>
+<td>Baymard gifting flow</td>
+</tr>
+<tr>
+<td><strong>P1</strong></td>
+<td>Güven bloğu: sosyal kanıt şeridi (hero altına 3–4 fotoğraflı gerçek müşteri eseri) + <strong>fotoğraflı yorumlar</strong> + kargo/iade ("kırılma/kalite garantisi") kutusu. <code>guvenSeridi</code> var ama yorum kanıtı yok.</td>
+<td><code>index.html</code>, <code>data.js</code></td>
+<td>Medill %270, PowerReviews %103,9</td>
+</tr>
+<tr>
+<td><strong>P1</strong></td>
+<td><strong>Teslim tarihi iletişimi:</strong> belirli tarih/aralık + "son sipariş tarihi" kesme (cut-off) bandı; "tahmini kargo" yerine garanti edilen tarih.</td>
+<td><code>studyo.js</code>, <code>style.css</code></td>
+<td>BigCommerce, Salesforce, Kibo %64</td>
+</tr>
+<tr>
+<td><strong>P2</strong></td>
+<td><strong>Facet/filtre</strong> ekle: fiyat/segment, kişiselleştirme tipi (isim/fotoğraf/logo/el yazısı). <code>fiyatGoster:false</code> iken "segment" olarak kurgula.</td>
+<td><code>main.js</code>, <code>style.css</code></td>
+<td>Godiva TR/Vosges "BY PRICE"</td>
+</tr>
+<tr>
+<td><strong>P2</strong></td>
+<td><strong>Curated "hediye fikri" koleksiyonları</strong> (ör. "Anneye 5 çikolata fikri") — yeni üretim gerektirmeyen, düşük maliyetli SEO aracı.</td>
+<td><code>data.js</code>, yeni sayfa</td>
+<td>Vosges gift-guide</td>
+</tr>
+<tr>
+<td><strong>P2</strong></td>
+<td><strong>"Bunları da beğenebilirsin"</strong> çapraz satış şeridi (kaydırılabilir).</td>
+<td><code>urun.html</code>, <code>main.js</code></td>
+<td>Milk Bar öneri motoru</td>
+</tr>
+<tr>
+<td><strong>P2</strong></td>
+<td>Ön-doldurulmuş WhatsApp mesajına <strong>kategori/ürün bilgisi</strong> de eklensin (şu an ürün+adet+özel gün var).</td>
+<td><code>main.js</code></td>
+<td>Ödemesiz model deseni</td>
+</tr>
+<tr>
+<td><strong>P3</strong></td>
+<td>Erişilebilirlik seti: dokunma hedefleri (WCAG 2.5.8 ≥24×24, hedef 44), <code>:focus-visible</code>, carousel <code>role="region"</code>/<code>aria-roledescription</code> + klavye; akordeon filtre. <code>prefers-reduced-motion</code> <strong>zaten var</strong>.</td>
+<td><code>style.css</code>, <code>main.js</code></td>
+<td>WCAG 2.5.8 / Baymard</td>
+</tr>
+</tbody></table></div>
+<p><strong>Uygulanmaması önerilenler:</strong> ödeme güvenliği/kart logoları, "3D Secure" rozetleri (ödeme yok — yanıltıcı); hızlı sepete ekle/quick view/tükendi göstergeleri (sepet yok); sayfa içeriğini kapatan tam ekran yapışkan chat; doğrulanamayan "X kişi şu an bakıyor" tipi FOMO bildirimleri (<a href="https://baymard.com/blog/ecommerce-ux-best-practices" target="_blank" rel="noopener">Baymard</a>; <a href="https://www.bigcommerce.com/articles/ecommerce/social-proof-examples" target="_blank" rel="noopener">BigCommerce</a>).</p>
+<hr>
+<h2 id="sonuc">Sonuç</h2>
+<p>Bu analizin en çarpıcı sonucu, "en başarılı" ile "en çok ziyaret edilen"in aynı şey olmaması ve Beyza Blanc'ın gerçek rakibinin çikolata markalarından çok <strong>kişiselleştirme platformları</strong> olmasıdır — Etsy ile butik arasındaki 4–5 büyüklük mertebesi farkı, bu ölçekte trafik yarışına girmenin anlamsız olduğunu gösteriyor. Stratejik çıkarım net: kazanan hamle <strong>ölçek değil, eksen mimarisi ve güven tasarımı</strong>dır. Sektörün 100+ koleksiyonu menüde 5–12 köke indirip gerisini facet'e çevirmesi, Beyza Blanc için de doğru reçetedir — "özel gün" eksenini koru, üstüne <strong>"kime" eksenini</strong> ekle (Türkiye/KKTC'de kanıtlı), fiyat ve kişiselleştirme tipini <strong>filtre</strong> yap, ve her kategoriyi <strong>en az 3–6 tasarımla</strong> dolu tut. Tasarımda ise zaten hizalı olan zemini/metni/fonu bozmadan yalnızca <strong>kart radiusu, gölge ve micro-type</strong> ince ayarını yapmak, sektör ortalamasına yakınsamak için yeterlidir. Nihai kaldıraç tasarımın kendisi değil, kullanıcı yorumlarının açıkça gösterdiği iki operasyonel unsurdur: <strong>üretim öncesi onaylı önizleme</strong> ve <strong>gerçekçi teslim tarihi iletişimi</strong> — bunlar hem en sık şikâyeti keser hem de ödemesiz WhatsApp modelinin güven açığını kapatır.</p>
+  </main>
+</div>
+
+<footer class="sayfa-alti">
+  <div class="sayfa-alti__ic">
+    <span>Beyza Blanc — Özel Gün Hediye Sitelerinden Kategori Haritası Çıkar</span>
+    <span>Kaynak: araştırma notları (research_notes) · 9 Kasım 2026</span>
+  </div>
+</footer>
+
+</body>
+</html>

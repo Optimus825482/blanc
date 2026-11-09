@@ -1,0 +1,26 @@
+Anasayfa	/
+İletişim	/Iletisim
+Sepetim Ürün	/checkout
+Gofret	/gofret-26
+Kaplamalı	/kaplamali-15
+Kremalı	/kremali-30
+Tuzlu	/tuzlu-17
+Çeşnili	/cesnili-28
+Kornet	/kornet-27
+Kek	/kek-21
+TÜM ÜRÜNLERİ İNCELE	#
+@bifabiscuit	#
+TAKİP ET	#
+Hakkımızda	/kurumsal
+Bilgi Toplumu Hizmetleri	https://e-sirket.mkk.com.tr/?page=company&amp;company=10857#
+Belgeler ve Politikalar	/belgeler-ve-politikalar
+İletişim Formu	https://www.bifa.com.tr/iletisim.aspx
+Sponsorluk Başvurusu	https://www.bifa.com.tr/sponsorluk
+Sipariş Takibi	/Hesabim.aspx#/Siparislerim
+Gizlilik Politikası	/gizlilik-politikasi
+Kullanıcı Sözleşmesi	/kullanici-sozlesmesi
+Internet Explorer	https://windows.microsoft.com/en-US/windows/downloads/internet-explorer
+Firefox	https://getfirefox.com/
+Google Chrome	https://www.google.com/chrome/
+Gizlilik Politikası	https://www.bifa.com.tr/gizlilik-politikasi
+#TOTAL=25

@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Özel Gün Çikolatasını Site ve WhatsApp Birlikte Satıyor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --krem: #fff8f3;
+  --krem-koyu: #f6ebdc;
+  --kahve: #3d2016;
+  --kahve-soluk: #6b4a3a;
+  --altin: #cfb56a;
+  --altin-koyu: #a98336;
+  --cizgi: #e6d9c8;
+  --beyaz: #fffdfa;
+  --yesil: #2e5a4b;
+  --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--krem);
+  color: var(--kahve);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--altin-koyu); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { color: var(--kahve); }
+code {
+  background: var(--krem-koyu);
+  border: 1px solid var(--cizgi);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 0.86em;
+}
+.duzen { max-width: 1420px; margin: 0 auto; padding: 0 24px; display: grid; gap: 40px; }
+@media (min-width: 1080px) { .duzen { grid-template-columns: 288px minmax(0, 1fr); } }
+
+/* Kapak */
+.kapak { border-bottom: 1px solid var(--cizgi); background: var(--beyaz); }
+.kapak__ic { max-width: 1420px; margin: 0 auto; padding: 40px 24px 32px; }
+.kapak__marka {
+  font-family: var(--serif); font-size: 0.95rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--altin-koyu); margin: 0 0 14px;
+}
+.kapak h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(1.9rem, 3.4vw, 2.9rem); line-height: 1.15; margin: 0 0 12px; }
+.kapak__alt { color: var(--kahve-soluk); max-width: 80ch; margin: 0; }
+.kapak__etiketler { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.etiket {
+  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  border: 1px solid var(--cizgi); background: var(--krem-koyu);
+  border-radius: 999px; padding: 4px 12px; color: var(--kahve-soluk);
+}
+
+/* İçindekiler */
+.icindekiler { position: sticky; top: 24px; align-self: start; padding: 24px 0; }
+.icindekiler h2 {
+  font-family: var(--sans); font-size: 0.74rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--kahve-soluk); margin: 0 0 12px;
+}
+.icindekiler ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+.icindekiler li { counter-increment: toc; margin-bottom: 7px; }
+.icindekiler a {
+  color: var(--kahve); text-decoration: none; font-size: 0.92rem;
+  display: flex; gap: 10px; padding: 5px 10px; border-radius: 8px;
+  border-left: 2px solid transparent;
+}
+.icindekiler a::before { content: counter(toc); color: var(--altin-koyu); font-size: 0.78rem; min-width: 14px; }
+.icindekiler a:hover { background: var(--krem-koyu); border-left-color: var(--altin); }
+.yazdirma-notu {
+  margin-top: 20px; padding: 12px 14px; border: 1px dashed var(--cizgi);
+  border-radius: 10px; font-size: 0.8rem; color: var(--kahve-soluk); background: var(--beyaz);
+}
+
+/* İçerik */
+.icerik { padding: 24px 0 96px; min-width: 0; }
+.icerik h2 {
+  font-family: var(--serif); font-weight: 600; font-size: clamp(1.5rem, 2.4vw, 2.05rem);
+  line-height: 1.2; margin: 56px 0 16px; padding-top: 20px; border-top: 1px solid var(--cizgi);
+}
+.icerik h2:first-child { margin-top: 8px; border-top: 0; padding-top: 0; }
+.icerik h3 { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; margin: 34px 0 10px; }
+.icerik h4 { font-family: var(--sans); font-size: 1rem; margin: 24px 0 8px; }
+.icerik p { margin: 0 0 16px; }
+.icerik ul { margin: 0 0 16px; padding-left: 22px; }
+.icerik li { margin-bottom: 8px; }
+.icerik hr { border: 0; border-top: 1px solid var(--cizgi); margin: 36px 0; }
+.belge-ustbaslik { display: none; }
+blockquote {
+  margin: 0 0 24px; padding: 16px 20px; background: var(--beyaz);
+  border: 1px solid var(--cizgi); border-left: 3px solid var(--altin); border-radius: 10px;
+}
+blockquote p { margin: 0; font-size: 0.94rem; color: var(--kahve-soluk); }
+
+/* Tablolar */
+.tablo-sarmal { overflow-x: auto; margin: 0 0 28px; border: 1px solid var(--cizgi); border-radius: 12px; background: var(--beyaz); }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; min-width: 560px; }
+thead th {
+  text-align: left; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--kahve-soluk); background: var(--krem-koyu);
+  padding: 11px 14px; border-bottom: 1px solid var(--cizgi); white-space: nowrap;
+}
+tbody td { padding: 11px 14px; border-bottom: 1px solid var(--cizgi); vertical-align: top; }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:nth-child(even) { background: #fffaf5; }
+
+/* Alt bilgi */
+.sayfa-alti { border-top: 1px solid var(--cizgi); background: var(--beyaz); }
+.sayfa-alti__ic {
+  max-width: 1420px; margin: 0 auto; padding: 24px;
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between;
+  font-size: 0.82rem; color: var(--kahve-soluk);
+}
+
+/* Yazdırma */
+@media print {
+  @page { size: A4; margin: 14mm 12mm; }
+  body { background: #fff; font-size: 10.5pt; }
+  .duzen { display: block; max-width: none; padding: 0; }
+  .icindekiler, .yazdirma-notu, .kapak__etiketler { display: none; }
+  .kapak__ic { padding: 0 0 12px; }
+  .icerik { padding: 0; }
+  .icerik h2 { page-break-after: avoid; margin-top: 26px; }
+  .icerik h3, table { page-break-inside: avoid; }
+  .tablo-sarmal { overflow: visible; border-color: #ddd; }
+  table { min-width: 0; font-size: 9pt; }
+  thead th { background: #f2f2f2; }
+  a { color: #000; text-decoration: none; }
+  .sayfa-alti { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="kapak">
+  <div class="kapak__ic">
+    <p class="kapak__marka">Beyza Blanc — Araştırma dosyası</p>
+    <h1>Özel Gün Çikolatasını Site ve WhatsApp Birlikte Satıyor</h1>
+    <p class="kapak__alt">Dünyada ve Türkiye&#x27;de özel gün çikolatası/hediyelik iş modeli, web sitesi fonksiyonları ve araçları — Beyza Blanc için dijital satış modeli.</p>
+    <div class="kapak__etiketler">
+      <span class="etiket">Türkçe</span>
+      <span class="etiket">Kaynaklı</span>
+      <span class="etiket">9 Kasım 2026</span>
+      <span class="etiket">Yazdırmaya hazır</span>
+    </div>
+  </div>
+</header>
+
+<div class="duzen">
+  <nav class="icindekiler" aria-label="İçindekiler">
+    <h2>İçindekiler</h2>
+    <ol><li><a href="#yonetici-ozeti-ve-karar-tablosu">Yönetici özeti ve karar tablosu</a></li>
+<li><a href="#dunya-uc-arketip-tek-olcekleme-mantigi-ve-10-500-moq">Dünya: üç arketip, tek ölçekleme mantığı ve 10-500+ MOQ</a></li>
+<li><a href="#turkiye-ve-kktc-dm-whatsapp-agirlikli-butik-ekonomisi">Türkiye ve KKTC: DM/WhatsApp-ağırlıklı butik ekonomisi</a></li>
+<li><a href="#sitelerin-tasarimi-kanitli-renk-font-ve-bilgi-mimarisi">Sitelerin tasarımı: kanıtlı renk, font ve bilgi mimarisi</a></li>
+<li><a href="#arac-ve-altyapi-ne-kadar-ne-icin-hangi-fazda">Araç ve altyapı: ne kadar, ne için, hangi fazda</a></li>
+<li><a href="#kurumsal-hediye-platformlari-ve-b2b-otomasyonu">Kurumsal hediye platformları ve B2B otomasyonu</a></li>
+<li><a href="#sosyal-medya-highlight-mimarisi-icerik-formati-ve-whatsapp-h">Sosyal medya: highlight mimarisi, içerik formatı ve WhatsApp hunisi</a></li>
+<li><a href="#beyza-blanc-icin-oneriler">Beyza Blanc için öneriler</a></li>
+<li><a href="#conclusion">Conclusion</a></li></ol>
+    <p class="yazdirma-notu">
+      Yazdırmak için <strong>Ctrl+P</strong> (Mac: ⌘+P). Yazdırma düzeninde menü ve
+      etiketler gizlenir, tablolar sayfa taşmasına karşı korunur.
+    </p>
+  </nav>
+  <main class="icerik">
+<p class="belge-ustbaslik">Araştırma raporu</p>
+<p>Dünyada özel gün odaklı kişiselleştirilmiş çikolata/hediyelik işinin kazanan modeli, "tek bir üretim ve kişiselleştirme motoru + her özel güne özel tasarım/ambalaj şablonu"dur; markalar aynı baskı/gravür/kalıp kabiliyetini doğum günü, yeni bebek, söz-nişan-düğün, yıl dönümü, mezuniyet, işe başlama gibi onlarca ana yayıp her gün için ayrı kutu, etiket ve metin varyantı satıyor (<a href="https://compartes.com/collections/gourmet-corporate-chocolate-gifts" target="_blank" rel="noopener">Compartés</a>, <a href="https://chococraft.com/collections/personalized-gifts" target="_blank" rel="noopener">Chococraft</a>). Bu markaların web siteleri "özel gün"ü birincil navigasyon ekseni yapıyor, ikinci eksen olarak "kime/alıcı" ve "kişiye özel"i ekliyor; teslim tarihi seçimi ve hediye notu ise hem küresel hem Türkiye sitelerinde ortak zorunlu öğe (<a href="https://www.godiva.com.tr" target="_blank" rel="noopener">Godiva Türkiye</a>, <a href="https://www.bakedbymelissa.com/" target="_blank" rel="noopener">Baked by Melissa</a>). Türkiye ve KKTC'de ise iş ağırlıkla hâlâ "Instagram DM + WhatsApp sipariş hattı" üzerinden yürüyor; kendi sitesi olan yerli butiklerin bile ödeme linki ve WhatsApp hunisine yaslandığı görülüyor (<a href="https://www.instagram.com/caklitchocolate/reels" target="_blank" rel="noopener">Çaklıt Chocolate</a>, <a href="https://www.kibrishediyesepeti.com" target="_blank" rel="noopener">Kıbrıs Hediye Sepeti</a>). Girne'deki butik marka Beyza Blanc (415 takipçi, sipariş yalnızca DM ile, Alsancak/Girne) için doğru karar, bu iki dünyayı birleştirmek: temeli <strong>özel gün odaklı bir e-ticaret sitesi</strong> (güven, katalog, teslim tarihi, hediye notu, sipariş kaydı) ile atmak, ama siparişi kapatan kanal olarak <strong>WhatsApp/DM'i korumak</strong>; başlangıçta ~<strong>60-110 USD/ay</strong> araç bütçesiyle (platform + hediye katmanı + kişiselleştirme) kurulabilir, kurumsal hediye kolu ise ancak yılda ~500-1.000 gönderim eşiğinden sonra ayrı bir gelir hattı olarak açılmalıdır.</p>
+<h2 id="yonetici-ozeti-ve-karar-tablosu">Yönetici özeti ve karar tablosu</h2>
+<p>İş modeli dünya çapında üç arketipe ayrılıyor: çikolata-first artizan markalar kişiselleştirmeyi ürünün üstüne ayrı bir katman olarak ekliyor (Choc on Choc, Compartés, zChocolat, Richart); personalizasyon-first teknoloji/üretim markaları baskı-gravür-kalıp üretimini çekirdek iş yapıyor (Boomf, Chococraft, Chocomize); hediye-edible platformları ve pazaryerleri ise özel günü "shop by occasion" navigasyonuyla paketliyor (Sugarfina, Milk Bar, Baked by Melissa, Etsy) (<a href="https://compartes.com/collections/gourmet-corporate-chocolate-gifts" target="_blank" rel="noopener">Compartés</a>, aşağıdaki tablo). Hepsinde ortak olan üç mekanik var: <strong>ölçeklenen şablon kütüphanesi</strong> (aynı üretim, güne özel paketleme), <strong>D2C'de 1 adet / kurumsalda 10-500+ minimum sipariş</strong> ve <strong>mevsimsel kampanya takvimi</strong> (Noel + Sevgililer + Anneler/Babalar Günü + mezuniyet omurgayı oluşturuyor). Tek şubeli butik için taklit edilebilir olan birinci arketiptir; çok alıcılı sevkiyat, soğuk zincir ve abonelik ise sermaye/lojistik gerektirir.</p>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Karar alanı</th>
+<th>Öneri</th>
+<th>Dayanak</th>
+</tr></thead><tbody>
+<tr>
+<td>Odak özel günler (giriş)</td>
+<td>Doğum günü, hoş geldin bebek, söz-nişan, evlilik/iş yıl dönümü, mezuniyet; ikincil: terfi, işe başlama, yeni ev</td>
+<td>Bebek/çocuk hediyeleri en hızlı büyüyen alt kategori (%9,67 CAGR) — <a href="https://www.mordorintelligence.com/industry-reports/gifts-retailing-market" target="_blank" rel="noopener">Mordor Intelligence</a></td>
+</tr>
+<tr>
+<td>Kanallar</td>
+<td>Kendi sitesi (vitrin + sipariş kaydı) + WhatsApp/DM (kapanış) + Instagram + Pinterest; pazaryeri opsiyonel</td>
+<td>TR/KKTC emsalleri DM/WhatsApp-ağırlıklı — <a href="https://www.instagram.com/caklitchocolate/reels" target="_blank" rel="noopener">turkiye-ve-kktc-pazari notu</a></td>
+</tr>
+<tr>
+<td>Platform</td>
+<td>Küçük ölçek + TR/KKTC ödeme için <strong>WooCommerce veya yerli SaaS (ikas/Ticimax)</strong>; global ölçek için Shopify (kanıt: Godiva TR ve onlarca global marka Shopify)</td>
+<td><a href="https://www.godiva.com.tr" target="_blank" rel="noopener">Godiva TR</a>, <a href="https://www.pelit.com.tr" target="_blank" rel="noopener">Pelit WooCommerce</a>, <a href="https://caramelchocolate.com" target="_blank" rel="noopener">Caramel Chocolate WooCommerce</a></td>
+</tr>
+<tr>
+<td>Tasarım yönü</td>
+<td>Kırık beyaz/krem zemin + tek sıcak aksan (altın <code>#CFB56A</code> veya kahve <code>#3D2016</code>); serif başlık + sans gövde</td>
+<td><a href="https://compartes.com" target="_blank" rel="noopener">site-tasarim-kanitlari notu</a></td>
+</tr>
+<tr>
+<td>Kurumsal kol</td>
+<td>Faz 3; kendi sitesinde "Kurumsal Hediyeler" sayfası + teklif formu + tier fiyat ile başla; otomasyon (HRIS) gerekmez</td>
+<td><a href="https://compartes.com/collections/gourmet-corporate-chocolate-gifts" target="_blank" rel="noopener">Compartés corporate</a>, <a href="https://corporategift.com/competitor/sendoso" target="_blank" rel="noopener">CorporateGift vs Sendoso</a></td>
+</tr>
+<tr>
+<td>Başlangıç araç bütçesi</td>
+<td>~<strong>60-110 USD/ay</strong> (platform + hediye notu/teslim tarihi + kişiselleştirme)</td>
+<td><a href="https://apps.shopify.com/customily-product-personalizer" target="_blank" rel="noopener">Shopify App Store</a> liste fiyatları (2026)</td>
+</tr>
+</tbody></table></div>
+<p><strong>Okuma notu ve veri uyarıları.</strong> Instagram takipçi/etkileşim sayıları <strong>9 Kasım 2026 snapshot'ıdır</strong> ve zamanla değişir (<a href="https://www.instagram.com/compartes" target="_blank" rel="noopener">sosyal-medya notu</a>). Araç fiyatları çoğunlukla <strong>Shopify App Store liste fiyatıdır (2026)</strong> ve plana/güncellemeye göre değişebilir; üçüncü taraf kaynaklarda bazı fiyatlar çelişkilidir ve bu raporda çelişkiler açıkça belirtilmiştir. Pazar büyüklüğü tahminleri tanım farkından ötürü birden çok kaynakta çelişmektedir; tek bir rakam kesin doğru gibi sunulmamalıdır. <strong>Boomf</strong>, gözlem anında ("Boomf has officially closed its doors", 9 Kasım 2026) <strong>kapanmış</strong> durumdaydı (<a href="https://www.boomf.com/" target="_blank" rel="noopener">boomf.com</a>). <strong>asansons.com park edilmiş bir alan adıdır</strong> (çikolata markası değil) (<a href="https://andsons.com" target="_blank" rel="noopener">andsons.com</a>). Pazaryeri komisyonları <strong>2026 görüntülemesine</strong> dayanır ve kategoriye/satıcı seviyesine göre değişir.</p>
+<h2 id="dunya-uc-arketip-tek-olcekleme-mantigi-ve-10-500-moq">Dünya: üç arketip, tek ölçekleme mantığı ve 10-500+ MOQ</h2>
+<p>Küresel pazar büyük ve büyüyor, ancak rakamlar tanım farkından ötürü çelişkili. Gift retailing pazarı 2026'da <strong>100,33 milyar USD</strong> olup 2031'de <strong>122,44 milyar</strong>a çıkması (4,06% CAGR), festif/tatil hediyelerinin 2025'te özel gün harcamalarının <strong>%24,05'i</strong> olması ve <strong>bebek/çocuk hediyelerinin en hızlı büyüyen alt kategori</strong> olması (2031'e kadar %9,67 CAGR) en tutarlı çerçeveyi veriyor (<a href="https://www.mordorintelligence.com/industry-reports/gifts-retailing-market" target="_blank" rel="noopener">Mordor Intelligence</a>). Kişiselleştirilmiş hediyeler pazarı <strong>2024'te 29,85 milyar USD'den 2035'te 52,9 milyar</strong>a (%5,4 CAGR) büyüyor (<a href="https://www.marketresearchfuture.com/reports/personalized-gifts-market-10348" target="_blank" rel="noopener">Market Research Future</a>); ABD kişiselleştirilmiş hediye pazarı <strong>2024'te 9,69 milyar → 2030'da 14,56 milyar USD</strong> (%7,02 CAGR) ve online kanal %7+ büyüyor (<a href="https://www.businesswire.com/news/home/20250509461623/en/U.S.-Personalized-Gifting-Market-Outlook-Forecasts-Report-2025-2030-Featuring-Industry-Leaders---Shutterfly-Etsy-Personalization-Mall-and-Cimpress-Hallmark---ResearchAndMarkets.com" target="_blank" rel="noopener">BusinessWire/ResearchAndMarkets</a>). Ancak bir kaynak gifting pazarını 2026'da 60,05 milyar USD verip 2035'te 1,59 milyara <strong>düşeceğini</strong> ve %52,11 CAGR olacağını iddia ediyor; bu kendi içinde matematiksel olarak tutarsızdır ve <strong>kullanılmamalıdır</strong> (<a href="https://www.businessresearchinsights.com/market-reports/gifting-market-117441" target="_blank" rel="noopener">Business Research Insights</a>). Benzer şekilde kurumsal hediyeleme pazarı bir kaynakta <strong>956,93 milyar USD</strong> (<a href="https://www.researchandmarkets.com/report/global-corporate-gifting-market" target="_blank" rel="noopener">ResearchAndMarkets</a>), başka bir kaynakta <strong>167,5 milyar USD</strong> (<a href="https://www.persistencemarketresearch.com/market-research/corporate-gifting-market.asp" target="_blank" rel="noopener">Persistence</a>) — bu iki rakam <strong>çelişkilidir</strong> ve aralık + tanım farkı belirtilmeden kullanılmamalıdır.</p>
+<p>Modelin kendisi net: markalar <strong>onlarca özel günü aynı üretim kabiliyetiyle</strong> karşılıyor ve kişiselleştirmeyi kademelendiriyor. Compartés aynı kataloğu "Shop by Occasion" (Birthday, Thank You, Anniversary, Congratulations, Housewarming), "Shop by Holiday" (Noel, Hanukkah, Paskalya), "Moments" (Sevgililer, Anneler, Babalar) ve "Cultural" (Passover, Diwali, Lunar New Year) menüleriyle bölüyor; üzerine logo ile tam bespoke bir "Custom Atelier" katmanı koyuyor (<a href="https://compartes.com/collections/gourmet-corporate-chocolate-gifts" target="_blank" rel="noopener">compartes.com</a>). Chococraft aynı yenilebilir baskı hattını "birthday invitations, anniversary invitations, wedding invitations &amp; favors, birth announcements" biçiminde farklı tasarım/ambalaj şablonlarına paketliyor (<a href="https://chococraft.com/collections/personalized-gifts" target="_blank" rel="noopener">chococraft.com</a>). zChocolat'ta ürün sabit (zBox'lar), kişiselleştirme ürünün üstüne katman olarak ekleniyor: mesaj kartı, ahşap kutuya isim gravürü, mum mührü, poşe nakışı (<a href="https://www.zchocolat.com/international-gift-delivery/japan" target="_blank" rel="noopener">zchocolat.com</a>).</p>
+<p>Kurumsal (B2B) kolu neredeyse her markada var ve D2C'den ayrı bir "concierge + MOQ + kademeli fiyat" katmanı olarak kuruluyor. Tipik minimum sipariş deseni: <strong>kişisel D2C 1 adet; kurumsal/etkinlik 10-500+</strong> (Chococraft <strong>10 kutu</strong>, andSons <strong>24-50</strong>, Compartés <strong>50</strong>, Chocomize <strong>100-500</strong>) (<a href="https://www.chococraft.in" target="_blank" rel="noopener">chococraft.in</a>, <a href="https://and-sons.com/blogs/journal/corporate-fancy-chocolate-gifts-that-impress-clients" target="_blank" rel="noopener">and-sons.com</a>, <a href="https://chocomize.com" target="_blank" rel="noopener">chocomize.com</a>). Kişiselleştirme kademeleri de bariyer sırasına oturuyor: etiket/kurdele/mesaj kartı en düşük; yenilebilir baskı/lazer gravür orta; özel kalıp/emboss ve tam bespoke en yüksek (logolu kalıp için ~100-200, tam bespoke için ~1.000+ adet) (<a href="https://compartes.com/pages/custom-chocolate-gifts" target="_blank" rel="noopener">Compartés custom</a>, <a href="https://shop.cocoadolce.com/pages/corporate-gifting" target="_blank" rel="noopener">Cocoa Dolce</a>). Bu yüzden tek şubeli butik için gerçekçi olan <strong>ambalaj/mesaj/gravür katmanıdır</strong>; yenilebilir fotoğraf baskısı ve custom kalıp yatırım gerektirir, çok alıcılı otomatik sevkiyat ile soğuk zincir ise sermaye/platform oyuncularının alanıdır.</p>
+<p><strong>Marka karşılaştırma tablosu (dünya + öne çıkan TR/KKTC)</strong></p>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Marka</th>
+<th>Ülke / Model özeti</th>
+<th>Öne çıkan özel gün odağı</th>
+<th>Kişiselleştirme / teknoloji</th>
+<th>Altyapı</th>
+<th>Kaynak</th>
+</tr></thead><tbody>
+<tr>
+<td>Choc on Choc</td>
+<td>UK, el yapımı Belçika çikolatası + abonelik</td>
+<td>Birthday, New Home, Wedding/Engagement, Graduation, Thank You, Anniversary</td>
+<td>Baskı, sleeve, "Build a Bundle", gift note + delivery date</td>
+<td>Shopify (kanıtlı)</td>
+<td><a href="https://choconchoc.co.uk/pages/personalised-chocolate" target="_blank" rel="noopener">choconchoc.co.uk</a></td>
+</tr>
+<tr>
+<td>Compartés</td>
+<td>ABD, lüks çikolata + Custom Atelier</td>
+<td>Birthday, Thank You, Anniversary, Housewarming + tatil/kültür</td>
+<td>"Make Your Own", logo ile bespoke, 50-50.000 adet, 2 hafta teslim</td>
+<td>Shopify Oxygen/Hydrogen (headless)</td>
+<td><a href="https://compartes.com/collections/gourmet-corporate-chocolate-gifts" target="_blank" rel="noopener">compartes.com</a></td>
+</tr>
+<tr>
+<td>zChocolat</td>
+<td>FR, lüks çikolata</td>
+<td>Birthday, Romance, Party Favors, Noel/Yeni Yıl</td>
+<td>Gravürlü ahşap kutu, mum mührü, nakış; 19.000 şirket iddiası</td>
+<td>PrestaShop (kanıtlı)</td>
+<td><a href="https://www.zchocolat.com/international-gift-delivery/japan" target="_blank" rel="noopener">zchocolat.com</a></td>
+</tr>
+<tr>
+<td>Milk Bar</td>
+<td>ABD, kurumsal ağırlıklı tatlı</td>
+<td>Employee birthdays, work anniversaries, onboarding, project milestone</td>
+<td>Modüler menü, concierge; sticky ATC + teslim tarihi + gift note</td>
+<td>Shopify (kanıtlı)</td>
+<td><a href="https://milkbarstore.com/pages/corporate-gifts-old" target="_blank" rel="noopener">milkbarstore.com</a></td>
+</tr>
+<tr>
+<td>Baked by Melissa</td>
+<td>ABD, mini cupcake</td>
+<td>Birthdays, thank-you, sympathy, weddings, baby showers</td>
+<td>4 adımlı akış (ürün→teslim tarihi→hediye notu→teslim), "custom mosaic"</td>
+<td>Shopify + Yotpo (kanıtlı)</td>
+<td><a href="https://www.bakedbymelissa.com/" target="_blank" rel="noopener">bakedbymelissa.com</a></td>
+</tr>
+<tr>
+<td>Chococraft</td>
+<td>IN, printed chocolate, D2C + kurumsal</td>
+<td>Birthday/anniversary invitations, wedding, birth announcements</td>
+<td>Yenilebilir baskı, MDF kutular, kurumsal min 10</td>
+<td>D2C site + global sevkiyat</td>
+<td><a href="https://chococraft.com/collections/personalized-gifts" target="_blank" rel="noopener">chococraft.com</a></td>
+</tr>
+<tr>
+<td>Sugarfina</td>
+<td>ABD, lüks şekerleme + kurumsal</td>
+<td>Birthday, Congratulations, Party Favors, Wedding, Lunar New Year</td>
+<td>"Design Your Own", Build a Gift Box, By Price ekseni</td>
+<td>Magento 2 / Corra (URL yolundan kanıtlı)</td>
+<td><a href="https://sugarfina.com/" target="_blank" rel="noopener">sugarfina.com</a></td>
+</tr>
+<tr>
+<td>Things Remembered</td>
+<td>ABD, gravür/nakış hediye</td>
+<td>Housewarming, weddings, anniversaries, babies, professionals</td>
+<td>Gravür + nakış (kişiselleştirme-first)</td>
+<td>Personalization Mall altyapısı; 2022 mağazalar kapandı, 2023'te 1-800-Flowers aldı</td>
+<td><a href="https://en.wikipedia.org/wiki/Things_Remembered" target="_blank" rel="noopener">Wikipedia</a></td>
+</tr>
+<tr>
+<td>Godiva Türkiye</td>
+<td>TR, lüks çikolata + kurumsal</td>
+<td>Söz &amp; Nişan, Doğum Günü, Yenidoğan, Yıl Dönümü, Bayram, Sevgililer, Öğretmenler</td>
+<td>"Ücretsiz Hediye Notu", fiyat ekseni, aynı gün teslimat</td>
+<td>Shopify (kanıtlı)</td>
+<td><a href="https://www.godiva.com.tr" target="_blank" rel="noopener">godiva.com.tr</a></td>
+</tr>
+<tr>
+<td>Caramel Chocolate</td>
+<td>KKTC, handmade + wedding/baby favours</td>
+<td>Halloween, Graduation, Father's/Mother's Day, Easter, Women's Day</td>
+<td>WooCommerce ürün-eklentisi (woo-custom-product-addons)</td>
+<td>WordPress + WooCommerce (kanıtlı)</td>
+<td><a href="https://caramelchocolate.com" target="_blank" rel="noopener">caramelchocolate.com</a></td>
+</tr>
+<tr>
+<td>Kıbrıs Hediye Sepeti</td>
+<td>KKTC, hediye platformu</td>
+<td>Doğum Günü, Yıl Dönümü, Yeni Bebek, Tebrik Ederim</td>
+<td>"Kendi hediye kutunu oluştur", WhatsApp sipariş</td>
+<td>OpenCart (URL yapısından çıkarım)</td>
+<td><a href="https://www.kibrishediyesepeti.com" target="_blank" rel="noopener">kibrishediyesepeti.com</a></td>
+</tr>
+</tbody></table></div>
+<p><strong>Mevsimsellik ve kampanya takvimi.</strong> Cironun omurgası Noel/tatil + Sevgililer Günü + Anneler/Babalar Günü + mezuniyet sezonudur; İngiltere'de Sevgililer Günü 2025-2032'nin en hızlı büyüyen özel gün segmenti olarak öne çıkıyor (<a href="https://www.databridgemarketresearch.com/reports/uk-gifts-retailing-market" target="_blank" rel="noopener">Data Bridge</a>). Markalar kampanyayı doğrudan üst menüye işliyor: Boomf'un sezon menüsünde New Year's, Valentine's, Father's/Mother's Day, Back to School, Diwali, Pride, Thanksgiving, Halloween yer alıyordu (<a href="https://boomf.com/collections/chocolate" target="_blank" rel="noopener">boomf.com</a>); Sugarfina Ocak'ta Lunar New Year koleksiyonu çıkarıyor (<a href="https://www.creatorinspiration.com" target="_blank" rel="noopener">CreatorInspiration</a>). <strong>Boşluk (Gaps):</strong> markaların özel gün başına ciro yüzdeleri, kampanya başlangıç/bitiş tarihleri ve marj verisi hiçbir kamuya açık kaynakta bulunamadı.</p>
+<h2 id="turkiye-ve-kktc-dm-whatsapp-agirlikli-butik-ekonomisi">Türkiye ve KKTC: DM/WhatsApp-ağırlıklı butik ekonomisi</h2>
+<p>Türkiye pazarı üç katmanda örgütleniyor: kendi sitesi olmayıp DM/WhatsApp ile sipariş alan küçük "kişiye özel" üreticiler (Çaklıt Chocolate, Bebek Çikolatası), hem sitesi hem pazaryeri mağazası olan butik markalar (Melodi, Madlen, S Chocolate) ve pazaryeri/hediye platformları (Çiçeksepeti, Bonnyfood, Bloom and Fresh) (<a href="https://www.instagram.com/caklitchocolate/reels" target="_blank" rel="noopener">turkiye-ve-kktc-pazari notu</a>). Fiyatlama iki uçta kümeleniyor: pazaryerindeki isimli madlen kutuları <strong>~680-900 TL</strong>, kendi sitesindeki temalı/premium kutular <strong>1.750-3.250 TL</strong> (farklı tarih/kanal; kesin kıyas için aynı tarihte örneklem gerekir) (<a href="https://www.hepsiburada.com/kisiye-ozel-cikolata-x-s62516" target="_blank" rel="noopener">Hepsiburada</a>, <a href="https://www.schocolate.com" target="_blank" rel="noopener">schocolate.com</a>). KKTC'de ise <strong>aynı gün teslimat</strong> (Lefkoşa-Girne-Güzelyurt) ve <strong>KKTC banka kartı kabulü</strong> rekabetçi farklılaşma noktaları olarak öne çıkıyor (<a href="https://www.kibrishediyesepeti.com" target="_blank" rel="noopener">kibrishediyesepeti.com</a>, <a href="https://hediyekibris.com" target="_blank" rel="noopener">hediyekibris.com</a>).</p>
+<p>Türkiye'ye özgü altyapı yerli SaaS paketleri (Ticimax <strong>14.000'den fazla firmaya</strong> e-ticaret altyapısı, <a href="https://tavily.com/knowledge/company/aNf1ss9be44U" target="_blank" rel="noopener">tavily Ticimax profili</a>; IdeaSoft, Haziran 2025'te Sipay Global tarafından satın alındı, <a href="https://webaction.com.tr/e-ticaret-paketleri-karsilastirma" target="_blank" rel="noopener">webaction.com.tr</a>; ikas "ömür boyu ücretsiz Start paketi") ve yerli sanal POS'lar (iyzico kurumsal komisyon <strong>%4,29 + 0,25 TL BSMV dahil</strong>, <a href="https://webaction.com.tr/iyzico-paytr-hangisi" target="_blank" rel="noopener">webaction.com.tr</a>; PayTR, Paratika, Param, Sipay) üzerinden işliyor. Türkiye e-ticaret hacmi 2025'te <strong>4,6 trilyon TL (115 milyar USD)</strong>, GSYİH içindeki pay %6,9 (<a href="https://www.cbinsights.com/company/iyzico" target="_blank" rel="noopener">TÜİK + iyzico raporu</a>). KKTC tarafında ödeme yerel bankalarla (Koopbank, CapitalBank) ve "Tüm KKTC Banka Kartları Geçerli" modeliyle çalışıyor (<a href="https://www.koopbank.com" target="_blank" rel="noopener">koopbank.com</a>, <a href="https://www.kibrishediyesepeti.com" target="_blank" rel="noopener">kibrishediyesepeti.com</a>); Türkiye-KKTC arası her iki yönlü kargo gümrük kontrolüne tabi, vergiyi alıcı ödüyor ve ticari gönderi için ihracat faturası + GTIP kodu gerekiyor (<a href="https://www.araskargo.com.tr/bireysel-hizmetlerimiz/kktc" target="_blank" rel="noopener">Aras Kargo KKTC</a>); ETGB sınırı 3 Ocak 2026 tebliğiyle <strong>600 kg / 30.000 Avro</strong>ya çıkarıldı (<a href="https://webaction.com.tr/turkiyeden-kktcye-kargo-gondermek-zor-mu" target="_blank" rel="noopener">webaction.com.tr</a>). KKTC'ye doğrudan gelen ticari olmayan eşyaya <strong>%30 tek ve maktu vergi</strong> uygulanıyor (<a href="https://www.tim.org.tr/tr/kktcden-yolcu-beraberi-ya-da-kargo-ile-getirilen-esyadan-tek-ve-maktu-gumru" target="_blank" rel="noopener">TİM</a>).</p>
+<p><strong>Pazaryeri komisyon tablosu (2026 görüntülemesi; kategoriye ve satıcı seviyesine göre değişir)</strong></p>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Pazaryeri</th>
+<th>Genel oran</th>
+<th>Kişiye özel / hediye</th>
+<th>Ödeme vadesi / not</th>
+<th>Kaynak</th>
+</tr></thead><tbody>
+<tr>
+<td>Trendyol</td>
+<td>%3-28</td>
+<td>Gıda %10-15; atıştırmalık %15,25; şekerleme seviye-5 %10</td>
+<td>Komisyon KDV hariç fiyat üzerinden; kadın girişimci programı <strong>%1,80-5,50</strong></td>
+<td><a href="https://birfatura.com/trendyol-komisyonu-nedir" target="_blank" rel="noopener">birfatura.com</a></td>
+</tr>
+<tr>
+<td>Hepsiburada</td>
+<td>%6-25</td>
+<td>Gıda %15; Hediyelik %18; Oyuncak %18; Anne &amp; Bebek %11-18</td>
+<td>Komisyon KDV dahil fiyat üzerinden + KDV</td>
+<td><a href="https://images.hepsiburada.net/mp/mp-cms/1625757354638_kategori-bazli-komisyon-oranlari-listesi.pdf" target="_blank" rel="noopener">Hepsiburada komisyon PDF</a></td>
+</tr>
+<tr>
+<td>Çiçeksepeti</td>
+<td>%4-35</td>
+<td>Kişiye Özel %27; Hediye Setleri %27; Çiçek %35</td>
+<td>Çiçek/hediye setlerinde vade <strong>40 gün</strong></td>
+<td><a href="https://cdn.ciceksepeti.com/editor/image/ciceksepeti-kategori-bazli-komisyon-oranlari-ve-vadeler.pdf" target="_blank" rel="noopener">Çiçeksepeti kategori komisyon PDF</a></td>
+</tr>
+</tbody></table></div>
+<p>Çiçeksepeti'nin "Kişiye Özel %27" oranı, özel gün çikolatasını kendi sitesinden/WhatsApp'tan satmanın neden cazip olduğunu açıklıyor: pazaryeri komisyonu tek başına ürün maliyetinin ciddi bir kısmını alıyor. Trendyol'un kadın girişimci indirimli oranları (%1,80-5,50) Beyza Blanc benzeri kadın girişimci markalar için pazaryeri kanalını ucuzlatabilir, ancak uygunluk şartları satıcı panelinden teyit edilmeli (potansiyel avantaj). <strong>Doğrulanamadı:</strong> pazaryerlerinde "sipariş sonrası isim/foto yükleme alanı" olup olmadığı; Hepsiburada'nın "Kişiye Özel" özel kategori oranı; Çiçeksepeti tarifesinin PDF tarihi. <strong>Gaps:</strong> Türkiye/KKTC'de DM vs site üzerinden sipariş oranına dair sayısal veri, özel gün bazında ciro dağılımı ve IBAN/havale yaygınlığı bulunamadı; ayrıca <strong>KKTC'de iyzico/PayTR gibi TR merkezli sanal POS'ların kullanılabilirliği doğrulanamadı</strong>.</p>
+<h2 id="sitelerin-tasarimi-kanitli-renk-font-ve-bilgi-mimarisi">Sitelerin tasarımı: kanıtlı renk, font ve bilgi mimarisi</h2>
+<p>Tasarım kanıtları, sitelerin canlı kaynak kodundan (HTML/CSS) 9 Kasım 2026'da çıkarıldı; <strong>piksel/ekran görüntüsü karşılaştırması yapılmadı</strong>, bu nedenle font ve renk iddiaları kaynak kod tokenlarına dayanır ve görsel doğrulama gerektirir (<a href="https://compartes.com" target="_blank" rel="noopener">site-tasarim-kanitlari notu</a>). İki egemen palet var: <strong>sıcak-nötr + metalik aksan</strong> (lüks butik kodu) ve <strong>yüksek kontrast + canlı marka rengi</strong> (dijital/DTC kodu). Neredeyse tümü <strong>kırık beyaz/krem zemin</strong> üzerine <strong>tek bir doygun aksan</strong> koyuyor; altın tonu (<code>#CFB56A</code>, <code>#E6CD8F</code>, <code>#786420</code>) yalnızca "lüks/hediye" konumundaki markalarda (Godiva TR, zChocolat, Compartés) görülüyor.</p>
+<p><strong>Tasarım kanıtı tablosu (kaynak koddan çıkarılmış)</strong></p>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Site</th>
+<th>Zemin</th>
+<th>Aksan / marka rengi</th>
+<th>Font (başlık + gövde)</th>
+<th>Yapı / IA</th>
+<th>Kanıt durumu</th>
+</tr></thead><tbody>
+<tr>
+<td>Choc on Choc</td>
+<td><code>#FFFFFF</code> / krem <code>#F5EFE6</code></td>
+<td>Kahve <code>#3D2016</code> + magenta <code>#B90661</code></td>
+<td>P22 Mackinac Pro (serif) + Inter</td>
+<td>Shop By Occasion + Recipient + Hobby, Build a Bundle, gift note + delivery date</td>
+<td>Renk/font doğrulandı (Typekit)</td>
+</tr>
+<tr>
+<td>Compartés</td>
+<td><code>#FEFEFD</code> / <code>#F7F5F2</code></td>
+<td>Kahve <code>#31261D</code>/<code>#1A1612</code> + altın <code>#E6CD8F</code></td>
+<td>Kepler Std (serif) + Bickham Script Pro (monogram) + Figtree</td>
+<td>Shop by Occasion/Holiday/Cultural, Make Your Own, gift guide landing'leri</td>
+<td>Renk/font doğrulandı (Tailwind token)</td>
+</tr>
+<tr>
+<td>zChocolat</td>
+<td><code>#171310</code> (sıcak siyah)</td>
+<td>Kiremit <code>#C84437</code> + altın/zeytin <code>#786420</code></td>
+<td>AGaramond/Cormorant Garamond + Manrope/Jost</td>
+<td>"Personalize", sayı önekli koleksiyonlar, Business Gifts</td>
+<td>Renk/font doğrulandı</td>
+</tr>
+<tr>
+<td>Milk Bar</td>
+<td><code>#FFFFFF</code> / krem <code>#FFEFDA</code></td>
+<td>Pembe <code>#E83A87</code> / <code>#FD69B0</code></td>
+<td>Garnett (self-hosted sans) + Pitch Bold</td>
+<td>sticky ATC, teslim tarihi, gift note, gifts.zest.co kurumsal</td>
+<td>Renk/font doğrulandı</td>
+</tr>
+<tr>
+<td>Baked by Melissa</td>
+<td><code>#FFFFFF</code> / açık pembe <code>#F7E6ED</code></td>
+<td>Fuşya <code>#E20063</code></td>
+<td>Proxima Nova / Condensed (Typekit)</td>
+<td>"What's the Occasion?", 4 adımlı How It Works</td>
+<td>Renk/font doğrulandı</td>
+</tr>
+<tr>
+<td>Vosges</td>
+<td><code>#FFFFFF</code></td>
+<td>Mürdüm <code>#3D1152</code> + teal <code>#108474</code></td>
+<td>Playfair Display (serif) + Roboto/Montserrat</td>
+<td>GIFTS + BY PRICE + WEDDINGS &amp; EVENTS + CORPORATE</td>
+<td>Renk/font doğrulandı</td>
+</tr>
+<tr>
+<td>COCO Chocolatier</td>
+<td>Siyah <code>#000000</code> / beyaz</td>
+<td>Teal <code>#108474</code></td>
+<td>Poppins/Archivo/Inter + Cormorant Garamond</td>
+<td>By type/flavour/diet/brand/occasion/season</td>
+<td>Renk/font doğrulandı; domain → madeuncommon.co</td>
+</tr>
+<tr>
+<td>Godiva TR</td>
+<td><code>#FFFFFF</code> / <code>#F3F3F3</code></td>
+<td>Altın <code>#CFB56A</code> + kahve <code>#6F4B21</code></td>
+<td>Gotham (self-hosted)</td>
+<td>"Okazyona Göre Hediyeler" + tip + koleksiyon + fiyat + kurumsal</td>
+<td>Renk/font doğrulandı</td>
+</tr>
+<tr>
+<td>Personal Creations</td>
+<td><code>#FFFFFF</code></td>
+<td>Teal <code>#296E70</code> + mercan <code>#F16650</code></td>
+<td>Montserrat + Roboto</td>
+<td>Upcoming/Milestone/Seasonal Occasions + Recipients + Products</td>
+<td>Renk/font doğrulandı (in-house platform)</td>
+</tr>
+<tr>
+<td>Pelit (TR)</td>
+<td>(banner görsellerinde)</td>
+<td>Kahve <code>#3C2011</code> + taupe <code>#B19F93</code></td>
+<td>Open Sans</td>
+<td>Düğün / Hediye Önerileri / Organizasyon</td>
+<td>Renk zayıf, net marka hex'i doğrulanamadı</td>
+</tr>
+<tr>
+<td>Caramel Chocolate (KKTC)</td>
+<td>—</td>
+<td>Mavi <code>#3340D3</code> (WooCommerce eklenti butonu)</td>
+<td>Saira / Chivo / Roboto</td>
+<td>Ürün-tipi ekseni; belirgin "özel gün" gezinmesi kanıtlanamadı</td>
+<td>Marka paleti zayıf kanıtlı</td>
+</tr>
+</tbody></table></div>
+<p><strong>Bilgi mimarisi kalıpları.</strong> Olgun özel-gün siteleri menüyü çapraz eksenlerde kuruyor: <strong>Özel Gün + Kime (alıcı) + Ürün/Koleksiyon</strong>; ek olarak Sugarfina ve Vosges <strong>fiyat aralığı</strong> ekseni de ekliyor (<a href="https://sugarfina.com/" target="_blank" rel="noopener">sugarfina.com</a>, <a href="https://www.vosgeschocolate.com/collections/corporate-gifts" target="_blank" rel="noopener">vosgeschocolate.com</a>). URL kalıbı Shopify'da <code>/collections/{occasion}</code> (Choc on Choc, COCO, Vosges, Milk Bar, Baked by Melissa), Compartés'te <code>/pages/{gift-guide}</code> ve Milk Bar'da <code>/collections/special-occasions-{occasion}</code> biçiminde (<a href="https://milkbarstore.com/pages/corporate-gifts-old" target="_blank" rel="noopener">site-tasarim-kanitlari notu</a>). <strong>Türkiye'ye özgü zorunlu kalemler kanıtlı:</strong> Söz &amp; Nişan / Düğün, Doğum Günü, Yıl Dönümü, Yeni Bebek, Bayram, Sevgililer Günü, Öğretmenler Günü, Kurumsal (Godiva TR "Okazyona Göre Hediyeler", Çiçeksepeti "Özel Günler" + "Gönderim Amacı", Pelit "Düğün"). Türkiye'de özel gün ekseninin ağırlıkla <strong>düğün/nişan + bayram + yılbaşı</strong> üçlüsünde yoğunlaştığı görülüyor (<a href="https://www.godiva.com.tr" target="_blank" rel="noopener">Godiva TR</a>, <a href="https://www.pelit.com.tr" target="_blank" rel="noopener">Pelit</a>).</p>
+<p><strong>Kullanıcı akışı.</strong> Kişiselleştirme iki yere yerleşiyor: ürün-ailesi içi "Create Your Own" konfigüratörü ve "Build a Box" tipi ayrı yapılandırıcı (<a href="https://www.boomf.com/" target="_blank" rel="noopener">boomf.com</a>, <a href="https://sugarfina.com/" target="_blank" rel="noopener">sugarfina.com</a>). Checkout'ta sektör ortalaması <strong>5,1 adım / 11,3 alan</strong>, ideal hedef ~<strong>8 alan</strong>; kullanıcıların <strong>%18'i</strong> sırf hesap açmak istemediği için vazgeçiyor, ortalama sepet terk oranı <strong>%70,22</strong> (<a href="https://baymard.com/research-articles/checkout-flow-average-form-fields" target="_blank" rel="noopener">Baymard</a>, <a href="https://baymard.com/lists/cart-abandonment-rate" target="_blank" rel="noopener">Baymard</a>). Özel-gün UX'inin kalbi <strong>"Bu tarihe kadar gelsin" teslim-tarihi seçimi</strong> ve <strong>hediye notu alanı</strong>; ikisi de hem global hem TR sitelerinde kanıtlı (Milk Bar <code>select date</code>, Baked by Melissa "Pick your delivery date", Godiva TR "Ücretsiz Hediye Notu", Kahve Dünyası "hediye notu") (<a href="https://www.bakedbymelissa.com/" target="_blank" rel="noopener">bakedbymelissa.com</a>, <a href="https://www.godiva.com.tr" target="_blank" rel="noopener">godiva.com.tr</a>). Baymard, checkout'ta "Shipping Speed" yerine <strong>"Delivery Date"</strong> kullanılmasını ve kesme saatini geri sayım olarak göstermeyi öneriyor; sitelerin <strong>%83'ü</strong> bunu yapmıyor — düşük maliyetli bir farklılaşma (<a href="https://baymard.com/research-articles/current-state-of-checkout-ux" target="_blank" rel="noopener">Baymard</a>). <strong>Gaps:</strong> hiçbir sitede ekran görüntüsü alınmadı; animasyon davranışları doğrulanamadı; sugarfina.com, thingsremembered.com ve bateel.com HTTP 403/Cloudflare verdiği için renk hex'i ve font ailesi elde edilemedi; sharisberries.com hiçbir kanıt vermedi; <strong>cocoachocolate.com bağlantı kurulamadı</strong>; <strong>kahvedunyasi.com font kanıtı yok</strong> (Next.js client render); <strong>ciceksepeti.com 403 + SPA</strong> olduğu için renk/font kanıtı yok.</p>
+<h2 id="arac-ve-altyapi-ne-kadar-ne-icin-hangi-fazda">Araç ve altyapı: ne kadar, ne için, hangi fazda</h2>
+<p>Çekirdek (olmazsa olmaz) katman tek şubeli butik için küçük: <strong>mağaza platformu + ödeme + hediye notu/teslim tarihi + kişiselleştirme</strong>. Shopify Basic <strong>39 USD/ay</strong>, Grow 105 USD/ay (<a href="https://shopify.ecom-store.pro/blog/shopify-payments" target="_blank" rel="noopener">ecom-store pro</a>); hediye notu/paket/teslim tarihi uygulamaları <strong>3,99-19 USD/ay</strong> (Wrapin, EM Delivery Date Scheduler, Wrapped); kişiselleştirme <strong>8-49 USD/ay</strong> (Zepto, Customily, PIMW). Toplam çekirdek <strong>~60-110 USD/ay</strong> (kişiselleştirme işlem ücretleri hariç) (<a href="https://apps.shopify.com/customily-product-personalizer" target="_blank" rel="noopener">site-fonksiyonlari notu</a>). Kişiselleştirme araçlarının çoğu "satılan kişiselleştirilmiş ürün başına" işlem ücreti alıyor (Zakeke %1,9/1,7/1,5; Kickflip %1,95→0), bu yüzden sabit ücretli araçlar (PIMW 7,99-24,99 USD/ay, işlem ücreti yok) düşük hacimde daha ucuz. <strong>Zakeke fiyatı kaynaklar arasında çelişkili</strong> ($19,90 vs $69,90 vs $79,90) — canlı Shopify App Store sayfası bugün $69,90 gösteriyor.</p>
+<p><strong>Araç karşılaştırma tablosu (fiyatlar 2026 Shopify App Store liste fiyatı)</strong></p>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Araç</th>
+<th>Ne yapar</th>
+<th>Platform</th>
+<th>Fiyat</th>
+<th>Faz / not</th>
+</tr></thead><tbody>
+<tr>
+<td>Shopify / WooCommerce</td>
+<td>Mağaza platformu</td>
+<td>—</td>
+<td>Shopify Basic 39 USD/ay; WooCommerce altyapı ücretsiz (hosting ayrı)</td>
+<td>Faz 1 çekirdek</td>
+</tr>
+<tr>
+<td>ikas / Ticimax / IdeaSoft</td>
+<td>TR yerli SaaS + iyzico/PayTR + e-fatura entegre</td>
+<td>—</td>
+<td>TL fiyatlar doğrulanamadı (teklif gerekir)</td>
+<td>Faz 1 alternatif (TR/KKTC için pragmatik)</td>
+</tr>
+<tr>
+<td>Zepto Product Personalizer</td>
+<td>İsim/tarih/foto alanları, canlı önizleme, DPI kontrolü</td>
+<td>Shopify</td>
+<td>9,99-69,99 USD/ay</td>
+<td>Faz 1 kişiselleştirme</td>
+</tr>
+<tr>
+<td>Customily</td>
+<td>Metin/foto/takvim + baskıya hazır dosya</td>
+<td>Shopify, WooCommerce, Etsy</td>
+<td>49 USD/ay + 0,10-1,00 USD/ürün</td>
+<td>Faz 1</td>
+</tr>
+<tr>
+<td>Inkybay / PIMW</td>
+<td>Ürün kişiselleştirme; PIMW işlem ücreti yok</td>
+<td>Shopify</td>
+<td>Inkybay 19,99-249,99; PIMW 7,99-24,99 USD/ay</td>
+<td>Faz 1</td>
+</tr>
+<tr>
+<td>EM Delivery Date Scheduler</td>
+<td>Teslim tarihi/saat, blackout, kapasite, hediye notu</td>
+<td>Shopify</td>
+<td>3,99-7,99 USD/ay</td>
+<td>Faz 1 (olmazsa olmaz)</td>
+</tr>
+<tr>
+<td>Wrapin / Wrapped</td>
+<td>Hediye paketi + hediye mesajı</td>
+<td>Shopify</td>
+<td>3,99-7,99 / 19-99 USD/ay</td>
+<td>Faz 1</td>
+</tr>
+<tr>
+<td>Giftnote</td>
+<td>Hediye mesajı (SMS/e-posta), çoklu adres, CSV</td>
+<td>Shopify</td>
+<td>19-99 USD/ay</td>
+<td>Faz 2-3 (kurumsal)</td>
+</tr>
+<tr>
+<td>Giftship</td>
+<td>Çoklu adres + hediye mesajı + teslim tarihi (all-in-one)</td>
+<td>Shopify</td>
+<td>~59,99 USD/ay (üçüncü taraf veri)</td>
+<td>Faz 2</td>
+</tr>
+<tr>
+<td>Captain / Navidium / Route</td>
+<td>Kargo/paket koruma sigortası</td>
+<td>Shopify, Woo</td>
+<td>9,95 / 29,99 USD/ay; Route gelir paylaşımı</td>
+<td>Faz 2 (AOV &gt; 100 USD veya ayda 50+ sipariş)</td>
+</tr>
+<tr>
+<td>Shopify Subscriptions → Appstle</td>
+<td>Abonelik (çikolata kulübü)</td>
+<td>Shopify</td>
+<td>Free → 10 USD/ay (%0 komisyon)</td>
+<td>Faz 2</td>
+</tr>
+<tr>
+<td>BSS B2B Order / Request a Quote</td>
+<td>Teklif + hızlı sipariş + CSV toplu yükleme</td>
+<td>Shopify</td>
+<td>12,99-36,99 USD/ay</td>
+<td>Faz 3 (kurumsal)</td>
+</tr>
+<tr>
+<td>Threekit / Spiff 3D</td>
+<td>Kurumsal 3D konfigüratör</td>
+<td>—</td>
+<td>30.000-100.000+ USD/yıl</td>
+<td>Gereksiz (butik ölçeğinin 10-50 katı)</td>
+</tr>
+<tr>
+<td>Linkpop / LinkShop</td>
+<td>Link-in-bio, bio'dan satın alma</td>
+<td>Shopify</td>
+<td>Free / 15 USD/ay</td>
+<td>Faz 1 (sosyal huni)</td>
+</tr>
+<tr>
+<td>ManyChat / ücretsiz alternatifler</td>
+<td>Comment-to-DM otomasyonu</td>
+<td>Instagram</td>
+<td>Free katman (kontak limiti <strong>çelişkili: 25 vs 1.000</strong>)</td>
+<td>Faz 2</td>
+</tr>
+<tr>
+<td>BuiltWith / Wappalyzer</td>
+<td>Rakip stack tespiti</td>
+<td>—</td>
+<td>API 295+ / 250+ USD/ay; ücretsiz katman yeterli</td>
+<td>Analiz</td>
+</tr>
+</tbody></table></div>
+<p><strong>Ödeme ve stack tespiti.</strong> Shopify mağazasında en mantıklı kurulum <strong>Shopify Payments (birincil) + PayPal (ikincil)</strong>; Shopify Payments üçüncü taraf işlem ücretini ortadan kaldırır ve Shop Pay ile checkout tamamlamayı <strong>%10-18</strong> artırır (Shop Pay yalnızca Shopify Payments ile mümkün) (<a href="https://eseospace.com/blog/shopify-payments-vs-stripe-vs-paypal" target="_blank" rel="noopener">eSEOspace</a>, <a href="https://easyappsecom.com/guides/shopify-payment-gateway-comparison-2026" target="_blank" rel="noopener">EasyApps</a>). Türkiye/KKTC'de ise yerli sanal POS'lar (iyzico %4,29 + 0,25 TL; PayTR) öne çıkıyor (<a href="https://webaction.com.tr/iyzico-paytr-hangisi" target="_blank" rel="noopener">webaction.com.tr</a>). Rakip altyapı tespitinde ücretsiz katman (Wappalyzer eklentisi + TrendTrack + sayfa kaynağında <code>cdn.shopify.com</code>/<code>/cart</code>/<code>/checkout</code> kontrolü) yeterli; ücretli API yalnızca düzinelerce site taranırken gerekir (<a href="https://www.trendtrack.io/blog-post/how-to-see-what-shopify-apps-a-store-is-using" target="_blank" rel="noopener">site-fonksiyonlari notu</a>). <strong>Gaps:</strong> WhatsApp Business API mesaj/katalog fiyatlandırması kaynaklandırılamadı; toplam aylık TCO için tek kaynak yok; butik ölçeğinde gerçek bir "ayda kaç sipariş, hangi araç" vakası bulunamadı; soğuk zincir için hazır e-ticaret uygulaması bulunamadı (operasyon/kargo konusu); <strong>KKTC'de Shopify Payments'ın ve TR merkezli sanal POS'ların kullanılabilirliği doğrulanamadı</strong> — bu, platform kararı öncesi mutlaka test edilmelidir.</p>
+<h2 id="kurumsal-hediye-platformlari-ve-b2b-otomasyonu">Kurumsal hediye platformları ve B2B otomasyonu</h2>
+<p>Kurumsal hediye pazarı iki kampa ayrılıyor: katalog/marketplace + kredi-bütçe modeliyle çalışan "gifting platformları" (Snappy, Loop &amp; Tie, Sendoso, Reachdesk, Alyce, Giftogram, Goody, Sugarwish, Giftsenda) ve çalışan tanıma/ödüllendirme yazılımları (Awardco, Bonusly, Blueboard, PerkUp) (<a href="https://www.snappy.com/blog/how-to-choose-a-corporate-gifting-platform" target="_blank" rel="noopener">kurumsal-ozel-gun-hediye-platformlari notu</a>). İki fiyat felsefesi net: ağır kurumsal platformlar yıllık <strong>15.000-100.000+ USD</strong> platform ücreti isterken, self-serve katman <strong>0-200 USD/ay</strong> bandında giriş sağlıyor. Örneğin Snappy Essential <strong>0 USD</strong>, Elevated <strong>2.000 USD/yıl</strong>; Loop &amp; Tie Free / 500 / 5.000 USD/yıl; Sendoso raporlanan <strong>15-25 bin USD/yıl</strong>; Reachdesk <strong>20.000 USD/yıl</strong>; Awardco Enterprise <strong>100-250 bin USD/yıl</strong>; buna karşılık Giftogram sıfır platform ücreti + pay-as-you-go, Goody Free / 20 USD-kullanıcı/ay, Stadium Free + %15 servis ücreti (<a href="https://saleshive.com/vendors/loop-tie" target="_blank" rel="noopener">SalesHive</a>, <a href="https://www.docket.io/resources/research/sendoso-pricing" target="_blank" rel="noopener">Docket.io</a>, <a href="https://www.vendr.com/marketplace/awardco" target="_blank" rel="noopener">Vendr</a>, <a href="https://www.giftsenda.com/pricing-plans" target="_blank" rel="noopener">Giftsenda</a>).</p>
+<p>Otomasyonun kalbi <strong>HRIS entegrasyonu</strong>: çalışanın işe başlama tarihi ve doğum günü HRIS'ten okunur, doğum günü/yıl dönümü/onboarding tetikleyicileri otomatik hediye gönderir; tipik bütçe doğum günleri için <strong>25-50 USD</strong>, yıl dönümleri için <strong>100-500+ USD</strong> (kıdemle ölçeklenir) (<a href="https://www.snappy.com/hris-integrations" target="_blank" rel="noopener">Snappy HRIS</a>, <a href="https://www.hoppier.com/blog/automate-employee-birthday-gifts" target="_blank" rel="noopener">Hoppier</a>). Talep boşluğu büyük: Snappy 2026 Workforce Study'ye göre çalışanların <strong>%72'si</strong> yıl dönümü hediyesinin şirkette kalma olasılığını artıracağını söylüyor, <strong>%88'i</strong> hediye/takdirin bağlılığı artırdığını söylüyor, ancak <strong>yalnızca %47'si</strong> hiç yıl dönümü hediyesi almış (<a href="https://www.rewordin.com/blog/corporate-gifting-statistics-2026" target="_blank" rel="noopener">Rewordin</a>). Çikolata özelinde yaygın minimumlar: kişiselleştirilmiş kutular için ~50, logo kalıbı/emboss için ~100-200, tam bespoke için ~1.000+; perakende kurumsal kutu fiyatları ~16-200 USD, bulk indirimli fiyatlar ~22-432 USD (<a href="https://compartes.com/pages/custom-chocolate-gifts" target="_blank" rel="noopener">Compartés custom</a>, <a href="https://www.kraftylab.com/corporate-gifts/bulk-gifts" target="_blank" rel="noopener">KraftyLab</a>). <strong>Butik için gerçekçi eşik:</strong> CorporateGift, 20.000+ USD/yıllık platformların ancak yılda ~<strong>1.500-2.000 hediye gönderiminden sonra</strong> mantıklı olduğunu söylüyor (<a href="https://corporategift.com/competitor/sendoso" target="_blank" rel="noopener">CorporateGift vs Sendoso</a>); bu nedenle butik "platform olmak" değil, kendi sitesinde "Kurumsal Hediyeler" sayfası + self-serve teklif formu + tier fiyat + (gerektiğinde) Giftnote/BSS gibi tek bir uygulama ile concierge hibridi kurmalı. <strong>Gaps:</strong> Gemnote/Alyce/Reachdesk tier fiyatları kamuya açık değil; Sendoso Express (ücretsiz eGift, 2022) 2026'da aktif mi bilinmiyor; "onay akışı" ve "fatura ile satış" için butik ölçeğine uygun fiyatı açık bir uygulama bulunamadı; yalnızca "çikolata kurumsal hediyeleme" segmentinin ayrık pazar büyüklüğü yok.</p>
+<h2 id="sosyal-medya-highlight-mimarisi-icerik-formati-ve-whatsapp-h">Sosyal medya: highlight mimarisi, içerik formatı ve WhatsApp hunisi</h2>
+<p>Özel gün hesaplarında highlights <strong>üç eksende</strong> kurgulanıyor: özel güne göre (Söz-Nişan, Bebek, Sevgililer), ürüne/koleksiyona göre ve sosyal kanıt/satış kanalına göre (Memnuniyet, Trendyol, Press, FAQs). Somut kanıt: @miradizayn (<strong>37,1K takipçi</strong>, snapshot) bio'su "Çikolata • Çiçek • Hediye / 🚚 Türkiye geneli gönderim / 👇 Sipariş &amp;" ve highlights'ı Kapı Süsü, Trendyol, Memnuniyet, Söz Nişan, TEMMUZ gibi özel-gün + kanal karışımı; @compartes (<strong>273K</strong>) highlights Holiday, Celebs, BTS, Gifts, Community, Press, FAQs; @sugarfina (<strong>261K</strong>) highlights tamamen mevsim/özel gün eksenli (<a href="https://www.instagram.com/miradizayn?hl=en" target="_blank" rel="noopener">Instagram @miradizayn</a>, <a href="https://www.instagram.com/compartes?hl=en" target="_blank" rel="noopener">@compartes</a>, <a href="https://www.instagram.com/sugarfina?hl=en" target="_blank" rel="noopener">@sugarfina</a>). Bio 150 karakterle sınırlı; highlights bio'nun tek-link sınırını aşmanın yolu (bir Story'ye link sticker eklenip Highlight'a kaydedilirse kalıcı tıklanabilir link olur) (<a href="https://skedsocial.com/blog/anatomy-of-a-perfect-instagram-business-bio-a-complete-guide" target="_blank" rel="noopener">Sked Social</a>).</p>
+<p>İçerikte beş format işliyor: <strong>"pack an order / paketleme (satisfying/ASMR)"</strong>, flat-lay/ürün fotoğrafı, atölye/hazırlık (BTS), müşteri UGC'si ("sizden gelenler"), özel gün kampanya duyurusu + geri sayım (<a href="https://www.instagram.com/popular/pack-orders" target="_blank" rel="noopener">sosyal-medya notu</a>). Statik görsel etkileşimi 2024'te %0,45'ten 2025'te %0,37'ye (yıllık ~%17) düştü; Reels ise küçük hesaplar için keşif motoru — Reels %30,81 reach ile statik görselin 2,25 katı, takipçi olmayanlara <strong>2,1x</strong> erişim; &lt;50K hesaplarda carousel'den %36, fotoğraftan %125 daha fazla kullanıcıya ulaşıyor; 1K-5K takipçili profillerde etkileşim oranı <strong>~%4-5</strong> (<a href="https://smashballoon.com/instagram-reels-vs-feed-posts-which-gets-more-engagement" target="_blank" rel="noopener">Smash Balloon</a>, <a href="https://colorlib.com/wp/instagram-engagement-rate" target="_blank" rel="noopener">Colorlib</a>). Bu benchmark'lar <strong>küresel ortalamadır, marka/hesap bazlı değildir</strong> ve marka hesaplarıyla "creator" hesaplarını karıştırır. Hashtag sayısı Instagram'da <strong>5 ile sınırlı</strong> ve 18:00-20:00 arası gönderiler ~%14 daha yüksek erişim alıyor (<a href="https://www.shno.co/marketing-statistics/instagram-marketing-statistics" target="_blank" rel="noopener">Shno.co</a>).</p>
+<p>Huni üç rotadan kuruluyor: Instagram Shop/ürün etiketi → kendi sitesinde checkout (kendi domain + işletme hesabı + fiziksel ürün şartı), <strong>DM'de ödeme linki</strong> (site gerekmez; özel sipariş/ön ödeme için en uygun) veya bio linki → sipariş sayfası (<a href="https://www.jim.com/blog/how-to-sell-on-instagram" target="_blank" rel="noopener">Jim.com</a>). Butik ölçekte kritik araç <strong>WhatsApp Business</strong>: karşılama/away mesajı ve <strong>50 hızlı yanıt</strong> ücretsiz; tetiklemeli mesajlar (sipariş onayı/sepet hatırlatma) API + onaylı şablon + opt-in + ücret gerektirir ve normal WhatsApp'tan otomatik mesaj göndermek hesabı banlatabilir (<a href="https://getkanal.com/blog/whatsapp-automated-message-guide" target="_blank" rel="noopener">GetKanal</a>). En kritik düzeltme <strong>fiyat şeffaflığı</strong>: Hacı Şerif örneğinde Reels'te fiyat verilmediği için yorumlar "Fiyat nedir?" sorusuyla doluyor (<a href="https://www.instagram.com/reel/DWgj0-hiQ0C" target="_blank" rel="noopener">Instagram @haciserif1938</a>). Seeding düşük maliyetli: 20 mikro-influencer bir makro anlaşmaya eşit; 38 nano/mikro creator ~<strong>950 USD</strong> ürün maliyetiyle <strong>1M+ gösterim</strong> (~1,71 USD CPM) üretebiliyor; coğrafi isabet (yüksek yerel yoğunluk) yüksek takipçiden daha değerli (<a href="https://www.cpgmarketing.ai/blog/influencer-campaign-examples-food-cpg-brands" target="_blank" rel="noopener">CPG Marketing</a>). Pinterest "hediye fikri arayan" kullanıcının görsel arama motoru ve alışveriş sitelerine Facebook'tan daha fazla trafik yönlendiriyor; içerik mevsimden <strong>önce</strong> planlanıyor (Noel ekim, Sevgililer ocak, Anneler Günü mart) (<a href="https://www.adobe.com/express/learn/blog/pinterest-for-business" target="_blank" rel="noopener">Adobe Express</a>, <a href="https://craftybase.com/blog/pinterest-for-etsy-seller-handmade" target="_blank" rel="noopener">Craftybase</a>). Kampanya ritmi fazlı: awareness <strong>4-6 hafta önce</strong>, ürün/teklif <strong>2-3 hafta önce</strong>, son sipariş/acele <strong>son 1 hafta</strong>; Klaviyo Sevgililer planı 10 Şubat "4 gün kaldı", 13 Şubat WhatsApp son çağrı, 14 Şubat gecikicilere hediye kartı (<a href="https://www.klaviyo.com/blog/valentines-day-marketing-ideas" target="_blank" rel="noopener">Klaviyo</a>). <strong>Gaps:</strong> hiçbir gönderinin gerçek like/comment/view sayısı doğrulanamadı (Instagram login duvarı); TR/KKTC çikolata hesapları için somut izlenme/etkileşim aralığı yok; <strong>somut bir çikolata/hediyelik markasının Pinterest performansı bulunamadı</strong>; <strong>KKTC/Girne'de bilinen bir mikro-influencer iş birliği vakası yok</strong>; <strong>Meta Ad Library doğrudan taranamadı</strong>, bu nedenle hangi yerel markanın ücretli reklam verdiği doğrulanamadı; Beyza Blanc'ın güncel bio/highlight yapısı doğrulanamadı.</p>
+<h2 id="beyza-blanc-icin-oneriler">Beyza Blanc için öneriler</h2>
+<p>Mevcut durumun (415 takipçi, sipariş yalnızca DM, Alsancak/Girne mağaza, kişiye özel çikolata/hediye kutuları) sektör kanıtlarıyla birleştiği nokta şudur: <strong>site vitrin ve güven katmanı; WhatsApp/DM ise siparişi kapatan kanal olarak kalmalı.</strong> Site, "fiyat/adet/teslim tarihi belirsizliği" friksiyonunu (bkz. Hacı Şerif "fiyat nedir?" seli) ortadan kaldırır; özel gün odaklı koleksiyonlar keşfi kolaylaştırır; hediye notu + teslim tarihi + misafir checkout ise dönüşümü artırır (Baymard kanıtı). Aşağıdaki öneriler notlardaki fiyat ve kanıtlara dayanır; TL fiyatlar için yerli sağlayıcıdan teklif alınmalıdır (doğrulanamadı).</p>
+<h3>Önerilen site haritası (sayfa listesi)</h3>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Sayfa</th>
+<th>İçerik / işlev</th>
+<th>Dayanak</th>
+</tr></thead><tbody>
+<tr>
+<td>Ana sayfa</td>
+<td>Özel gün girişi + vitrin + güven şeridi (teslim tarihi/sıcaklık güvencesi)</td>
+<td>Baked by Melissa güven şeridi modeli</td>
+</tr>
+<tr>
+<td>Özel Günler (koleksiyonlar)</td>
+<td>Doğum Günü, Yaş Günü, Hoş Geldin Bebek, Söz &amp; Nişan, Düğün/Evlilik Yıl Dönümü, İşe Başlama, İş Yıl Dönümü, Mezuniyet, Terfi, Yeni Ev, Bayram, Sevgililer</td>
+<td>Godiva TR "Okazyona Göre Hediyeler"</td>
+</tr>
+<tr>
+<td>Kim İçin</td>
+<td>O / O'na / Çocuk / Bebek / Kurumsal</td>
+<td>Choc on Choc "Shop By Recipient"</td>
+</tr>
+<tr>
+<td>Kişiye Özel (konfigüratör)</td>
+<td>İsim/tarih/foto + canlı önizleme; "kendi kutunu kur"</td>
+<td>Compartés "Make Your Own", Sugarfina "Design Your Own"</td>
+</tr>
+<tr>
+<td>Ürün sayfası</td>
+<td>Teslim tarihi + hediye notu + gerçek müşteri fotoğraflı yorum (UGC) + kargo/iade özeti</td>
+<td>Baked by Melissa, Godiva TR</td>
+</tr>
+<tr>
+<td>Sepet &amp; Checkout</td>
+<td>Misafir checkout en görünür, 4 adım, ≤8-10 alan, Express ödeme</td>
+<td>Baymard</td>
+</tr>
+<tr>
+<td>Kurumsal Hediyeler</td>
+<td>Tier fiyat tablosu + teklif formu + logo/kişiselleştirme + numune talebi</td>
+<td>Compartés/CorporateGift B2B seti</td>
+</tr>
+<tr>
+<td>Hakkımızda</td>
+<td>Elle üretim/BTS, Girne atölyesi, "since ..." hikâyesi</td>
+<td>COCO/Patchi marka anlatısı</td>
+</tr>
+<tr>
+<td>Blog / Özel Gün Rehberi</td>
+<td>"Anneye 5 çikolata fikri" gibi SEO + Pinterest içeriği</td>
+<td>Pinterest/SEO kanalı</td>
+</tr>
+<tr>
+<td>SSS / Kargo &amp; İade</td>
+<td>Teslim süreleri, KKTC içi aynı gün, soğuk/erime politikası</td>
+<td>MarieBelle teslim kısıtı dili</td>
+</tr>
+<tr>
+<td>İletişim</td>
+<td>WhatsApp kısayolu (içeriği gizlemeyen konumda) + harita</td>
+<td>Baymard floating chat uyarısı</td>
+</tr>
+</tbody></table></div>
+<h3>Önerilen fonksiyon / araç seti (araç, fiyat, faz)</h3>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Faz</th>
+<th>Fonksiyon</th>
+<th>Öneri</th>
+<th>Yaklaşık maliyet</th>
+</tr></thead><tbody>
+<tr>
+<td>Faz 1</td>
+<td>Mağaza platformu</td>
+<td>WooCommerce (TR/KKTC ödeme avantajı) veya ikas/Ticimax SaaS; global hedef varsa Shopify</td>
+<td>Woo/ikas TL: teklif gerekir; Shopify Basic 39 USD/ay</td>
+</tr>
+<tr>
+<td>Faz 1</td>
+<td>Ödeme</td>
+<td>TR/KKTC: iyzico/PayTR (%4,29 + 0,25 TL örneği); Shopify'da Shopify Payments + PayPal</td>
+<td>İşlem bazlı</td>
+</tr>
+<tr>
+<td>Faz 1</td>
+<td>Hediye notu + teslim tarihi (olmazsa olmaz)</td>
+<td>Wrapin 3,99-7,99 USD/ay + EM Delivery Date Scheduler 3,99-7,99 USD/ay</td>
+<td>~4-16 USD/ay</td>
+</tr>
+<tr>
+<td>Faz 1</td>
+<td>Kişiselleştirme (isim/tarih + canlı önizleme)</td>
+<td>Zepto 9,99-69,99 USD/ay veya PIMW 7,99-24,99 (işlem ücreti yok); Woo'da woo-custom-product-addons</td>
+<td>~8-49 USD/ay</td>
+</tr>
+<tr>
+<td>Faz 1</td>
+<td>Link-in-bio + WhatsApp butonu</td>
+<td>Linktree/Linkpop (Free) + WhatsApp sipariş butonu</td>
+<td>0-15 USD/ay</td>
+</tr>
+<tr>
+<td>Faz 2</td>
+<td>Instagram/WhatsApp otomasyonu</td>
+<td>Comment-to-DM (ManyChat veya ücretsiz alternatif) + WhatsApp Business greeting/away/50 hızlı yanıt</td>
+<td>0 USD/ay (ücretsiz katman)</td>
+</tr>
+<tr>
+<td>Faz 2</td>
+<td>Kargo/paket koruma</td>
+<td>Captain 9,95 USD/ay veya Route (gelir paylaşımı)</td>
+<td>0-10 USD/ay</td>
+</tr>
+<tr>
+<td>Faz 2</td>
+<td>Yeniden sipariş + abonelik (çikolata kulübü)</td>
+<td>Shopify Subscriptions (free) → Appstle 10 USD/ay</td>
+<td>0-10 USD/ay</td>
+</tr>
+<tr>
+<td>Faz 3</td>
+<td>Kurumsal hediye (CSV/çoklu adres)</td>
+<td>Giftnote Pro 99 USD/ay veya BSS B2B Order 12,99-36,99 USD/ay</td>
+<td>13-99 USD/ay</td>
+</tr>
+<tr>
+<td>Gereksiz</td>
+<td>3D konfigüratör, tam B2B portalı, HRIS otomasyonu</td>
+<td>Threekit (30.000+ USD/yıl), SparkLayer (49 USD/ay)</td>
+<td>Ertele</td>
+</tr>
+</tbody></table></div>
+<h3>Önerilen tasarım yönü (somut renk ve font)</h3>
+<p>Kanıtlı örneklere dayanarak <strong>kırık beyaz/krem zemin + tek sıcak aksan</strong> en güvenli koddur (Godiva TR <code>#303030</code> + <code>#CFB56A</code>, Compartés <code>#FEFEFD</code> + <code>#E6CD8F</code>, zChocolat <code>#171310</code> + <code>#786420</code>, Choc on Choc <code>#F5EFE6</code> + <code>#3D2016</code>). Butik lüks için somut öneri: <strong>zemin krem <code>#FFF8F3</code> / <code>#F5EFE6</code>, ana metin koyu kahve <code>#3D2016</code>, tek aksan altın <code>#CFB56A</code></strong> (alternatif: genç/dijital his için siyah-beyaz + tek canlı aksan — Milk Bar <code>#E83A87</code> veya COCO <code>#108474</code> kalıbı). Tipografi için kanıtlı ve en yaygın kalıp <strong>serif başlık + sans gövde</strong> (Choc on Choc P22 Mackinac + Inter; zChocolat AGaramond/Cormorant + Manrope); ücretsiz Google Fonts eşdeğerleri önerilir: başlıkta <strong>Cormorant Garamond</strong> veya <strong>Playfair Display</strong>, gövdede <strong>Inter</strong> veya <strong>Manrope</strong>. İsim/monogram için el yazısı vurgu (Compartés Bickham Script kanıtı) opsiyonel ve yalnızca isim alanında; ücretsiz el yazısı eşdeğeri tercih edilmeli. <strong>Kaçınılması gereken:</strong> "kahverengi kutu + altın yazı" klişesi (Base Design/andSons eleştirisi) ve çoklu animasyon; farklılaşma tek bir zarif scroll animasyonu veya özgün fotoğrafçılıkla kurulmalı.</p>
+<h3>Kurumsal hediye kolunu kurma yolu</h3>
+<p>D2C'den ayrı bir gelir hattı olarak düşünülmeli, ama platform kurmadan: (1) siteye <strong>"Kurumsal Hediyeler"</strong> sayfası ekle — kademeli (tier) fiyat tablosu, logo/kişiselleştirme seçenekleri, numune talebi ve Net-30/proforma notu; (2) başlangıçta <strong>concierge (elle) yürüt</strong> — Compartés/Burdick modelinin butik karşılığı, çünkü çikolata nemli/bozulabilir olduğundan fulfillment'ı 3. partiye devretmek tazelik riski taşır; (3) ilk eşik <strong>10 kutu</strong> (Chococraft giriş MOQ'su), sonra 24-50 (andSons tipik); (4) hacim yılda ~<strong>500-1.000 gönderime</strong> ulaşınca tek bir araç ekle (Giftnote Pro 99 USD/ay veya BSS 12,99-36,99 USD/ay); (5) <strong>HRIS/Slack/SSO otomasyonu ve 15.000+ USD/yıl enterprise platformlar (Sendoso, Reachdesk, Awardco) butik için orantısızdır</strong> — bunlar ancak yılda ~1.500-2.000 gönderimden sonra mantıklı. Hedef müşteriler Girne/KKTC'deki oteller, düğün organizatörleri, kafeler, klinikler ve çok uluslu şirketlerin yerel ofisleri olabilir.</p>
+<h3>Sosyal medya ve DM/WhatsApp hunisi — somut adımlar</h3>
+<p>1. <strong>Bio ve highlights:</strong> Bio'da ölçülebilir CTA ("Girne &amp; tüm KKTC — WhatsApp ile sipariş 👉 [link]") + Instagram Order/Message butonu. Highlights: "Söz &amp; Nişan", "Bebek / Hoş Geldin", "Doğum Günü", "İş Yeri / Terfi", "Sizden Gelenler (UGC)", "Nasıl Sipariş Verilir" + mevsimsel ("Sevgililer 2027") — miradizayn kurgusunun butik uyarlaması. 2. <strong>İçerik ritmi:</strong> Haftada 3-5 gönderi — 2 Reel (paketleme/satisfying + atölye/hazırlık), 1 carousel (fiyatlı özel gün fikir listesi), 1 UGC; günlük 1-2 Story. Statik flat-lay yalnızca lansman/"anchor" için (~%10 pay). Hook ilk 3 saniyede; "hediyeyi unutanlar", "bu kutu 3 dakikada hazır", "kendine mi, ona mı?" gibi relatability hook'ları. 3. <strong>Fiyat şeffaflığı:</strong> Caption'da başlangıç fiyatı + "sipariş için DM/WhatsApp"; WhatsApp katalog + <code>/pricing</code> hızlı yanıtı. Bu, Hacı Şerif'teki "fiyat nedir?" yorum selini önler. 4. <strong>Huni akışı:</strong> Reels/Story (hook) → bio linki (tek sipariş CTA'sı: WhatsApp wa.me veya basit sipariş formu) → WhatsApp Business (karşılama + katalog + hızlı yanıtlar) → ödeme (IBAN/havale + kart linki). Kişiye özel siparişlerde <strong>DM'de ödeme linki</strong> en uygun (site şartı yok); Instagram Shop kendi-domain sitesi olmadığı için uygun değil. 5. <strong>Otomasyon:</strong> Ücretsiz comment-to-DM ("FİYAT yaz" → katalog) + WhatsApp greeting/away + 50 hızlı yanıt. <strong>ManyChat ücretsiz katmanı çelişkilidir</strong> (25 vs 1.000 kontak) — güncel değeri teyit et. 6. <strong>Yerel büyüme:</strong> Girne/KKTC'de 1K-20K takipçili nano-creator'lara ürün seeding (düğün organizatörü, kafe/mekan, doğum fotoğrafçısı, anne-bebek hesabı); coğrafi isabet yüksek takipçiden önemli; yerel hashtag (5 sınırı içinde); 18:00-20:00 gönderim. 7. <strong>Ölçüm:</strong> 5.000 takipçinin altında olduğu için etkileşimi <strong>takipçiye göre</strong> ölç; Reels Insights skip rate ve retention'ı izle.</p>
+<h3>Uygulama yol haritası (faz 1 / 2 / 3 + yaklaşık maliyetler)</h3>
+<div class="tablo-sarmal"><table>
+<thead><tr>
+<th>Faz</th>
+<th>Zaman</th>
+<th>İşler</th>
+<th>Yaklaşık maliyet</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>Faz 1 — Temel (Ay 0-2)</strong></td>
+<td>Site + WhatsApp hunisi + özel gün koleksiyonları</td>
+<td>Platform (Woo/ikas veya Shopify Basic), iyzico/PayTR ödeme, hediye notu + teslim tarihi, basit kişiselleştirme (isim/tarih + canlı önizleme), misafir checkout, bio linki + WhatsApp butonu, highlight yeniden kurgusu, 12 özel gün × 2-3 ürün matrisi</td>
+<td><strong>~15-60 USD/ay</strong> araç + platform (Shopify 39 USD/ay) ≈ <strong>~60-110 USD/ay</strong>; kurulum işçiliği ayrı</td>
+</tr>
+<tr>
+<td><strong>Faz 2 — Ölçek ve otomasyon (Ay 2-6)</strong></td>
+<td>İçerik motoru + dönüşüm optimizasyonu</td>
+<td>Comment-to-DM otomasyonu + WhatsApp katalog/hızlı yanıtlar, kargo/paket koruma, yeniden sipariş + çikolata kulübü aboneliği, UGC toplama, Pinterest board'ları (sezon 6-8 hafta önce), yerel seeding ilk dalga (15-20 nano-creator), en iyi Reels'leri küçük bütçeyle boost</td>
+<td>Ek <strong>~10-35 USD/ay</strong> araç + seeding ürün maliyeti (38 creator ~950 USD örneği) + reklam bütçesi</td>
+</tr>
+<tr>
+<td><strong>Faz 3 — Kurumsal ve genişleme (Ay 6-12)</strong></td>
+<td>Kurumsal kol + B2B</td>
+<td>"Kurumsal Hediyeler" sayfası + tier fiyat + teklif formu (concierge), sonra Giftnote Pro (99 USD/ay) veya BSS (12,99-36,99 USD/ay); CSV/çoklu adres; Net-30/proforma; yılda ~500-1.000 gönderim eşiği sonrası değerlendir</td>
+<td><strong>~13-99 USD/ay</strong> ek; HRIS/enterprise platformlar ertelenir</td>
+</tr>
+</tbody></table></div>
+<p><strong>Uygulama öncesi mutlaka teyit edilmesi gerekenler (kritik belirsizlikler):</strong> (a) <strong>KKTC'de Shopify Payments ve TR merkezli sanal POS'ların (iyzico/PayTR) kullanılabilirliği doğrulanamadı</strong> — platform/ödeme kararı buna bağlı; (b) TL fiyatlar (ikas/Ticimax/WooCommerce hosting) teklif gerektirir; (c) tasarım kanıtları kaynak kod tokenlarına dayanır, görsel doğrulama yapılmadı; (d) tüm Instagram takipçi/etkileşim rakamları 9 Kasım 2026 snapshot'ıdır.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Bu araştırmanın en güçlü sonucu, "site mi, DM mi?" sorusunun yanlış bir ikilem olduğudur: dünyada kazanan markalar özel günü <strong>hem</strong> bir navigasyon/vitrin sistemi <strong>hem</strong> bir kişiselleştirme motoru olarak kuruyor, ama ölçeklenen kısım üretim değil <strong>şablon kütüphanesidir</strong> — onlarca özel günü birkaç ürün formatıyla çaprazlayan bir matris. Beyza Blanc'ın 415 takipçili bir butik olarak en büyük riski, 30 markayı 30 farklı üretim hattı gibi taklit edip işçiliğe boğulmak; en büyük fırsatı ise <strong>fiyat/adet/teslim tarihi belirsizliğini kaldırıp</strong> özel gün niyetini WhatsApp'ta hızlıca siparişe çevirmektir. İkinci ve daha az görünür sonuç, kurumsal hediye kolunun bir "sonraki aşama" değil, <strong>ayrı bir iş kolu</strong> olduğudur; ancak butik ölçeğinde bu kol platform kurmakla değil, concierge + tek uygulama + ~10 kutu MOQ ile açılır ve HRIS otomasyonu/enterprise platformlar yılda ~1.500-2.000 gönderime kadar ertelenmelidir. Üçüncü sonuç, KKTC'nin kendine özgü bir konum sağladığıdır: TR'ye satışta gümrük/GTIP yükü ve %30 tek ve maktu vergi bir engelken, <strong>KKTC içi aynı gün teslimat + yerel kart kabulü</strong> pazarlanabilir bir "son sipariş" avantajıdır; bu yüzden ilk fazda hedef pazarı KKTC içinde tutup siteyi oraya göre kurmak, sonra TR'yi pazaryeri veya Türkiye içi fulfillment ile denemek en rasyonel sıralamadır.</p>
+  </main>
+</div>
+
+<footer class="sayfa-alti">
+  <div class="sayfa-alti__ic">
+    <span>Beyza Blanc — Özel Gün Çikolatasını Site ve WhatsApp Birlikte Satıyor</span>
+    <span>Kaynak: araştırma notları (research_notes) · 9 Kasım 2026</span>
+  </div>
+</footer>
+
+</body>
+</html>

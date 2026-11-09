@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kendi Tasarımını Oluştur — Tasarım Stüdyosu | Beyza Blanc</title>
+<meta name="description" content="Ürünü, özel günü, renkleri, kutusunu ve üzerindeki yazıyı seç; fotoğrafını yükle, tasarımını canlı gör, özet ekranında onayla ve WhatsApp’tan fiyat iste.">
+<meta name="theme-color" content="#fff8f3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Playfair+Display:wght@500;600&family=Great+Vibes&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-sayfa="studyo">
+<a class="skip-link" href="#icerik">İçeriğe geç</a>
+<div data-bilesen="ustbar"></div>
+<div data-bilesen="duyuru"></div>
+
+<main id="icerik">
+  <section class="bolum bolum--dar">
+    <div class="kap">
+      <p class="hero__etiket">Tasarım stüdyosu</p>
+      <h1>Kendi Tasarımını Oluştur</h1>
+      <p class="hero__metin">
+        Seçimlerini yaptıkça soldaki önizleme anında güncellenir. İşin bittiğinde özet ekranında
+        yazımı kontrol et, onayla ve tek dokunuşla WhatsApp’a gönder. Sitede online ödeme yoktur.
+      </p>
+      <p class="not-kutu" id="studyo-son-siparis"></p>
+    </div>
+  </section>
+
+  <section class="bolum bolum--dar">
+    <div class="kap studyo">
+
+      <!-- Önizleme -->
+      <div class="studyo__onizleme">
+        <div class="onizleme-kart">
+          <canvas id="onizleme" width="1000" height="1000" role="img" aria-label="Tasarımının canlı önizlemesi"></canvas>
+          <div class="onizleme-alt">
+            <span>Canlı önizleme — gördüğün tasarımın birebir üretim provası değil, tasarım ön izlemesidir.</span>
+          </div>
+        </div>
+        <p class="kucuk soluk" style="margin-top:1rem">
+          Yüklediğin fotoğraf cihazından dışarı çıkmaz. Yalnızca özet ekranında “gönder” dediğinde,
+          senin onayınla WhatsApp’a gider.
+        </p>
+      </div>
+
+      <!-- Kontroller -->
+      <div>
+        <form id="studyo-form" novalidate>
+
+          <div class="panel">
+            <h2>1. Ürün ve adet</h2>
+            <p class="panel__ipucu">Ne hazırlıyoruz? Adet seçimin fiyatı belirleyen ana etkendir.</p>
+
+            <fieldset class="alan">
+              <legend class="alan__etiket">Ürün tipi</legend>
+              <div class="secimler" id="alan-urun"></div>
+            </fieldset>
+
+            <fieldset class="alan">
+              <legend class="alan__etiket">Boyut</legend>
+              <div class="secimler" id="alan-boyut"></div>
+            </fieldset>
+
+            <div class="alan">
+              <label class="alan__etiket" for="adet">Sipariş adedi</label>
+              <select id="adet" name="adet"></select>
+              <p class="alan__yardim">10 adet ve üzeri siparişler kurumsal fiyatla değerlendirilir.</p>
+            </div>
+
+            <fieldset class="alan">
+              <legend class="alan__etiket">Çikolata tipi</legend>
+              <div class="secimler" id="alan-cikolata"></div>
+            </fieldset>
+          </div>
+
+          <div class="panel">
+            <h2>2. Özel gün</h2>
+            <p class="panel__ipucu">Tema, önerilen renk ve kurdeleyi otomatik ayarlar; sonra istediğini değiştirebilirsin.</p>
+            <fieldset class="alan">
+              <legend class="alan__etiket">Hangi özel gün için?</legend>
+              <div class="secimler" id="alan-tema"></div>
+            </fieldset>
+          </div>
+
+          <div class="panel">
+            <h2>3. Üzerindeki yazı</h2>
+            <p class="panel__ipucu">Çikolatanın ve kutunun üzerine işlenecek isim, tarih ve kısa not.</p>
+
+            <div class="alan">
+              <label class="alan__etiket" for="isim">İsim (veya baş harfler)</label>
+              <input type="text" id="isim" name="isim" autocomplete="off" placeholder="Örn. Elif &amp; Mert">
+              <p class="alan__yardim">En fazla 22 karakter. Birden fazla isim için “&amp;” kullanabilirsin.</p>
+            </div>
+
+            <div class="alan">
+              <label class="alan__etiket" for="tarih">Özel tarih (isteğe bağlı)</label>
+              <input type="date" id="tarih" name="tarih">
+            </div>
+
+            <div class="alan">
+              <label class="alan__etiket" for="mesaj">Kart notu (isteğe bağlı)</label>
+              <textarea id="mesaj" name="mesaj" placeholder="Örn. İyi ki doğdun, hep mutlu ol."></textarea>
+              <p class="alan__yardim">En fazla 60 karakter. Kart seçtiysen bu not kartın üzerine yazılır.</p>
+            </div>
+
+            <fieldset class="alan">
+              <legend class="alan__etiket">Yazı tipi</legend>
+              <div class="secimler" id="alan-font"></div>
+            </fieldset>
+          </div>
+
+          <div class="panel">
+            <h2>4. Fotoğraf veya logo</h2>
+            <p class="panel__ipucu">Bebeğinizin fotoğrafı, çift fotoğrafı ya da şirket logonuz.</p>
+            <div class="alan">
+              <label class="alan__etiket" for="foto">Fotoğraf / logo yükle</label>
+              <div class="dosya-alani">
+                <input type="file" id="foto" accept="image/*">
+                <div class="dosya-onizleme" id="foto-onizleme"></div>
+                <button class="btn btn--cizgili btn--kucuk" type="button" id="foto-kaldir" hidden style="margin-top:0.75rem">
+                  Fotoğrafı kaldır
+                </button>
+              </div>
+              <p class="alan__yardim">Dosya cihazından yüklenmez; önizleme tamamen tarayıcında oluşur.</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2>5. Ambalaj, kurdele ve kart</h2>
+
+            <fieldset class="alan">
+              <legend class="alan__etiket">Kutu / ambalaj rengi</legend>
+              <div class="renk-secim" id="alan-ambalaj"></div>
+            </fieldset>
+
+            <fieldset class="alan">
+              <legend class="alan__etiket">Kurdele</legend>
+              <div class="renk-secim" id="alan-kurdele"></div>
+            </fieldset>
+
+            <fieldset class="alan">
+              <legend class="alan__etiket">Kart</legend>
+              <div class="secimler" id="alan-kart"></div>
+            </fieldset>
+          </div>
+
+          <div class="panel">
+            <h2>6. Teslim</h2>
+            <p class="panel__ipucu">
+              Hediye kime gidecek, nasıl ulaşacak ve hangi gün elinde olmalı? Bunlar teklif
+              mesajına eklenir; teslim gününü birlikte netleştiririz.
+            </p>
+
+            <div class="alan">
+              <label class="alan__etiket" for="aliciAdi">Alıcının adı (isteğe bağlı)</label>
+              <input type="text" id="aliciAdi" name="aliciAdi" autocomplete="off" placeholder="Örn. Ayşe Yılmaz">
+            </div>
+
+            <fieldset class="alan">
+              <legend class="alan__etiket">Teslim şekli</legend>
+              <div class="secimler" id="alan-teslim"></div>
+            </fieldset>
+
+            <div class="alan">
+              <label class="alan__etiket" for="teslimTarihi">Hangi gün elinde olmalı?</label>
+              <input type="date" id="teslimTarihi" name="teslimTarihi">
+              <p class="alan__yardim" id="teslim-yardim"></p>
+            </div>
+
+            <div class="alan">
+              <label class="alan__etiket" for="teslimNotu">Teslim notu (isteğe bağlı)</label>
+              <textarea id="teslimNotu" name="teslimNotu" placeholder="Örn. Sürpriz olacak, arayıp bilgi vermeyin;"></textarea>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2>7. Ekstralar</h2>
+            <ul class="onay-listesi" id="ekstra-liste"></ul>
+          </div>
+
+        </form>
+
+        <div class="panel">
+          <h2>8. Tasarımı gönder</h2>
+          <p class="panel__ipucu">
+            “Onayla ve gönder” dediğinde önce bir özet ekranı açılır: isim, tarih, renk ve teslim
+            bilgilerini son bir kez kontrol edip onaylarsın. Sonra görsel ve mesaj WhatsApp’a aktarılır.
+          </p>
+
+          <div class="studyo__eylem">
+            <button class="btn btn--wa btn--tam" type="button" id="btn-paylas">
+              ✅ Tasarımı onayla ve gönder
+            </button>
+            <button class="btn btn--cizgili btn--tam" type="button" id="btn-wa">
+              Özeti metin olarak WhatsApp’ta aç
+            </button>
+            <button class="btn btn--cizgili btn--tam" type="button" id="btn-indir">
+              Görseli indir (PNG)
+            </button>
+            <button class="btn btn--cizgili btn--tam" type="button" id="btn-sifirla">
+              Baştan başla
+            </button>
+          </div>
+
+          <p class="studyo__durum" id="studyo-durum" role="status" aria-live="polite"></p>
+
+          <div class="alan" style="margin-top:1.25rem">
+            <label class="alan__etiket" for="studyo-ozet">WhatsApp’a gidecek mesaj</label>
+            <textarea id="studyo-ozet" readonly rows="14" aria-describedby="ozet-yardim"></textarea>
+            <p class="alan__yardim" id="ozet-yardim">
+              Bu metin seçimlerine göre otomatik oluşur ve WhatsApp mesajına eklenir.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<!-- Üretim öncesi son kontrol: araştırmada en sık UX şikâyeti "gördüğümle gelen farklı" -->
+<dialog class="onay-diyalog" id="onay-diyalog" aria-labelledby="onay-baslik">
+  <div class="onay-diyalog__ic">
+    <h2 id="onay-baslik">Göndermeden önce son kontrol</h2>
+    <p class="soluk">
+      Aşağıdaki bilgiler üretimde birebir kullanılacak. Yazım, tarih veya renk hatası varsa şimdi
+      düzeltmen gerekir.
+    </p>
+
+    <div class="onay-diyalog__onizleme">
+      <canvas id="onay-tuval" width="480" height="480" role="img" aria-label="Tasarımının özet görseli"></canvas>
+      <ul class="onay-liste" id="onay-liste"></ul>
+    </div>
+
+    <div class="onay-tasdik">
+      <label for="onay-tasdik">
+        <input type="checkbox" id="onay-tasdik">
+        <span>
+          İsim, tarih ve yazıların <strong>birebir bu şekilde basılacağını</strong> kontrol ettim;
+          kart notu, teslim şekli ve teslim günü bilgilerinin doğru olduğunu onaylıyorum.
+        </span>
+      </label>
+    </div>
+
+    <p class="kucuk soluk" id="onay-son-siparis"></p>
+
+    <div class="onay-eylem">
+      <button class="btn btn--wa" type="button" id="btn-gonder" disabled>💬 WhatsApp’tan gönder</button>
+      <button class="btn btn--cizgili" type="button" id="btn-duzenle">Geri dön ve düzenle</button>
+    </div>
+
+    <p class="studyo__durum" id="onay-durum" role="status" aria-live="polite"></p>
+  </div>
+</dialog>
+
+<div data-bilesen="altbilgi"></div>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/studyo.js"></script>
+</body>
+</html>

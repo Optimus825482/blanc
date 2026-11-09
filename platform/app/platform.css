@@ -1,0 +1,51 @@
+
+.v-acilis h1 { font-size: clamp(2.65rem, 1.6rem + 4vw, 5rem); }
+.bb-topics { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr)); gap:1.25rem; }
+.bb-topics .v-kart { display:block; padding-bottom:1rem; }
+.bb-topics h3 { margin-block:.8rem .4rem; }
+.bb-topics p { color:var(--v-soluk); margin-bottom:0; }
+.bb-prose { max-width:62ch; }
+.bb-prose p { white-space:pre-line; }
+.bb-nav { display:flex; flex-wrap:wrap; gap:1rem; }
+.bb-detail-image { border:1px solid var(--v-cizgi); }
+.bb-admin { width:min(100% - 2rem, 70rem); margin:2rem auto; }
+.bb-admin form { display:grid; gap:.8rem; padding:1.25rem; margin-block:1rem; border:1px solid var(--cizgi); background:var(--beyaz); }
+.bb-admin label { display:grid; gap:.25rem; min-width:0; }
+.bb-admin input:not([type=checkbox]), .bb-admin textarea { width:100%; min-width:0; font:inherit; color:inherit; padding:.55rem; border:1px solid #89746b; background:white; border-radius:4px; }
+.bb-admin textarea { min-height:7rem; resize:vertical; }
+.bb-admin button { justify-self:start; }
+.bb-admin img { max-width:min(100%, 9rem); height:auto; }
+.bb-admin .bb-check { display:flex; align-items:center; min-height:44px; }
+.bb-admin .bb-check input { width:1.1rem; height:1.1rem; }
+.bb-admin .bb-status { padding:.75rem; background:#f0e6d7; }
+.bb-admin details { border-bottom:1px solid var(--cizgi); }
+.bb-admin summary { cursor:pointer; min-height:44px; padding:.65rem 0; font-weight:600; }
+
+.bb-page-intro { max-width: 48rem; padding-bottom: clamp(1.5rem, 4vw, 3rem); }
+.bb-page-intro h1, .bb-inner-page h1 { font-size: clamp(2.6rem, 1.5rem + 3.5vw, 4.8rem); line-height: 1; }
+.bb-page-intro p:last-child { max-width: 57ch; color: var(--v-soluk); }
+.bb-inner-page { padding-block: clamp(2rem, 6vw, 5rem); }
+.bb-inner-page .bb-prose p { color: var(--v-soluk); }
+.bb-inner-page .bb-detail-image { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; }
+.bb-topics .v-kart { background: #fff9ef; border: 1px solid var(--v-cizgi); }
+.bb-topics .v-kart img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+.bb-topics .v-kart h3, .bb-topics .v-kart p { margin-inline: 1rem; }
+.bb-topics .v-kart:focus-visible, .vitrin a:focus-visible { outline: 3px solid #806029; outline-offset: 3px; }
+
+/* Management forms retain native controls and visible focus states. */
+.bb-admin { max-width: 68rem; }
+.bb-admin > a { display: inline-flex; align-items: center; min-height: 44px; color: #6e3b35; }
+.bb-admin > h1 { font-size: clamp(2.4rem, 1.4rem + 3vw, 4rem); margin-block: 1rem; }
+.bb-admin > h2 { margin-block: 2.5rem .75rem; font-size: 2rem; }
+.bb-admin > details { background: #fffdfa; border: 1px solid #dfd0be; margin-block: .5rem; }
+.bb-admin > details > summary { padding: .9rem 1rem; color: #3d2016; }
+.bb-admin > details > summary:hover { background: #f5ebdf; }
+.bb-admin details form { margin: 0; border: 0; border-top: 1px solid #dfd0be; }
+.bb-admin input:focus-visible, .bb-admin textarea:focus-visible, .bb-admin button:focus-visible, .bb-admin summary:focus-visible {
+  outline: 3px solid #806029;
+  outline-offset: 3px;
+}
+.bb-admin .btn--birincil { background: #512730; border-color: #512730; color: #fffaf5; }
+.bb-stories { display:flex; gap:1rem; overflow-x:auto; padding:.4rem .25rem 1.5rem; }
+.bb-story { display:grid; justify-items:center; gap:.4rem; min-width:6rem; font-size:.7rem; text-align:center; text-decoration:none; }
+.bb-story img { width:5.25rem; height:5.25rem; object-fit:cover; border-radius:50%; padding:3px; border:2px solid #a77c4e; }

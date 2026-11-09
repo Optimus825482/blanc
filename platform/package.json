@@ -1,0 +1,20 @@
+{
+  "name": "beyza-blanc-platform",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "db:seed": "node db/seed.mjs"
+  },
+  "type": "module",
+  "dependencies": {
+    "@next/env": "^16.4.5",
+    "next": "^16.4.5",
+    "pg": "^8.23.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "sharp": "^0.35.5"
+  },
+  "private": true
+}

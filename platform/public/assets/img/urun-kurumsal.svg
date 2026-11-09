@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="Kurumsal logo baskılı siyah hediye kutusu illüstrasyonu">
+  <defs>
+    <linearGradient id="kurumsalKutu" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2624"/>
+      <stop offset="1" stop-color="#12100f"/>
+    </linearGradient>
+    <radialGradient id="kurumsalMadlen" cx="35%" cy="30%" r="75%">
+      <stop offset="0" stop-color="#54361f"/>
+      <stop offset="1" stop-color="#2b1608"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="600" fill="#f2ede6"/>
+
+  <rect x="110" y="120" width="580" height="380" rx="20" fill="url(#kurumsalKutu)" stroke="#cfb56a" stroke-width="2.5"/>
+  <rect x="132" y="142" width="536" height="336" rx="12" fill="none" stroke="#cfb56a55" stroke-width="1.5"/>
+
+  <g transform="translate(400 250)">
+    <circle r="62" fill="none" stroke="#cfb56a" stroke-width="3"/>
+    <text x="0" y="10" fill="#cfb56a" font-family="Helvetica, Arial, sans-serif" font-size="26" text-anchor="middle" letter-spacing="3">LOGO</text>
+  </g>
+
+  <text x="400" y="352" fill="#f0e3d2" font-family="Georgia, serif" font-size="26" text-anchor="middle" letter-spacing="4">ŞİRKET ADI</text>
+  <text x="400" y="392" fill="#f0e3d299" font-family="Georgia, serif" font-size="18" text-anchor="middle" letter-spacing="3">5. YILIN KUTLU OLSUN · ELİF YILMAZ</text>
+
+  <g>
+    <circle cx="200" cy="450" r="30" fill="url(#kurumsalMadlen)"/>
+    <circle cx="272" cy="450" r="30" fill="url(#kurumsalMadlen)"/>
+    <circle cx="344" cy="450" r="30" fill="url(#kurumsalMadlen)"/>
+    <circle cx="416" cy="450" r="30" fill="url(#kurumsalMadlen)"/>
+    <circle cx="488" cy="450" r="30" fill="url(#kurumsalMadlen)"/>
+    <circle cx="560" cy="450" r="30" fill="url(#kurumsalMadlen)"/>
+  </g>
+
+  <rect x="110" y="500" width="580" height="14" fill="#cfb56a" opacity="0.85"/>
+</svg>

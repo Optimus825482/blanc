@@ -1,0 +1,89 @@
+import { getContent, getCategories } from '../../lib/db';
+import { contact, instagram, pageMetadata, siteUrl } from '../../lib/seo';
+import Cards from './cards';
+import InstagramFeed from './instagram-feed';
+import { getInstagram } from '../../lib/instagram';
+import './home.css';
+
+export const dynamic = 'force-dynamic';
+export async function generateMetadata() {
+  const home = await getContent('home');
+  return pageMetadata('Girne Alsancak’ta ' + home.title, home.body, '/', home.image);
+}
+
+const posts = [
+  ['Dd_qwYWKdYV', 'Altın çikolata aranjmanı', 'nisan/altin-cikolata-aranjmani'],
+  ['DfUupJkiL_s', 'İsme özel bebek hediyeliği', 'bebek/isme-ozel-pleksi-kapi-susu'],
+  ['DeKCxa2KYvX', 'Gökhan Türk Motors çalışması', 'kurumsal/gokhan-turk-motors'],
+];
+
+export default async function Home() {
+  const [home, about, corporate, categories, feed] = await Promise.all([
+    getContent('home'), getContent('about'), getContent('corporate'), getCategories(), getInstagram()
+  ]);
+  const business = {
+    '@context': 'https://schema.org', '@type': 'LocalBusiness', name: 'Beyza Blanc',
+    description: home.body, url: siteUrl || undefined,
+    image: siteUrl ? new URL(home.image, siteUrl).href : undefined, sameAs: [instagram],
+    address: { '@type': 'PostalAddress', addressLocality: 'Alsancak', addressRegion: 'Girne' },
+  };
+  return <div className="bb-home">
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(business).replace(/</g, '\\u003c') }} />
+    <section className="bb-cover" aria-labelledby="cover-title">
+      <div className="v-kabuk bb-cover-grid">
+        <div className="bb-cover-copy">
+          <p className="bb-overline">Çikolata ve hediye atölyesi</p>
+          <h1 id="cover-title">{home.title}</h1>
+          <p className="bb-cover-intro">{home.body}</p>
+          <div className="v-eylemler">
+            <a className="bb-gold-button" href="#koleksiyonlar">Koleksiyonları keşfet <span aria-hidden="true">↘</span></a>
+            <a className="v-metin-link" href="/studyo">Tasarım stüdyosunu aç <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <figure className="bb-cover-figure">
+          <div className="bb-cover-photo"><img src={home.image} alt={home.alt} width="640" height="640" fetchPriority="high" /></div>
+          <figcaption><span>BEYZA BLANC</span><span>ALSANCAK · GİRNE</span></figcaption>
+        </figure>
+      </div>
+    </section>
+    <nav className="bb-index v-kabuk" aria-label="Vitrin bölümleri">
+      <a href="#koleksiyonlar"><small>01</small> Koleksiyonlar <span aria-hidden="true">↘</span></a>
+      <a href="#tasarim"><small>02</small> Kişiselleştirme <span aria-hidden="true">↘</span></a>
+      <a href="#kurumsal"><small>03</small> Kurumsal hediyeler <span aria-hidden="true">↘</span></a>
+    </nav>
+    <section className="v-kabuk v-bolum bb-collection" id="koleksiyonlar">
+      <div className="v-bolum-baslik" data-reveal=""><div><p className="v-etiket">01 / Koleksiyonlar</p><h2>Kutlamanıza eşlik eden tasarımlar</h2><p>Nişan tepsilerinden isme özel bebek hediyelerine, atölyenin çalışmalarını keşfedin.</p></div>
+        <a className="v-metin-link" href="/koleksiyonlar">Tüm koleksiyonlar</a></div>
+      <Cards categories={categories} />
+      {!categories.length && <p>Yeni koleksiyonlarımız hazırlanıyor.</p>}
+    </section>
+    <section className="bb-process" id="tasarim" aria-labelledby="process-title">
+      <div className="v-kabuk bb-process-grid">
+        <div data-reveal="">
+          <p className="bb-overline">02 / Kişiye özel</p>
+          <h2 id="process-title">İlk fikirden son kurdeleye</h2>
+          <a className="v-metin-link" href="/studyo">Stüdyoda tasarla <span aria-hidden="true">↗</span></a>
+        </div>
+        <ol>
+          <li data-reveal=""><span aria-hidden="true">01</span><div><h3>Özel günü seçin</h3><p>Koleksiyonlara göz atın veya doğrudan stüdyoda başlayın.</p></div></li>
+          <li data-reveal=""><span aria-hidden="true">02</span><div><h3>İmzanızı ekleyin</h3><p>İsim, tarih, renk ve kutu seçimlerinizi canlı önizlemede görün.</p></div></li>
+          <li data-reveal=""><span aria-hidden="true">03</span><div><h3>Atölyeyle paylaşın</h3><p>Görseli indirip etkinlik tarihi ve adetle birlikte Instagram’dan iletin.</p></div></li>
+        </ol>
+      </div>
+    </section>
+    <section className="v-kabuk v-eslesme bb-atelier">
+      <img data-reveal="" src={about.image} alt={about.alt} width="640" height="640" loading="lazy" />
+      <div className="v-panel bb-prose" data-reveal=""><p className="v-etiket">Alsancak / Atölye</p>
+        <h2>{about.title}</h2><p>{about.body}</p><a className="v-dugme" href="/hakkimizda">Atölyeyi tanıyın</a></div>
+    </section>
+    <section className="v-kabuk v-eslesme v-kurumsal bb-atelier" id="kurumsal">
+      <div className="v-panel bb-prose" data-reveal=""><p className="v-etiket">03 / Kurumsal hediyeler</p>
+        <h2>{corporate.title}</h2><p>{corporate.body}</p><a className="v-dugme v-dugme--cizgi" href="/kurumsal">Kurumsal hediyeleri inceleyin</a></div>
+      <img data-reveal="" src={corporate.image} alt={corporate.alt} width="640" height="640" loading="lazy" />
+    </section>
+    <InstagramFeed feed={feed} fallback={posts.map(([id, title, image]) => ({
+      id, caption: title, image: '/assets/img/instagram/' + image + '.webp',
+      link: 'https://www.instagram.com/p/' + id + '/',
+    }))} />
+  </div>;
+}

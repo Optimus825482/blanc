@@ -1,0 +1,4 @@
+0542 876 89 10	tel:+90 542 876 89 10
+Kargonuzu Takip Edin	https://api.whatsapp.com/send?phone=+905428768910&text=Merhaba Kibrishediyesepeti.com, Vermiþ olduðum sipariþin durumunu öðrenmek istiyorum.
+Facebook	https://www.facebook.com/kibriscicekci
+Ýnstagram	https://www.instagram.com/kibriscicekci

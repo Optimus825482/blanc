@@ -1,0 +1,69 @@
+kahvedunyasi.com’da	/kurumsal-hediyeler
+Kurumsal Hediyeler	/kurumsal-hediyeler
+HEDÝYE GÖNDER	/hediye-gonder-c-196
+KAHVE	/kahve-c-40
+ÇÝKOLATA	/cikolata-c-46
+PASTACILIK	/pastacilik-c-47
+Tümünü Gör	/haberler-ve-firsatlar
+Reform Alýþveriþ Çantasý 870,00 TL Sepete Ekle	/urun/reform-alisveris-cantasi-p-2427
+Kahve Dünyasý Algötür Metal Termos 460 ml 1.300,00 TL Sepete Ekle	/urun/kahve-dunyasi-algotur-metal-termos-460-ml-p-2407
+Tablet Çikolata Brownie Dolgulu 350,00 TL Sepete Ekle	/urun/tablet-cikolata-brownie-dolgulu-p-2448
+Tablet Çikolata Bademli Krokanlý ve Karamelli 350,00 TL Sepete Ekle	/urun/tablet-cikolata-bademli-krokanli-ve-karamelli-p-2447
+Özel Seri Soðuk Fýndýk Aromalý Caffe Latte 10'lu 250,00 TL Sepete Ekle	/urun/ozel-seri-soguk-findik-aromali-caffe-latte-10lu-p-324
+Guatemala Filtre Kahve Kilitli 250g 365,00 TL Sepete Ekle	/urun/guatemala-filtre-kahve-kilitli-250g-p-2425
+Lavi Karýþýk Dolgulu Çikolata Silindir Kutu 400g 500,00 TL Sepete Ekle	/urun/lavi-karisik-dolgulu-cikolata-silindir-kutu-400g-p-290
+Özel Seri Soðuk Vanilyalý Aromalý Caffe Latte 10'lu 250,00 TL Sepete Ekle	/urun/ozel-seri-soguk-vanilyali-aromali-caffe-latte-10lu-p-312
+Geçmiþ Olsun Hediye Kutusu 94,90 TL Sepete Ekle	/urun/gecmis-olsun-hediye-kutusu-p-7
+Baþarýlarýnýn Devamýný Dilerim Hediye Kutusu 94,90 TL Sepete Ekle	/urun/basarilarinin-devamini-dilerim-hediye-kutusu-p-9
+Yeni Yaþýn Mutlu Olsun Hediye Kutusu 94,90 TL Sepete Ekle	/urun/yeni-yasin-mutlu-olsun-hediye-kutusu-p-6
+Hayat Seninle Güzel Hediye Kutusu 94,90 TL Sepete Ekle	/urun/hayat-seninle-guzel-hediye-kutusu-p-29
+Tümünü Gör	/blog
+Kahve	/blog?BlogCategoryType=Coffee
+Ekim 22, 2026	/blog/kahve-dunyasinda-proteinli-icecek-keyfi-sevdiginiz-lezzete-bir-shot-whey-protein-ekleyin-33
+Bizden Haberler	/blog?BlogCategoryType=NewsFromUs
+Ocak 28, 2026	/blog/reform-ile-yeni-degil-yeniden-30
+Reform ile Yeni Deðil Yeniden	/blog/reform-ile-yeni-degil-yeniden-30
+Tarif	/blog?BlogCategoryType=Recipes
+Aralýk 29, 2025	/blog/salep-ve-sicak-cikolata-tarifi-29
+Salep ve Sýcak Çikolata Tarifi	/blog/salep-ve-sicak-cikolata-tarifi-29
+Ekim 24, 2025	/blog/filtre-kahve-kac-kalori-28
+Filtre Kahve Kaç Kalori	/blog/filtre-kahve-kac-kalori-28
+Mayýs 06, 2025	/blog/kahve-dunyasinin-kapsul-kahve-serileriyle-kahve-deneyiminizi-bir-ust-seviyeye-tasiyin-27
+Bizi Takip Edin	https://www.instagram.com/kahvedunyasi
+Google Play	https://play.google.com/store/apps/details?id=com.kahvedunyasi.app
+App Store	https://apps.apple.com/tr/app/kahve-d%C3%BCnyas%C4%B1-%C3%A7ekirdek-kazan/id1364478029
+App Gallery	https://appgallery.huawei.com/#/app/C100896347
+Çerez Politikasý	/sozlesmeler?type=Cookies
+Gizlilik Politikasý	/sozlesmeler?type=ClarificationText
+Üyelik Sözleþmesi	/sozlesmeler?type=UserConsent
+Loodos	https://www.loodos.com.tr/
+Türk Kahvesi	/kahve/turk-kahvesi-c-24
+Filtre Kahve	/kahve/filtre-kahve-c-23
+Kapsül Kahve	/kahve/kapsul-kahve-c-187
+Espresso	/kahve/espresso-c-28
+Salep Ve Sýcak Çikolata	/kahve/salep-ve-sicak-cikolata-c-15
+Hazýr Kahveler	/kahve/hazir-kahveler-c-29
+Þuruplar	/kahve/suruplar-c-9
+Çikolata	/cikolata-c-46
+Atýþtýrmalýk Ve Çikolata	/cikolata/atistirmalik-ve-cikolata-c-32
+Kutu Çikolata	/cikolata/kutu-cikolata-c-20
+Çikolata Kaplýlar	/cikolata/cikolata-kaplilar-c-54
+Fit Lezzetler	/cikolata/fit-lezzetler-c-2
+Pastacýlýk	/pastacilik-c-47
+Kakao	/pastacilik/kakao-c-4
+Kuvertür Çikolata	/pastacilik/kuvertur-cikolata-c-42
+Pul Çikolata	/pastacilik/pul-cikolata-c-36
+Hediye Gönder	/hediye-gonder-c-196
+Hikayemiz	/hikayemiz
+Üretim	/uretim
+Kurumsal Çözümler	/kurumsal-cozumler
+Kariyer	/kariyer
+Atölye	/atolye
+Tüm Maðazalar	/magazalar
+Blog	/blog
+Franchise	/franchise
+Sýkça Sorulan Sorular	/sikca-sorulan-sorular
+Ýletiþim	/sikca-sorulan-sorular?type=CONTACT
+Bize Ulaþýn	/sikca-sorulan-sorular?type=CONTACT_FORM
+0 (850) 393 7070	tel:+908503937070
+#TOTAL=68

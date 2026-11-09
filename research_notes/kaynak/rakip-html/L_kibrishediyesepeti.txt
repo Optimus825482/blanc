@@ -1,0 +1,42 @@
+0542 876 89 10	tel:+90 542 876 89 10
+Kargonuzu Takip Edin	https://api.whatsapp.com/send?phone=+905428768910&text=Merhaba Kibrishediyesepeti.com, Vermiş olduğum siparişin durumunu öğrenmek istiyorum.
+Facebook	https://www.facebook.com/kibriscicekci
+İnstagram	https://www.instagram.com/kibriscicekci
+0 ürün - ₺0,00 0	https://www.kibrishediyesepeti.com/index.php?route=checkout/cart
+Seni Seviyorum	https://www.kibrishediyesepeti.com/seni-seviyorum
+Doğum Günü	https://www.kibrishediyesepeti.com/dogum-gunu
+Buket Çeşitleri	https://www.kibrishediyesepeti.com/buket-cesitleri
+Saksı Bitkileri	https://www.kibrishediyesepeti.com/saksi-bitkileri
+Özür Dilerim	https://www.kibrishediyesepeti.com/ozur-dilerim
+Geçmiş Olsun	https://www.kibrishediyesepeti.com/gecmis-olsun
+Tebrik Ederim	https://www.kibrishediyesepeti.com/tebrik-ederim
+Premium Kutu Çikolata	https://www.kibrishediyesepeti.com/premium-kutu-cikolata
+Yıl Dönümü	https://www.kibrishediyesepeti.com/yil-donumu
+Anneler Günü	https://www.kibrishediyesepeti.com/anneler-gunu
+Babalar Günü	https://www.kibrishediyesepeti.com/babalar-gunu
+Yeni Bebek	https://www.kibrishediyesepeti.com/yeni-bebek
+Helyum Balonlar	https://www.kibrishediyesepeti.com/helyum-balonlar
+WhatsApp Destek	https://api.whatsapp.com/send?phone=+905428768910&text=Ürünleriniz%20hakkında%20bilgi%20almak%20istiyorum.
+Kasımpatı Buketi	https://www.kibrishediyesepeti.com/kasimpati-buketi
+Soru Sor "> Soru Sor	javascript:open_popup(22)
+7 Beyaz Gül Buketi	https://www.kibrishediyesepeti.com/7-beyaz-gul-buketi
+7 Kırmızı Gül Buketi	https://www.kibrishediyesepeti.com/7-kirmizi-gul-buketi
+Çift Dallı Beyaz Orkide	https://www.kibrishediyesepeti.com/cift-dalli-beyaz-orkide
+9 Adet Beyaz Gül Buketi	https://www.kibrishediyesepeti.com/9-adet-beyaz-gul-buketi
+Büyük Boy Spatifilyum	https://www.kibrishediyesepeti.com/buyuk-boy-spatifilyum
+Büyük Boy Antoryum	https://www.kibrishediyesepeti.com/buyuk-boy-antoryum
+11 Kırmızı Gül Buketi	https://www.kibrishediyesepeti.com/11-kirmizi-gul-buketi
+11 Beyaz Gül Buketi	https://www.kibrishediyesepeti.com/11-beyaz-gul-buketi
+Kırmızı Guzmanya	https://www.kibrishediyesepeti.com/kirmizi-guzmanya
+7/24 Müşteri Hizmetleri +90 542 876 89 10	tel:+905428768910
+Hakkımızda	https://www.kibrishediyesepeti.com/hakkimizda
+Teslimat Bilgisi	https://www.kibrishediyesepeti.com/teslimat-bilgileri
+Gizlilik Sözleşmesi	https://www.kibrishediyesepeti.com/gizlilik-ilkeleri
+Mesafeli Satış Sözleşmesi	https://www.kibrishediyesepeti.com/mesafeli-satis-sozlesmesi
+Çerez Politikası	https://www.kibrishediyesepeti.com/cerez-politikasi
+İade Şartları	https://www.kibrishediyesepeti.com/iade-sartlari
+Telif Hakkı Politikası	https://www.kibrishediyesepeti.com/telif-hakki-politikasi
+İletişim	https://www.kibrishediyesepeti.com/index.php?route=information/contact
+instagram	https://www.instagram.com/kibriscicekci
+Copyright © 2022 - Tüm Hakları Saklıdır - Tasarım:Kibrishediyesepeti.com	https://www.kibrishediyesepeti.com
+#TOTAL=41

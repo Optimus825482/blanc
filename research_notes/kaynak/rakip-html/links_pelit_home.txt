@@ -1,0 +1,95 @@
+Dil	#
+Turkish	https://www.pelit.com.tr/tr/
+English	https://www.pelit.com.tr/en/
+Yeni Ürünler	https://www.pelit.com.tr/yeni-urunler/
+Son Baktýklarýnýz	https://www.pelit.com.tr/son-baktiklariniz/
+Çikolata Muse	http://www.pelitcikolatamuse.com/
+Hediye Önerileri	https://www.pelit.com.tr/hediye-onerileri/
+Ýletiþim	https://www.pelit.com.tr/iletisim/
+Pasta	https://www.pelit.com.tr/pasta/
+Doðum Günü	https://www.pelit.com.tr/pasta/dogum-gunu/
+Bebek	https://www.pelit.com.tr/pasta/dogum-gunu/bebek/
+Çocuk	https://www.pelit.com.tr/pasta/dogum-gunu/cocuk/
+Yetiþkin	https://www.pelit.com.tr/pasta/dogum-gunu/yetiskin/
+Özel Gün	https://www.pelit.com.tr/pasta/ozel-gun/
+Anneler Günü	https://www.pelit.com.tr/pasta/ozel-gun/anneler-gunu/
+Babalar Günü	https://www.pelit.com.tr/pasta/ozel-gun/babalar-gunu/
+Sevgililer Günü	https://www.pelit.com.tr/pasta/ozel-gun/sevgililer-gunu/
+Unutulmaz Anlar	https://www.pelit.com.tr/pasta/ozel-gun/unutulmaz-anlar/
+Tek Pasta	https://www.pelit.com.tr/pasta/tek-pasta/
+Üzümlü	https://www.pelit.com.tr/pasta/tek-pasta/uzumlu-tek-pasta/
+Bademli	https://www.pelit.com.tr/pasta/tek-pasta/bademli-tek-pasta/
+Bal Kabaklý	https://www.pelit.com.tr/pasta/tek-pasta/bal-kabakli-tek-pasta/
+Böðürtlenli	https://www.pelit.com.tr/pasta/tek-pasta/bogurtlenli-tek-pasta/
+Çikolatalý	https://www.pelit.com.tr/pasta/tek-pasta/cikolatali-tek-pasta/
+Çilekli	https://www.pelit.com.tr/pasta/tek-pasta/cilekli-tek-pasta/
+Fýndýklý	https://www.pelit.com.tr/pasta/tek-pasta/findikli-tek-pasta/
+Fýstýklý	https://www.pelit.com.tr/pasta/tek-pasta/fistikli-tek-pasta/
+Frambuazlý	https://www.pelit.com.tr/pasta/tek-pasta/frambuazli-tek-pasta/
+Hindistan Cevizli	https://www.pelit.com.tr/pasta/tek-pasta/hindistan-cevizli-tek-pasta/
+Karamelli	https://www.pelit.com.tr/pasta/tek-pasta/karamelli-tek-pasta/
+Kestaneli	https://www.pelit.com.tr/pasta/tek-pasta/kestaneli-tek-pasta/
+Krokanlý	https://www.pelit.com.tr/pasta/tek-pasta/krokanli-tek-pasta/
+Muzlu	https://www.pelit.com.tr/pasta/tek-pasta/muzlu-tek-pasta/
+Portakallý	https://www.pelit.com.tr/pasta/tek-pasta/portakalli-tek-pasta/
+Viþneli	https://www.pelit.com.tr/pasta/tek-pasta/visneli-tek-pasta/
+Yaþ Pasta	https://www.pelit.com.tr/pasta/yas-pasta/
+Bademli	https://www.pelit.com.tr/pasta/yas-pasta/bademli/
+Bal Kabaklý	https://www.pelit.com.tr/pasta/yas-pasta/bal-kabakli/
+Böðürtlenli	https://www.pelit.com.tr/pasta/yas-pasta/bogurtlenli/
+Çikolatalý	https://www.pelit.com.tr/pasta/yas-pasta/cikolatali/
+Çilekli	https://www.pelit.com.tr/pasta/yas-pasta/cilekli/
+Fýndýklý	https://www.pelit.com.tr/pasta/yas-pasta/findikli/
+Fýstýklý	https://www.pelit.com.tr/pasta/yas-pasta/fistikli/
+Frambuazlý	https://www.pelit.com.tr/pasta/yas-pasta/frambuazli/
+Hindistan Cevizli	https://www.pelit.com.tr/pasta/yas-pasta/hindistan-cevizli-yas-pasta/
+Karamelli	https://www.pelit.com.tr/pasta/yas-pasta/karamelli/
+Kestaneli	https://www.pelit.com.tr/pasta/yas-pasta/kestaneli/
+Krokanlý	https://www.pelit.com.tr/pasta/yas-pasta/krokanli/
+Muzlu	https://www.pelit.com.tr/pasta/yas-pasta/muzlu/
+Portakallý	https://www.pelit.com.tr/pasta/yas-pasta/portakalli/
+Üzümlü	https://www.pelit.com.tr/pasta/yas-pasta/uzumlu/
+Viþneli	https://www.pelit.com.tr/pasta/yas-pasta/visneli/
+Patisserie	https://www.pelit.com.tr/patisserie/
+Tuzlu Patisserie	https://www.pelit.com.tr/patisserie/tuzlu-patisserie/
+Börek	https://www.pelit.com.tr/patisserie/tuzlu-patisserie/borek/
+Kahvaltý Keyfi	https://www.pelit.com.tr/patisserie/tuzlu-patisserie/kahvalti-keyfi/
+Kruvasan	https://www.pelit.com.tr/patisserie/tuzlu-patisserie/kruvasan/
+Paketli Ürün	https://www.pelit.com.tr/patisserie/tuzlu-patisserie/paketli-urun-tuzlu-pattiserie/
+Pizza	https://www.pelit.com.tr/patisserie/tuzlu-patisserie/pizza/
+Tuzlu Bisküvi	https://www.pelit.com.tr/patisserie/tuzlu-patisserie/tuzlu-biskuvi/
+Çikolata	https://www.pelit.com.tr/cikolata/
+Çikolatalý Ürünler	https://www.pelit.com.tr/cikolata/cikolatali-urunler/
+Draje ve Badem Þekeri	https://www.pelit.com.tr/cikolata/draje-ve-badem-sekeri/
+Madlen	https://www.pelit.com.tr/cikolata/madlen/
+Spesiyal	https://www.pelit.com.tr/cikolata/spesiyal/
+Düðün	https://www.pelit.com.tr/dugun/
+Düðün Pastalarý	https://www.pelit.com.tr/dugun/dugun-pastalari/
+Nikah Þekerleri	https://www.pelit.com.tr/dugun/nikah-sekerleri/
+Porsiyon Pastalar	https://www.pelit.com.tr/dugun/porsiyon-pastalar/
+Söz ve Niþan Pastalarý	https://www.pelit.com.tr/dugun/soz-ve-nisan-pastalari/
+Gizli Kategori	https://www.pelit.com.tr/gizli-kategori/
+Tatlý Pattiserie	https://www.pelit.com.tr/tatli-pattiserie/
+Cookie	https://www.pelit.com.tr/tatli-pattiserie/cookie/
+Dondurma	https://www.pelit.com.tr/tatli-pattiserie/dondurma/
+Geleneksel	https://www.pelit.com.tr/tatli-pattiserie/geleneksel/
+Kek	https://www.pelit.com.tr/tatli-pattiserie/kek/
+Lokum	https://www.pelit.com.tr/tatli-pattiserie/lokum/
+Paketli Ürün	https://www.pelit.com.tr/tatli-pattiserie/paketli-urun/
+Petifür	https://www.pelit.com.tr/tatli-pattiserie/petifur/
+Sütlü Tatlý	https://www.pelit.com.tr/tatli-pattiserie/sutlu-tatli/
+Tatlý Bisküvi	https://www.pelit.com.tr/tatli-pattiserie/tatli-biskuvi/
+Ürünler	#
+Organizasyon	https://www.pelit.com.tr/organizasyon/
+Menü	https://www.pelit.com.tr/menulerimiz/
+Þubeler	https://www.pelit.com.tr/pelit-subeleri/
+Öneri Görüþ	https://www.pelit.com.tr/oneri-gorus/
+Kataloglarýmýz	http://onlinekatalog.pelit.com.tr/
+Þubeler Kolayca ulaþabileceðiniz þubelerimiz ve detaylar	http://www.pelit.com.tr/pelit-subeleri/
+Organizasyon Organizasyonlarýnýzý Pelit ile unutulmaz kýlmak bir týk uzaðýnýzda	http://www.pelit.com.tr/organizasyon/
+Kataloglarýmýz Sezonun en özel ürünleri için Pelit Kataloglarýný inceleyin	http://onlinekatalog.pelit.com.tr/
+Hakkýmýzda	https://www.pelit.com.tr/hakkimizda/
+Bilgi Toplumu Hizmetleri (Pelit Pastacýlýk)	https://www.belgemodul.com/sirket/478
+Bilgi Toplumu Hizmetleri (Pelit Çikolata)	https://www.belgemodul.com/sirket/721
+KVKK Aydýnlatma Metni	http://www.pelit.com.tr/kvkk-aydinlatma-metni/
+#TOTAL=94

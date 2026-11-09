@@ -1,0 +1,18 @@
+# Bağımlılıklar ve derleme
+node_modules/
+.next/
+out/
+
+# Ortam sırları
+.env
+.env.*
+!.env.example
+
+# Araç ve oturum dosyaları
+.remember/
+.claude/
+*.log
+
+# İşletim sistemi
+Thumbs.db
+.DS_Store
