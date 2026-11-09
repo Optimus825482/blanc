@@ -127,43 +127,163 @@
   }
 
   /** Madlen: daire + sarmal doku. */
+  /* ------------------------------ Altlık sahneleri ----------------------- */
+  // Her ürün tipi için render edilmiş (ileride fotoğraf) bir altlık ve çizim alanı geometrisi.
+  // altliklar.json yüklenemezse eski düz çizim geometrisiyle devam edilir.
+  var altlikGeo = null;
+  var altlikImg = {};
+  var VARSAYILAN_GEO = {
+    kutu: { dis: { x: 90, y: 150, g: 820, h: 700, r: 26 }, ic: { x: 124, y: 184, g: 752, h: 632, r: 16 } },
+    bar: { bar: { x: 190, y: 330, g: 620, h: 300, r: 18 } },
+    tepsi: { oval: { cx: 500, cy: 470, rx: 374, ry: 274 } },
+  };
+
+  function geo(tip) {
+    return (altlikGeo && altlikGeo[tip]) || VARSAYILAN_GEO[tip];
+  }
+
+  function altliklariYukle() {
+    if (!window.fetch) return;
+    fetch('/assets/img/studyo/altliklar.json')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (json) {
+        if (!json) return;
+        altlikGeo = json;
+        Object.keys(json).forEach(function (tip) {
+          if (!json[tip].gorsel) return;
+          var img = new Image();
+          img.onload = function () { altlikImg[tip] = img; ciz(); };
+          img.src = json[tip].gorsel;
+        });
+      })
+      .catch(function () {});
+  }
+  altliklariYukle();
+
+  /* ------------------------------ Renk yardımcıları ---------------------- */
+
+  function hexRgb(hex) {
+    var h = String(hex || '').replace('#', '');
+    if (h.length === 3) h = h.replace(/(.)/g, '$1$1');
+    var n = parseInt(h, 16);
+    if (isNaN(n) || h.length !== 6) return { r: 122, g: 74, b: 43 };
+    return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+  }
+
+  function karistir(hex, hedef, oran) {
+    var a = hexRgb(hex);
+    var r = Math.round(a.r + (hedef - a.r) * oran);
+    var g = Math.round(a.g + (hedef - a.g) * oran);
+    var b = Math.round(a.b + (hedef - a.b) * oran);
+    return 'rgb(' + r + ',' + g + ',' + b + ')';
+  }
+
+  function acik(hex, oran) { return karistir(hex, 255, oran); }
+  function koyu(hex, oran) { return karistir(hex, 0, oran); }
+
+  function golgeli(fn, renk, bulanik, dx, dy) {
+    ctx.save();
+    ctx.shadowColor = renk;
+    ctx.shadowBlur = bulanik;
+    ctx.shadowOffsetX = dx || 0;
+    ctx.shadowOffsetY = dy || 0;
+    fn();
+    ctx.restore();
+  }
+
+  /* ------------------------------ Çikolata ------------------------------- */
+
+  function kapsul(x, y, cap, renk) {
+    var r = cap * 1.24;
+    golgeli(function () {
+      ctx.beginPath();
+      ctx.arc(x, y + cap * 0.06, r, 0, Math.PI * 2);
+      ctx.fillStyle = renk;
+      ctx.fill();
+    }, 'rgba(40,22,12,0.38)', cap * 0.55, cap * 0.08, cap * 0.22);
+
+    // Pilili kenar
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(x, y + cap * 0.06, r, 0, Math.PI * 2);
+    ctx.clip();
+    var pili = 40;
+    for (var i = 0; i < pili; i++) {
+      var a = (Math.PI * 2 * i) / pili;
+      ctx.beginPath();
+      ctx.moveTo(x + Math.cos(a) * cap * 0.98, y + cap * 0.06 + Math.sin(a) * cap * 0.98);
+      ctx.lineTo(x + Math.cos(a) * r, y + cap * 0.06 + Math.sin(a) * r);
+      ctx.strokeStyle = i % 2 ? 'rgba(0,0,0,0.07)' : 'rgba(255,255,255,0.42)';
+      ctx.lineWidth = Math.max(1.5, cap * 0.075);
+      ctx.stroke();
+    }
+    // İç çukur gölgesi
+    var ic = ctx.createRadialGradient(x, y + cap * 0.06, cap * 0.9, x, y + cap * 0.06, r);
+    ic.addColorStop(0, 'rgba(0,0,0,0.0)');
+    ic.addColorStop(1, 'rgba(0,0,0,0.22)');
+    ctx.fillStyle = ic;
+    ctx.fillRect(x - r, y - r, r * 2, r * 2 + cap);
+    ctx.restore();
+  }
+
   function madlen(x, y, cap, dolgu, kenar) {
-    // Güvenlik: eksik renk gelirse varsayılana düş (canvas gradyanı hata vermesin)
     if (!dolgu || typeof dolgu !== 'string') dolgu = '#7A4A2B';
     if (!kenar || typeof kenar !== 'string' || kenar === '#00000022') kenar = dolgu;
-    var grad = ctx.createRadialGradient(x - cap * 0.25, y - cap * 0.3, cap * 0.1, x, y, cap);
-    grad.addColorStop(0, dolgu);
-    grad.addColorStop(1, kenar);
-    ctx.beginPath();
-    ctx.arc(x, y, cap, 0, Math.PI * 2);
-    ctx.fillStyle = grad;
-    ctx.fill();
+
+    // Gövde: temper parlaması sol üstte, kenarda koyulaşma
+    golgeli(function () {
+      var grad = ctx.createRadialGradient(x - cap * 0.38, y - cap * 0.42, cap * 0.04, x, y, cap * 1.05);
+      grad.addColorStop(0, acik(dolgu, 0.34));
+      grad.addColorStop(0.35, dolgu);
+      grad.addColorStop(0.85, koyu(kenar, 0.22));
+      grad.addColorStop(1, koyu(kenar, 0.42));
+      ctx.beginPath();
+      ctx.arc(x, y, cap, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+    }, 'rgba(30,15,8,0.45)', cap * 0.35, cap * 0.05, cap * 0.14);
 
     ctx.save();
     ctx.beginPath();
     ctx.arc(x, y, cap, 0, Math.PI * 2);
     ctx.clip();
-    ctx.strokeStyle = 'rgba(255,255,255,0.28)';
-    ctx.lineWidth = Math.max(2, cap * 0.06);
+    // Kalıp kabartması: eş merkezli halkalar
     for (var i = 1; i <= 3; i++) {
+      var rr = cap * (0.3 + i * 0.19);
       ctx.beginPath();
-      ctx.arc(x - cap * 0.15, y + cap * 0.1, cap * (0.22 + i * 0.2), Math.PI * 0.15, Math.PI * 1.05);
+      ctx.arc(x, y, rr, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+      ctx.lineWidth = Math.max(1.5, cap * 0.05);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(x, y + cap * 0.03, rr, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(0,0,0,0.12)';
+      ctx.lineWidth = Math.max(1, cap * 0.03);
       ctx.stroke();
     }
+    // Speküler parlama
+    var spek = ctx.createRadialGradient(x - cap * 0.42, y - cap * 0.46, 0, x - cap * 0.42, y - cap * 0.46, cap * 0.5);
+    spek.addColorStop(0, 'rgba(255,255,255,0.55)');
+    spek.addColorStop(0.5, 'rgba(255,255,255,0.12)');
+    spek.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = spek;
+    ctx.fillRect(x - cap, y - cap, cap * 2, cap * 2);
+    // Kenar ışığı sağ altta
+    ctx.beginPath();
+    ctx.arc(x, y, cap * 0.93, Math.PI * 0.1, Math.PI * 0.6);
+    ctx.strokeStyle = 'rgba(255,255,255,0.16)';
+    ctx.lineWidth = Math.max(1.5, cap * 0.06);
+    ctx.stroke();
+
     if (fotograf && durum.ekstralar.indexOf('cikolataUzeriIsim') === -1) {
-      // fotoğraf varsa ve isim baskısı kapalıysa çikolatanın üstünde küçük fotoğraf
       ctx.beginPath();
-      ctx.arc(x, y, cap * 0.55, 0, Math.PI * 2);
+      ctx.arc(x, y, cap * 0.58, 0, Math.PI * 2);
       ctx.clip();
-      ctx.drawImage(fotograf.img, x - cap * 0.55, y - cap * 0.55, cap * 1.1, cap * 1.1);
+      ctx.globalAlpha = 0.92;
+      ctx.drawImage(fotograf.img, x - cap * 0.58, y - cap * 0.58, cap * 1.16, cap * 1.16);
+      ctx.globalAlpha = 1;
     }
     ctx.restore();
-
-    ctx.beginPath();
-    ctx.arc(x, y, cap, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(61,32,22,0.18)';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
 
     if (durum.ekstralar.indexOf('cikolataUzeriIsim') > -1 && durum.isim) {
       ctx.save();
@@ -173,9 +293,12 @@
       var kisa = durum.isim.length > 12 ? durum.isim.substring(0, 12) : durum.isim;
       var punto = Math.max(11, Math.min(cap * 0.42, (cap * 1.7) / Math.max(6, kisa.length)));
       ctx.font = '600 ' + punto + 'px ' + fontCss();
-      ctx.fillStyle = metinRengi(dolgu);
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
+      // Kabartma: koyu alt, açık üst
+      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.fillText(kisa, x, y + Math.max(1, cap * 0.03));
+      ctx.fillStyle = metinRengi(dolgu) === '#3d2016' ? acik(dolgu, 0.55) : acik(dolgu, 0.78);
       ctx.fillText(kisa, x, y);
       ctx.restore();
     }
@@ -186,17 +309,10 @@
     return f ? f.css : 'serif';
   }
 
-  /**
-   * Madlen rengini verir.
-   * @param {number} sira  Izgaradaki sıra numarası (karışık tipte renk döngüsü için)
-   * @param {object} cik   Çikolata tipi kaydı (dolgu/kenar alanlarıyla)
-   */
   function cikolata(sira, cik) {
     if (!cik) return { dolgu: '#7A4A2B', kenar: '#5C351C' };
     if (cik.dolgu === 'mix') {
-      var dizi = D.studyo.cikolataTipleri.filter(function (x) {
-        return x.dolgu !== 'mix';
-      });
+      var dizi = D.studyo.cikolataTipleri.filter(function (x) { return x.dolgu !== 'mix'; });
       if (!dizi.length) return { dolgu: '#7A4A2B', kenar: '#5C351C' };
       var secilen = dizi[sira % dizi.length];
       return { dolgu: secilen.dolgu, kenar: secilen.kenar };
@@ -205,6 +321,20 @@
   }
 
   /* --------------------------------- Ana çizim --------------------------- */
+
+  function zeminCiz(tip) {
+    var img = altlikImg[tip];
+    if (img) {
+      ctx.drawImage(img, 0, 0, OLCO, OLCO);
+      return;
+    }
+    var grad = ctx.createRadialGradient(OLCO * 0.38, OLCO * 0.32, OLCO * 0.1, OLCO * 0.5, OLCO * 0.5, OLCO * 0.85);
+    grad.addColorStop(0, '#fbf6ee');
+    grad.addColorStop(0.6, '#efe6d7');
+    grad.addColorStop(1, '#d6c9b4');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, OLCO, OLCO);
+  }
 
   function ciz() {
     var amb = secili(durum.ambalaj, D.studyo.ambalajRenkleri);
@@ -215,17 +345,12 @@
     var tema = UI.temaBul(durum.tema);
 
     ctx.clearRect(0, 0, OLCO, OLCO);
-    ctx.fillStyle = '#fdfbf7';
-    ctx.fillRect(0, 0, OLCO, OLCO);
+    var tip = urun.tip === 'bar' ? 'bar' : urun.tip === 'tepsi' ? 'tepsi' : 'kutu';
+    zeminCiz(tip);
 
-    // Zemin dokusu: çok hafif dış çerçeve
-    ctx.strokeStyle = 'rgba(207,181,106,0.35)';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(24, 24, OLCO - 48, OLCO - 48);
-
-    if (urun.tip === 'bar') {
+    if (tip === 'bar') {
       cizBar(amb, kur, kart, cik, tema);
-    } else if (urun.tip === 'tepsi') {
+    } else if (tip === 'tepsi') {
       cizTepsi(amb, kur, kart, cik, tema);
     } else {
       cizKutu(amb, kur, kart, cik, tema);
@@ -233,31 +358,38 @@
 
     // Filigran
     ctx.font = '400 20px ' + fontCss();
-    ctx.fillStyle = 'rgba(61,32,22,0.45)';
+    ctx.fillStyle = 'rgba(61,32,22,0.5)';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
-    ctx.fillText(C.marka + ' · tasarım önizlemesi', 56, OLCO - 52);
+    ctx.fillText(C.marka + ' · tasarım önizlemesi', 56, OLCO - 44);
     ctx.textAlign = 'right';
-    ctx.fillText(tasarimKodu(), OLCO - 56, OLCO - 52);
+    ctx.fillText(tasarimKodu(), OLCO - 56, OLCO - 44);
   }
 
-  function ustBasliklar(tema, x, y, en, ortala) {
+  function kabartmaYazi(metin, x, y, acikRenk, koyuRenk) {
+    ctx.fillStyle = koyuRenk;
+    ctx.fillText(metin, x, y + 1.5);
+    ctx.fillStyle = acikRenk;
+    ctx.fillText(metin, x, y);
+  }
+
+  function ustBasliklar(tema, x, y, en, ortala, renk) {
+    var ana = renk || '#3d2016';
     ctx.textAlign = ortala ? 'center' : 'left';
     ctx.textBaseline = 'alphabetic';
-    ctx.font = '500 24px ' + fontCss();
-    ctx.fillStyle = 'rgba(61,32,22,0.6)';
+    ctx.font = '500 22px ' + fontCss();
+    ctx.fillStyle = karistir(ana, 128, 0.35);
     var etiket = tema ? tema.ad.toLocaleUpperCase('tr-TR') : '';
     ctx.fillText(etiket, x, y);
 
     if (durum.isim) {
       var punto = sigdir(64, fontCss(), durum.isim, en);
       ctx.font = '500 ' + punto + 'px ' + fontCss();
-      ctx.fillStyle = '#3d2016';
-      ctx.fillText(durum.isim, x, y + 62);
+      kabartmaYazi(durum.isim, x, y + 62, ana, 'rgba(255,255,255,0.55)');
     }
     if (durum.tarih) {
       ctx.font = '400 26px ' + fontCss();
-      ctx.fillStyle = 'rgba(61,32,22,0.75)';
+      ctx.fillStyle = karistir(ana, 128, 0.2);
       ctx.fillText(tarihYaz(durum.tarih), x, y + (durum.isim ? 104 : 62));
     }
     ctx.textAlign = 'left';
@@ -266,45 +398,65 @@
   function tarihYaz(iso) {
     var p = String(iso).split('-');
     if (p.length !== 3) return iso;
-    var aylar = [
-      'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-      'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
-    ];
+    var aylar = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
     var ay = aylar[parseInt(p[1], 10) - 1] || p[1];
     return parseInt(p[2], 10) + ' ' + ay + ' ' + p[0];
   }
 
+  function tonla(yol, renk, guc) {
+    // Altlık üzerindeki nötr kutuyu ambalaj rengine boyar (multiply), sonra ışığı geri verir.
+    ctx.save();
+    yol();
+    ctx.clip();
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.fillStyle = renk;
+    ctx.globalAlpha = guc === undefined ? 1 : guc;
+    ctx.fillRect(0, 0, OLCO, OLCO);
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'soft-light';
+    var isik = ctx.createLinearGradient(0, 0, OLCO, OLCO);
+    isik.addColorStop(0, 'rgba(255,255,255,0.55)');
+    isik.addColorStop(0.5, 'rgba(255,255,255,0)');
+    isik.addColorStop(1, 'rgba(0,0,0,0.35)');
+    ctx.fillStyle = isik;
+    ctx.fillRect(0, 0, OLCO, OLCO);
+    ctx.restore();
+  }
+
   function cizKutu(amb, kur, kart, cik, tema) {
-    var x = 90;
-    var y = 160;
-    var g = OLCO - 180;
-    var h = OLCO - 160 - 150;
+    var g = geo('kutu');
+    var dis = g.dis;
+    var ic = g.ic;
 
-    yuvarlak(ctx, x, y, g, h, 26);
-    ctx.fillStyle = amb.zemin;
-    ctx.fill();
-    ctx.strokeStyle = amb.kenar;
-    ctx.lineWidth = 3;
-    ctx.stroke();
+    // Kutu gövdesini ambalaj rengine boya
+    tonla(function () { yuvarlak(ctx, dis.x, dis.y, dis.g, dis.h, dis.r); }, amb.zemin);
 
-    yuvarlak(ctx, x + 16, y + 16, g - 32, h - 32, 18);
-    ctx.strokeStyle = 'rgba(61,32,22,0.14)';
+    // Kapak içi baskılı kart (isim / tarih alanı)
+    var kartY = ic.y + 22;
+    var kartH = 150;
+    golgeli(function () {
+      yuvarlak(ctx, ic.x + 22, kartY, ic.g - 44, kartH, 8);
+      ctx.fillStyle = '#fbf6ec';
+      ctx.fill();
+    }, 'rgba(30,15,8,0.35)', 14, 0, 6);
+    yuvarlak(ctx, ic.x + 30, kartY + 8, ic.g - 60, kartH - 16, 6);
+    ctx.strokeStyle = 'rgba(169,131,54,0.55)';
     ctx.lineWidth = 1.5;
     ctx.stroke();
-
-    ustBasliklar(tema, x + 44, y + 78, g - 88, false);
+    ustBasliklar(tema, ic.x + 54, kartY + 54, ic.g - 108, false, '#3d2016');
 
     // Çikolata ızgarası
     var adet = parseInt(durum.boyut, 10);
     if (!adet || adet < 1) adet = 16;
     var kolon = Math.ceil(Math.sqrt(adet));
     var satir = Math.ceil(adet / kolon);
-    var alanX = x + 90;
-    var alanY = y + 190;
-    var alanG = g - 180;
-    var alanH = h - 330;
+    var alanX = ic.x + 40;
+    var alanY = kartY + kartH + 26;
+    var alanG = ic.g - 80;
+    var alanH = ic.y + ic.h - alanY - 40;
     var hucre = Math.min(alanG / kolon, alanH / satir);
-    var cap = (hucre * 0.42);
+    var cap = hucre * 0.36;
+    var kapsulRenk = metinRengi(amb.zemin) === '#3d2016' ? '#f4ecdf' : '#5a3b2a';
 
     for (var i = 0; i < adet; i++) {
       var s = Math.floor(i / kolon);
@@ -312,128 +464,180 @@
       var satirdakiAdet = Math.min(kolon, adet - s * kolon);
       var kaydirma = (alanG - satirdakiAdet * hucre) / 2;
       var cx = alanX + kaydirma + k * hucre + hucre / 2;
-      var cy = alanY + s * hucre + hucre / 2;
-      var renk = cikolata(s * kolon + k, cik);
-      madlen(cx, cy, cap, renk.dolgu, renk.kenar);
+      var cy = alanY + (alanH - satir * hucre) / 2 + s * hucre + hucre / 2;
+      kapsul(cx, cy, cap, kapsulRenk);
+    }
+    for (var j = 0; j < adet; j++) {
+      var s2 = Math.floor(j / kolon);
+      var k2 = j % kolon;
+      var satirdaki2 = Math.min(kolon, adet - s2 * kolon);
+      var kaydirma2 = (alanG - satirdaki2 * hucre) / 2;
+      var renk = cikolata(s2 * kolon + k2, cik);
+      madlen(alanX + kaydirma2 + k2 * hucre + hucre / 2, alanY + (alanH - satir * hucre) / 2 + s2 * hucre + hucre / 2, cap, renk.dolgu, renk.kenar);
     }
 
-    if (kur.renk) serit(x, y, g, h, kur.renk);
-    if (kart.zemin) kartCiz(kart, x + g - 350, y + h - 158, 310, 122);
+    if (kur.renk) serit(dis.x, dis.y, dis.g, dis.h, kur.renk);
+    if (kart.zemin) kartCiz(kart, dis.x + dis.g - 330, dis.y + dis.h - 150, 300, 118);
   }
 
   function cizBar(amb, kur, kart, cik, tema) {
-    var bG = 620;
-    var bH = 300;
-    var x = (OLCO - bG) / 2;
-    var y = 300;
-
-    ustBasliklar(tema, x, y - 92, bG, false);
-
-    yuvarlak(ctx, x, y, bG, bH, 22);
+    var b = geo('bar').bar;
+    var x = b.x, y = b.y, bG = b.g, bH = b.h, r = b.r || 18;
     var dolgu = cik.dolgu === 'mix' ? D.studyo.cikolataTipleri[0].dolgu : cik.dolgu;
     var kenar = cik.kenar === '#00000022' ? dolgu : cik.kenar;
-    var grad = ctx.createLinearGradient(x, y, x, y + bH);
-    grad.addColorStop(0, dolgu);
-    grad.addColorStop(1, kenar);
-    ctx.fillStyle = grad;
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(61,32,22,0.25)';
-    ctx.lineWidth = 2;
+
+    ustBasliklar(tema, x, y - 96, bG, false, '#3d2016');
+
+    // Bar gövdesi
+    golgeli(function () {
+      yuvarlak(ctx, x, y, bG, bH, r);
+      var grad = ctx.createLinearGradient(x, y, x + bG * 0.3, y + bH);
+      grad.addColorStop(0, acik(dolgu, 0.18));
+      grad.addColorStop(0.5, dolgu);
+      grad.addColorStop(1, koyu(kenar, 0.3));
+      ctx.fillStyle = grad;
+      ctx.fill();
+    }, 'rgba(20,10,5,0.5)', 28, 6, 14);
+
+    // Kenar pah: üst/sol açık, alt/sağ koyu
+    yuvarlak(ctx, x + 2, y + 2, bG - 4, bH - 4, r);
+    ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+    ctx.lineWidth = 3;
     ctx.stroke();
 
-    // Bölmeler
-    ctx.strokeStyle = 'rgba(255,255,255,0.22)';
-    ctx.lineWidth = 2;
-    for (var i = 1; i < 4; i++) {
-      ctx.beginPath();
-      ctx.moveTo(x + (bG / 4) * i, y + 8);
-      ctx.lineTo(x + (bG / 4) * i, y + bH - 8);
-      ctx.stroke();
+    // Bölmeler (2 × 4) kabartmalı
+    var kol = 4, sat = 2;
+    var pad = 14;
+    var bw = (bG - pad * (kol + 1)) / kol;
+    var bh = (bH - pad * (sat + 1)) / sat;
+    for (var sI = 0; sI < sat; sI++) {
+      for (var kI = 0; kI < kol; kI++) {
+        var bx = x + pad + kI * (bw + pad);
+        var by = y + pad + sI * (bh + pad);
+        // Oluk (koyu)
+        yuvarlak(ctx, bx - 4, by - 4, bw + 8, bh + 8, 10);
+        ctx.fillStyle = koyu(kenar, 0.35);
+        ctx.fill();
+        // Yükselti
+        var g2 = ctx.createLinearGradient(bx, by, bx + bw, by + bh);
+        g2.addColorStop(0, acik(dolgu, 0.22));
+        g2.addColorStop(0.55, dolgu);
+        g2.addColorStop(1, koyu(kenar, 0.18));
+        yuvarlak(ctx, bx, by, bw, bh, 8);
+        ctx.fillStyle = g2;
+        ctx.fill();
+        yuvarlak(ctx, bx + 1.5, by + 1.5, bw - 3, bh - 3, 7);
+        ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
     }
+    // Yüzey parlaması
+    ctx.save();
+    yuvarlak(ctx, x, y, bG, bH, r);
+    ctx.clip();
+    var spek = ctx.createLinearGradient(x, y, x + bG, y + bH);
+    spek.addColorStop(0, 'rgba(255,255,255,0.18)');
+    spek.addColorStop(0.35, 'rgba(255,255,255,0.02)');
+    spek.addColorStop(0.6, 'rgba(255,255,255,0.10)');
+    spek.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = spek;
+    ctx.fillRect(x, y, bG, bH);
+    ctx.restore();
 
-    // Bar üstü yazı
+    // Bar üstü yazı (kabartma)
     if (durum.isim || durum.mesaj) {
       var metin = durum.mesaj || durum.isim;
       ctx.save();
-      ctx.beginPath();
-      yuvarlak(ctx, x + 40, y + 60, bG - 80, bH - 120, 14);
+      yuvarlak(ctx, x + 30, y + 40, bG - 60, bH - 80, 14);
       ctx.clip();
-      sigdir(52, fontCss(), metin, bG - 120);
+      sigdir(54, fontCss(), metin, bG - 120);
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillStyle = metinRengi(dolgu);
+      ctx.fillStyle = 'rgba(0,0,0,0.45)';
+      ctx.fillText(metin, x + bG / 2, y + bH / 2 + 2);
+      ctx.fillStyle = metinRengi(dolgu) === '#3d2016' ? koyu(dolgu, 0.5) : acik(dolgu, 0.62);
       ctx.fillText(metin, x + bG / 2, y + bH / 2);
       ctx.restore();
     }
 
     if (fotograf) {
-      var r = 112;
-      var px = x + bG + 40;
-      var py = y + bH + 40;
+      var fr = 112;
+      var px = x + bG - 20;
+      var py = y + bH + 100;
+      golgeli(function () {
+        ctx.beginPath();
+        ctx.arc(px, py, fr + 8, 0, Math.PI * 2);
+        ctx.fillStyle = '#fffdf9';
+        ctx.fill();
+      }, 'rgba(30,15,8,0.4)', 22, 4, 10);
       ctx.save();
       ctx.beginPath();
-      ctx.arc(px, py, r, 0, Math.PI * 2);
+      ctx.arc(px, py, fr, 0, Math.PI * 2);
       ctx.clip();
-      ctx.drawImage(fotograf.img, px - r, py - r, r * 2, r * 2);
+      ctx.drawImage(fotograf.img, px - fr, py - fr, fr * 2, fr * 2);
       ctx.restore();
       ctx.beginPath();
-      ctx.arc(px, py, r, 0, Math.PI * 2);
+      ctx.arc(px, py, fr + 3, 0, Math.PI * 2);
       ctx.strokeStyle = kur.renk || '#cfb56a';
-      ctx.lineWidth = 6;
+      ctx.lineWidth = 5;
       ctx.stroke();
     }
 
-    if (kart.zemin) kartCiz(kart, x, y + bH + 40, 300, 118);
+    if (kur.renk) {
+      // Barın etrafında saten kuşak
+      satenBant(x + bG * 0.68, y - 18, 46, bH + 36, kur.renk, true);
+      fiyonk(x + bG * 0.68 + 23, y - 6, 30, kur.renk);
+    }
+    if (kart.zemin) kartCiz(kart, x - 10, y + bH + 54, 300, 118);
   }
 
   function cizTepsi(amb, kur, kart, cik, tema) {
-    var cx = OLCO / 2;
-    var cy = 470;
-    var rg = 400;
-    var rh = 300;
+    var o = geo('tepsi').oval;
+    var cx = o.cx, cy = o.cy, rg = o.rx, rh = o.ry;
 
-    ustBasliklar(tema, 120, 150, OLCO - 240, false);
+    // Tepsi aynasına ambalaj rengi yansıması (hafif)
+    tonla(function () { ctx.beginPath(); ctx.ellipse(cx, cy, rg, rh, 0, 0, Math.PI * 2); }, amb.zemin, 0.35);
 
-    // Tepsi
-    ctx.save();
-    ctx.beginPath();
-    ctx.ellipse(cx, cy, rg, rh, 0, 0, Math.PI * 2);
-    var grad = ctx.createRadialGradient(cx - 80, cy - 90, 40, cx, cy, rg);
-    grad.addColorStop(0, '#ffffff');
-    grad.addColorStop(1, amb.zemin);
-    ctx.fillStyle = grad;
-    ctx.fill();
-    ctx.strokeStyle = kur.renk || amb.kenar;
-    ctx.lineWidth = 10;
-    ctx.stroke();
-    ctx.restore();
-
-    // Tepsi üzerine dizilim
+    // Dizilim: kapsüller sonra çikolatalar (gölgeler doğru sırada)
     var sayi = 12;
-    var cap = 62;
-    for (var i = 0; i < sayi; i++) {
-      var aci = (Math.PI * 2 * i) / sayi - Math.PI / 2;
-      var px = cx + Math.cos(aci) * (rg - 110);
-      var py = cy + Math.sin(aci) * (rh - 100);
+    var cap = 58;
+    var kapsulRenk = kur.renk && kur.renk !== '#EFE3D2' ? acik(kur.renk, 0.72) : '#f4ecdf';
+    var i, aci, px, py;
+    for (i = 0; i < sayi; i++) {
+      aci = (Math.PI * 2 * i) / sayi - Math.PI / 2;
+      px = cx + Math.cos(aci) * (rg - 100);
+      py = cy + Math.sin(aci) * (rh - 92);
+      kapsul(px, py, cap, kapsulRenk);
+    }
+    for (i = 0; i < sayi; i++) {
+      aci = (Math.PI * 2 * i) / sayi - Math.PI / 2;
+      px = cx + Math.cos(aci) * (rg - 100);
+      py = cy + Math.sin(aci) * (rh - 92);
       var renk = cikolata(i, cik);
       madlen(px, py, cap, renk.dolgu, renk.kenar);
     }
 
-    // Orta isim plakası
-    var pG = 300;
-    var pH = 130;
-    yuvarlak(ctx, cx - pG / 2, cy - pH / 2, pG, pH, 14);
-    ctx.fillStyle = amb.metin === '#F6E7D8' || amb.metin === '#F0E7D6' || amb.metin === '#EFE3D2' ? '#fffdf9' : '#fffdf9';
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(61,32,22,0.18)';
+    // Orta isim plakası (pleksi / ayna)
+    var pG = 320;
+    var pH = 140;
+    golgeli(function () {
+      yuvarlak(ctx, cx - pG / 2, cy - pH / 2, pG, pH, 16);
+      var pg = ctx.createLinearGradient(cx - pG / 2, cy - pH / 2, cx + pG / 2, cy + pH / 2);
+      pg.addColorStop(0, '#fffdf9');
+      pg.addColorStop(1, '#efe6d8');
+      ctx.fillStyle = pg;
+      ctx.fill();
+    }, 'rgba(30,15,8,0.4)', 20, 2, 8);
+    yuvarlak(ctx, cx - pG / 2 + 6, cy - pH / 2 + 6, pG - 12, pH - 12, 12);
+    ctx.strokeStyle = 'rgba(169,131,54,0.6)';
     ctx.lineWidth = 1.5;
     ctx.stroke();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     var etiket = durum.isim || (tema ? tema.kisa : 'İsim');
-    sigdir(44, fontCss(), etiket, pG - 48);
-    ctx.fillStyle = '#3d2016';
-    ctx.fillText(etiket, cx, cy - (durum.tarih ? 16 : 0));
+    sigdir(44, fontCss(), etiket, pG - 56);
+    kabartmaYazi(etiket, cx, cy - (durum.tarih ? 16 : 0), '#3d2016', 'rgba(255,255,255,0.7)');
     if (durum.tarih) {
       ctx.font = '400 24px ' + fontCss();
       ctx.fillStyle = 'rgba(61,32,22,0.72)';
@@ -442,45 +646,103 @@
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
 
-    if (kart.zemin) kartCiz(kart, cx - 150, cy + rh + 40, 300, 118);
+    if (kur.renk) fiyonk(cx, cy - rh + 8, 40, kur.renk);
+    if (kart.zemin) kartCiz(kart, cx - 150, cy + rh + 44, 300, 118);
+  }
+
+  /* ------------------------------ Kurdele ve kart ------------------------ */
+
+  function satenBant(x, y, g, h, renk, dikey) {
+    golgeli(function () {
+      var grad = dikey ? ctx.createLinearGradient(x, y, x + g, y) : ctx.createLinearGradient(x, y, x, y + h);
+      grad.addColorStop(0, koyu(renk, 0.28));
+      grad.addColorStop(0.22, renk);
+      grad.addColorStop(0.42, acik(renk, 0.38));
+      grad.addColorStop(0.6, renk);
+      grad.addColorStop(1, koyu(renk, 0.32));
+      ctx.fillStyle = grad;
+      ctx.fillRect(x, y, g, h);
+    }, 'rgba(20,10,5,0.4)', 14, dikey ? 4 : 0, dikey ? 0 : 6);
+  }
+
+  function fiyonk(fx, fy, boy, renk) {
+    function halka(dx, egim) {
+      ctx.save();
+      ctx.translate(fx + dx, fy);
+      ctx.rotate(egim);
+      var grad = ctx.createRadialGradient(-boy * 0.3, -boy * 0.3, boy * 0.1, 0, 0, boy);
+      grad.addColorStop(0, acik(renk, 0.45));
+      grad.addColorStop(0.6, renk);
+      grad.addColorStop(1, koyu(renk, 0.4));
+      ctx.beginPath();
+      ctx.ellipse(0, 0, boy, boy * 0.62, 0, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+      ctx.restore();
+    }
+    golgeli(function () {
+      // Kuyruklar
+      ctx.fillStyle = koyu(renk, 0.15);
+      ctx.beginPath();
+      ctx.moveTo(fx, fy);
+      ctx.lineTo(fx - boy * 0.55, fy + boy * 1.5);
+      ctx.lineTo(fx - boy * 0.2, fy + boy * 1.35);
+      ctx.lineTo(fx - boy * 0.1, fy + boy * 0.3);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(fx, fy);
+      ctx.lineTo(fx + boy * 0.6, fy + boy * 1.45);
+      ctx.lineTo(fx + boy * 0.25, fy + boy * 1.3);
+      ctx.lineTo(fx + boy * 0.1, fy + boy * 0.3);
+      ctx.closePath();
+      ctx.fill();
+      halka(-boy * 0.95, -0.35);
+      halka(boy * 0.95, 0.35);
+    }, 'rgba(20,10,5,0.45)', 16, 3, 8);
+    // Düğüm
+    var dg = ctx.createRadialGradient(fx - boy * 0.12, fy - boy * 0.15, 1, fx, fy, boy * 0.45);
+    dg.addColorStop(0, acik(renk, 0.5));
+    dg.addColorStop(1, koyu(renk, 0.35));
+    ctx.beginPath();
+    ctx.ellipse(fx, fy, boy * 0.42, boy * 0.34, 0, 0, Math.PI * 2);
+    ctx.fillStyle = dg;
+    ctx.fill();
   }
 
   function serit(x, y, g, h, renk) {
-    var ys = y + h * 0.62;
-    ctx.save();
-    ctx.globalAlpha = 0.95;
-    ctx.fillStyle = renk;
-    ctx.fillRect(x + 6, ys, g - 12, 34);
-    ctx.restore();
-
-    // Fiyonk
-    var fx = x + g - 70;
-    var fy = ys + 17;
-    ctx.fillStyle = renk;
-    ctx.beginPath();
-    ctx.ellipse(fx - 26, fy - 10, 26, 18, -0.4, 0, Math.PI * 2);
-    ctx.ellipse(fx + 26, fy - 10, 26, 18, 0.4, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(fx, fy, 12, 0, Math.PI * 2);
-    ctx.fill();
+    var ys = y + h * 0.64;
+    satenBant(x - 4, ys, g + 8, 38, renk, false);
+    fiyonk(x + g - 96, ys + 19, 30, renk);
   }
 
   function kartCiz(kart, x, y, g, h) {
-    yuvarlak(ctx, x, y, g, h, 12);
-    ctx.fillStyle = kart.zemin;
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(61,32,22,0.16)';
-    ctx.lineWidth = 1.5;
+    ctx.save();
+    ctx.translate(x + g / 2, y + h / 2);
+    ctx.rotate(-0.06);
+    golgeli(function () {
+      yuvarlak(ctx, -g / 2, -h / 2, g, h, 10);
+      var grad = ctx.createLinearGradient(-g / 2, -h / 2, g / 2, h / 2);
+      grad.addColorStop(0, acik(kart.zemin, 0.12));
+      grad.addColorStop(1, koyu(kart.zemin, 0.06));
+      ctx.fillStyle = grad;
+      ctx.fill();
+    }, 'rgba(30,15,8,0.42)', 18, 4, 10);
+    yuvarlak(ctx, -g / 2 + 7, -h / 2 + 7, g - 14, h - 14, 6);
+    ctx.strokeStyle = 'rgba(61,32,22,0.18)';
+    ctx.lineWidth = 1;
     ctx.stroke();
 
     var mesaj = durum.mesaj || (durum.isim ? 'Sevgilerle, ' + durum.isim : 'Kart notu');
-    ctx.font = '400 24px ' + fontCss();
+    ctx.font = '400 23px ' + fontCss();
     ctx.fillStyle = kart.metin;
-    var satirlar = satirlaraBol(mesaj, g - 48).slice(0, 3);
-    satirlar.forEach(function (s, i) {
-      ctx.fillText(s, x + 24, y + 46 + i * 30);
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    var satirlar = satirlaraBol(mesaj, g - 52).slice(0, 3);
+    satirlar.forEach(function (sat, i) {
+      ctx.fillText(sat, -g / 2 + 26, -h / 2 + 44 + i * 30);
     });
+    ctx.restore();
   }
 
   /* ------------------------------ Özet metni ---------------------------- */

@@ -1,0 +1,38 @@
+{
+  "kutu": {
+    "gorsel": "/assets/img/studyo/altlik-kutu.webp",
+    "dis": {
+      "x": 90,
+      "y": 150,
+      "g": 820,
+      "h": 700,
+      "r": 26
+    },
+    "ic": {
+      "x": 124,
+      "y": 184,
+      "g": 752,
+      "h": 632,
+      "r": 16
+    }
+  },
+  "bar": {
+    "gorsel": "/assets/img/studyo/altlik-bar.webp",
+    "bar": {
+      "x": 190,
+      "y": 330,
+      "g": 620,
+      "h": 300,
+      "r": 18
+    }
+  },
+  "tepsi": {
+    "gorsel": "/assets/img/studyo/altlik-tepsi.webp",
+    "oval": {
+      "cx": 500,
+      "cy": 470,
+      "rx": 374,
+      "ry": 274
+    }
+  }
+}
