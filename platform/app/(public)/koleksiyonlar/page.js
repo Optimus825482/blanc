@@ -6,7 +6,7 @@ import Cards from '../cards';
 import Filtreler from '../filtreler';
 import { TasarimIzgarasi } from '../tasarim-karti';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 export const metadata = pageMetadata('Özel Gün Koleksiyonları', 'Girne Alsancak’ta söz, nişan, doğum günü, bebek ve kurumsal kutlamalar için kişiye özel çikolata ve hediyelik tasarımları.', '/koleksiyonlar');
 
 export default async function Collections({ searchParams }) {

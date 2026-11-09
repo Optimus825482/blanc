@@ -8,7 +8,7 @@ import { getInstagram } from '../../lib/instagram';
 import { deliveryBands, getSettings, hoursSchema, postalAddress } from '../../lib/settings';
 import './home.css';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 export async function generateMetadata() {
   const home = await getContent('home');
   return pageMetadata('Girne Alsancak’ta ' + home.title, home.body, '/', home.image);
@@ -52,7 +52,7 @@ export default async function Home() {
           </div>
         </div>
         <figure className="bb-cover-figure">
-          <div className="bb-cover-photo"><img src={home.image} alt={home.alt} width="640" height="640" fetchPriority="high" /></div>
+          <div className="bb-cover-photo"><img decoding="async" src={home.image} alt={home.alt} width="640" height="640" fetchPriority="high" /></div>
           <figcaption><span>BEYZA BLANC</span><span>ALSANCAK · GİRNE</span></figcaption>
         </figure>
       </div>
@@ -97,14 +97,14 @@ export default async function Home() {
       </div>
     </section>
     <section className="v-kabuk v-eslesme bb-atelier">
-      <img data-reveal="" src={about.image} alt={about.alt} width="640" height="640" loading="lazy" />
+      <img decoding="async" data-reveal="" src={about.image} alt={about.alt} width="640" height="640" loading="lazy" />
       <div className="v-panel bb-prose" data-reveal=""><p className="v-etiket">Alsancak / Atölye</p>
         <h2>{about.title}</h2><p>{about.body}</p><Link className="v-dugme" href="/hakkimizda">Atölyeyi tanıyın</Link></div>
     </section>
     <section className="v-kabuk v-eslesme v-kurumsal bb-atelier" id="kurumsal">
       <div className="v-panel bb-prose" data-reveal=""><p className="v-etiket">03 / Kurumsal hediyeler</p>
         <h2>{corporate.title}</h2><p>{corporate.body}</p><Link className="v-dugme v-dugme--cizgi" href="/kurumsal">Kurumsal hediyeleri inceleyin</Link></div>
-      <img data-reveal="" src={corporate.image} alt={corporate.alt} width="640" height="640" loading="lazy" />
+      <img decoding="async" data-reveal="" src={corporate.image} alt={corporate.alt} width="640" height="640" loading="lazy" />
     </section>
     <InstagramFeed feed={feed} fallback={posts.map(([id, title, image]) => ({
       id, caption: title, image: '/assets/img/instagram/' + image + '.webp',

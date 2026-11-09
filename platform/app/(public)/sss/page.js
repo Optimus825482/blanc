@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { getFaq } from '../../../lib/katalog-oku';
 import { contact, pageMetadata } from '../../../lib/seo';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 export const metadata = pageMetadata('Sıkça Sorulan Sorular', 'Sipariş nasıl veriliyor, ne kadar sürede hazırlanıyor, bebek çikolatasına neler yazılabiliyor, teslimat ve kargo nasıl işliyor?', '/sss');
 
 export default async function Sss() {

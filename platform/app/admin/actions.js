@@ -109,7 +109,7 @@ export async function connectInstagram(data) {
     [account.id, account.username, encryptToken(token)]
   );
   clearInstagramCache();
-  revalidatePath('/');
+  revalidatePath('/', 'layout');
   redirect('/admin?bolum=instagram&durum=meta-bagli');
 }
 
@@ -117,7 +117,7 @@ export async function disconnectInstagram() {
   await requireAdmin();
   await query('DELETE FROM bb_instagram WHERE singleton=true');
   clearInstagramCache();
-  revalidatePath('/');
+  revalidatePath('/', 'layout');
   redirect('/admin?bolum=instagram&durum=meta-kaldirildi');
 }
 

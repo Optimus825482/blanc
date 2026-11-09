@@ -7,6 +7,6 @@ export default function ContentPage({ item, children, cta }) {
       <a className="v-dugme" href={cta?.href ?? contact}>{cta?.label ?? 'Atölyeye yaz'}</a>
       {children}
     </div>
-    <img data-reveal="" className="bb-detail-image" src={item.image} alt={item.alt} width="640" height="640" fetchPriority="high" />
+    <img decoding="async" data-reveal="" className="bb-detail-image" src={item.image} alt={item.alt} width="640" height="640" fetchPriority="high" />
   </section>;
 }

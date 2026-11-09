@@ -86,8 +86,8 @@ export default async function Teklif({ params, searchParams }) {
         </div>
         {q.summary && <details className="bb-teklif__ozet"><summary>Gönderilen özet</summary><pre>{q.summary}</pre></details>}
       </div>
-      {q.image_id ? <img className="bb-detail-image" src={'/media/' + q.image_id} alt="Tasarım önizlemesi" width="640" height="640" />
-        : q.logo_id ? <img className="bb-detail-image bb-logo" src={'/media/' + q.logo_id} alt={(f.firma || '') + ' logosu'} width="640" height="640" /> : null}
+      {q.image_id ? <img decoding="async" loading="lazy" className="bb-detail-image" src={'/media/' + q.image_id} alt="Tasarım önizlemesi" width="640" height="640" />
+        : q.logo_id ? <img decoding="async" loading="lazy" className="bb-detail-image bb-logo" src={'/media/' + q.logo_id} alt={(f.firma || '') + ' logosu'} width="640" height="640" /> : null}
     </div>
   </section>;
 }

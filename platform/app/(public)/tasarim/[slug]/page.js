@@ -4,7 +4,7 @@ import { fiyatYaz, getDesign, getDesigns } from '../../../../lib/katalog-oku';
 import { contact, pageMetadata, siteUrl } from '../../../../lib/seo';
 import { TasarimIzgarasi } from '../../tasarim-karti';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export async function generateMetadata({ params }) {
   const t = await getDesign((await params).slug);
@@ -35,7 +35,7 @@ export default async function Tasarim({ params }) {
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(urun).replace(/</g, '\\u003c') }} />
     <section className="v-kabuk v-bolum v-acilis bb-tasarim-detay" style={{ '--gun-vurgu': t.occasion_accent || '#B08D57' }}>
       <div className="bb-tasarim-detay__gorsel">
-        {t.image ? <img src={t.image} alt={t.alt || t.title} width="640" height="640" fetchPriority="high" /> : <span aria-hidden="true">{t.occasion_icon}</span>}
+        {t.image ? <img decoding="async" src={t.image} alt={t.alt || t.title} width="640" height="640" fetchPriority="high" /> : <span aria-hidden="true">{t.occasion_icon}</span>}
         {(t.bestseller || t.is_new) && <span className="bb-tasarim__rozet">{t.bestseller ? 'Çok tercih edilen' : 'Yeni'}</span>}
       </div>
       <div className="bb-prose v-acilis-metin">

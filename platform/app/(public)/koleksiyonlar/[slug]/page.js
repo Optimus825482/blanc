@@ -5,7 +5,7 @@ import { contact, pageMetadata } from '../../../../lib/seo';
 import Filtreler from '../../filtreler';
 import { TasarimIzgarasi } from '../../tasarim-karti';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -36,7 +36,7 @@ export default async function Collection({ params, searchParams }) {
         </div>
         {(oneri.ambalaj || oneri.kurdele) && <p className="bb-gun__oneri">Atölyenin önerisi: {[oneri.ambalaj && oneri.ambalaj + ' ambalaj', oneri.kurdele && oneri.kurdele + ' kurdele', oneri.cikolata && oneri.cikolata + ' çikolata'].filter(Boolean).join(', ')}.</p>}
       </div>
-      {item.card_image && <img className="bb-detail-image v-acilis-gorsel" src={item.card_image} alt={item.card_alt} width="640" height="640" fetchPriority="high" />}
+      {item.card_image && <img decoding="async" className="bb-detail-image v-acilis-gorsel" src={item.card_image} alt={item.card_alt} width="640" height="640" fetchPriority="high" />}
     </section>
     <section className="v-kabuk v-bolum" aria-labelledby="tasarimlar-baslik">
       <div className="v-bolum-baslik"><div><p className="v-etiket">Hazır tasarımlar</p><h2 id="tasarimlar-baslik">{item.short_title} için {designs.length} tasarım</h2></div></div>
