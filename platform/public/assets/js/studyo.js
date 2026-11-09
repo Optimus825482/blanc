@@ -24,7 +24,10 @@
   /* ----------------------------- Başlangıç durumu ----------------------- */
 
   var durum = {
-    gorunum: 'gercek',
+    sablon: '',
+    yaziRenk: '',
+    // Yazı ve logo konumu baskı alanına oranla (0–1); olcek kaydırıcıdan.
+    yerlesim: { yazi: { x: 0.5, y: 0.2, olcek: 1 }, foto: { x: 0.76, y: 0.74, olcek: 1 } },
     urun: D.studyo.urunTipleri[0].id,
     boyut: D.studyo.urunTipleri[0].boyutlar[1],
     tema: D.temalar[0].id,
@@ -70,6 +73,7 @@
       durum.kurdele = tema.oneri.kurdele;
       durum.cikolata = tema.oneri.cikolata;
     }
+    durum.sablon = tasarim.id; // şablon değerleri kontroller kurulunca uygulanır
   }
 
   // Koleksiyon sayfasından gelen ?tema= : özel gün ve atölye önerisi devralınır.
@@ -358,21 +362,26 @@
     var tema = UI.temaBul(durum.tema);
 
     ctx.clearRect(0, 0, OLCO, OLCO);
-    var tip = urun.tip === 'bar' ? 'bar' : urun.tip === 'tepsi' ? 'tepsi' : 'kutu';
-    var gercek = durum.gorunum === 'gercek' ? gercekGorsel(tema, tip) : null;
-    if (gercek) {
-      cizGercek(gercek, amb, kur, kart, cik, tema, urun, tip);
-      return;
-    }
-    zeminCiz(tip);
-
-    if (tip === 'bar') {
-      cizBar(amb, kur, kart, cik, tema);
-    } else if (tip === 'tepsi') {
-      cizTepsi(amb, kur, kart, cik, tema);
+    var tip = cizimTipi(urun);
+    var alan = baskiAlani(urun, tip);
+    var foto = sablonGorsel(urun);
+    if (foto) {
+      // Panelden yüklenen boş ürün fotoğrafı: baskı alanı seçilen ambalaj rengine boyanır (açık renkler zemini korur)
+      kaplaCiz(foto, 0, 0, OLCO, OLCO);
+      if (amb.zemin && !acikMi(amb.zemin)) tonla(function () { yuvarlak(ctx, alan.x, alan.y, alan.g, alan.h, 18); }, amb.zemin, 0.85);
+      if (kur.renk) {
+        satenBant(alan.x + alan.g * 0.74, alan.y - 10, 36, alan.h + 20, kur.renk, true);
+        fiyonk(alan.x + alan.g * 0.74 + 18, alan.y + 8, 26, kur.renk);
+      }
+      if (kart.zemin) kartCiz(kart, OLCO - 56 - 300, OLCO - 64 - 112, 300, 112);
     } else {
-      cizKutu(amb, kur, kart, cik, tema);
+      zeminCiz(tip);
+      if (tip === 'bar') cizBar(amb, kur, kart, cik, tema);
+      else if (tip === 'tepsi') cizTepsi(amb, kur, kart, cik, tema);
+      else cizKutu(amb, kur, kart, cik, tema);
     }
+    yaziKatmani(alan, amb, kart);
+    fotoKatmani(alan);
 
     // Filigran
     ctx.font = '400 20px ' + fontCss();
@@ -461,7 +470,6 @@
     ctx.strokeStyle = tema && tema.vurgu ? tema.vurgu : 'rgba(169,131,54,0.55)';
     ctx.lineWidth = 1.5;
     ctx.stroke();
-    ustBasliklar(tema, ic.x + 54, kartY + 54, ic.g - 108, false, '#3d2016');
 
     // Çikolata ızgarası
     var adet = parseInt(durum.boyut, 10);
@@ -503,8 +511,6 @@
     var x = b.x, y = b.y, bG = b.g, bH = b.h, r = b.r || 18;
     var dolgu = cik.dolgu === 'mix' ? D.studyo.cikolataTipleri[0].dolgu : cik.dolgu;
     var kenar = cik.kenar === '#00000022' ? dolgu : cik.kenar;
-
-    ustBasliklar(tema, x, y - 96, bG, false, '#3d2016');
 
     // Bar gövdesi
     golgeli(function () {
@@ -563,45 +569,6 @@
     ctx.fillRect(x, y, bG, bH);
     ctx.restore();
 
-    // Bar üstü yazı (kabartma)
-    if (durum.isim || durum.mesaj) {
-      var metin = durum.mesaj || durum.isim;
-      ctx.save();
-      yuvarlak(ctx, x + 30, y + 40, bG - 60, bH - 80, 14);
-      ctx.clip();
-      sigdir(54, fontCss(), metin, bG - 120);
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle = 'rgba(0,0,0,0.45)';
-      ctx.fillText(metin, x + bG / 2, y + bH / 2 + 2);
-      ctx.fillStyle = metinRengi(dolgu) === '#3d2016' ? koyu(dolgu, 0.5) : acik(dolgu, 0.62);
-      ctx.fillText(metin, x + bG / 2, y + bH / 2);
-      ctx.restore();
-    }
-
-    if (fotograf) {
-      var fr = 112;
-      var px = x + bG - 20;
-      var py = y + bH + 100;
-      golgeli(function () {
-        ctx.beginPath();
-        ctx.arc(px, py, fr + 8, 0, Math.PI * 2);
-        ctx.fillStyle = '#fffdf9';
-        ctx.fill();
-      }, 'rgba(30,15,8,0.4)', 22, 4, 10);
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(px, py, fr, 0, Math.PI * 2);
-      ctx.clip();
-      ctx.drawImage(fotograf.img, px - fr, py - fr, fr * 2, fr * 2);
-      ctx.restore();
-      ctx.beginPath();
-      ctx.arc(px, py, fr + 3, 0, Math.PI * 2);
-      ctx.strokeStyle = kur.renk || '#cfb56a';
-      ctx.lineWidth = 5;
-      ctx.stroke();
-    }
-
     if (kur.renk) {
       // Barın etrafında saten kuşak
       satenBant(x + bG * 0.68, y - 18, 46, bH + 36, kur.renk, true);
@@ -651,19 +618,6 @@
     ctx.strokeStyle = tema && tema.vurgu ? tema.vurgu : 'rgba(169,131,54,0.6)';
     ctx.lineWidth = 1.5;
     ctx.stroke();
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    var etiket = durum.isim || (tema ? tema.kisa : 'İsim');
-    sigdir(44, fontCss(), etiket, pG - 56);
-    kabartmaYazi(etiket, cx, cy - (durum.tarih ? 16 : 0), '#3d2016', 'rgba(255,255,255,0.7)');
-    if (durum.tarih) {
-      ctx.font = '400 24px ' + fontCss();
-      ctx.fillStyle = 'rgba(61,32,22,0.72)';
-      ctx.fillText(tarihYaz(durum.tarih), cx, cy + 30);
-    }
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'alphabetic';
-
     if (kur.renk) fiyonk(cx, cy - rh + 8, 40, kur.renk);
     if (kart.zemin) kartCiz(kart, cx - 150, cy + rh + 44, 300, 118);
   }
@@ -763,180 +717,145 @@
     ctx.restore();
   }
 
-  /* ------------------------------ Gerçek görsel modu --------------------- */
-  // Özel güne (ve ürün tipine) göre atölyenin gerçek çalışmasının fotoğrafı altlık olur;
-  // isim, tarih, kurdele rengi, kart ve yüklenen fotoğraf üstüne bindirilir.
-  var gercekImg = {};
+  /* ------------------------------ Şablon editörü (2.3b) ------------------ */
+  // Zemin: panelden yüklenen boş ürün fotoğrafı (urun.altlik) ya da çizim tipine göre render sahne.
+  // Baskı alanı: urun.baskiAlani ({x,y,w,h} 0–1) ya da çizim geometrisinden varsayılan. Yazı ve logo bu
+  // alanın içinde sürüklenir; konumlar alana oranla saklanır, fotoğraf değişince yerleşim bozulmaz.
+  var sablonImg = {};
+  var katmanKutu = { yazi: null, foto: null }; // son çizimdeki piksel kutuları (isabet testi)
 
-  // Eşleme değeri ya düz yol (eski biçim, ortadan kırpılır) ya da {src, odak:[x,y]} nesnesidir;
-  // odak, kare kırpmada ortalanacak noktayı verir — fotoğraftaki logo dışarıda, ürün içeride kalsın diye.
-  function gercekKayit(tema, tip) {
-    var harita = (altlikGeo && altlikGeo.gercek) || {};
-    var kayit = (tema && harita[tema.id]) || {};
-    var varsayilan = harita.varsayilan || {};
-    var urunTipi = D.studyo.urunTipleri.filter(function (u) { return u.id === durum.urun; })[0];
-    var panelAltlik = urunTipi && urunTipi.altlik ? urunTipi.altlik : null;
-    var v = panelAltlik || kayit[tip] || varsayilan[tip] || kayit.kutu || varsayilan.kutu || null;
-    if (!v) return null;
-    return typeof v === 'string' ? { src: v, odak: [0.5, 0.5] } : v;
-  }
+  function cizimTipi(urun) { return urun.tip === 'bar' ? 'bar' : urun.tip === 'tepsi' ? 'tepsi' : 'kutu'; }
 
-  function gercekGorsel(tema, tip) {
-    var kayit = gercekKayit(tema, tip);
-    if (!kayit) return null;
-    var yol = kayit.src;
-    if (gercekImg[yol] === undefined) {
-      gercekImg[yol] = null;
+  function sablonGorsel(urun) {
+    var yol = urun && urun.altlik;
+    if (!yol) return null;
+    if (sablonImg[yol] === undefined) {
+      sablonImg[yol] = null;
       var img = new Image();
-      img.onload = function () { gercekImg[yol] = img; ciz(); };
-      img.onerror = function () { gercekImg[yol] = false; ciz(); };
+      img.onload = function () { sablonImg[yol] = img; ciz(); };
+      img.onerror = function () { sablonImg[yol] = false; ciz(); };
       img.src = yol;
     }
-    return gercekImg[yol] ? { img: gercekImg[yol], odak: kayit.odak || [0.5, 0.5], yakin: kayit.yakin || 1 } : null;
+    return sablonImg[yol] || null;
   }
 
-  function kaplaCiz(img, x, y, g, h, odak, yakin) {
-    var oran = Math.max(g / img.naturalWidth, h / img.naturalHeight) * (yakin || 1);
+  function baskiAlani(urun, tip) {
+    var a = urun && urun.baskiAlani;
+    if (a && a.w > 0 && a.h > 0) return { x: a.x * OLCO, y: a.y * OLCO, g: a.w * OLCO, h: a.h * OLCO };
+    var g = geo(tip);
+    if (tip === 'bar') return { x: g.bar.x, y: g.bar.y, g: g.bar.g, h: g.bar.h };
+    if (tip === 'tepsi') return { x: g.oval.cx - g.oval.rx, y: g.oval.cy - g.oval.ry, g: g.oval.rx * 2, h: g.oval.ry * 2 };
+    return { x: g.dis.x, y: g.dis.y, g: g.dis.g, h: g.dis.h };
+  }
+
+  function kaplaCiz(img, x, y, g, h) {
+    var oran = Math.max(g / img.naturalWidth, h / img.naturalHeight);
     var sw = g / oran;
     var sh = h / oran;
-    var fx = odak ? odak[0] : 0.5;
-    var fy = odak ? odak[1] : 0.5;
-    var sx = Math.min(Math.max((img.naturalWidth * fx) - sw / 2, 0), img.naturalWidth - sw);
-    var sy = Math.min(Math.max((img.naturalHeight * fy) - sh / 2, 0), img.naturalHeight - sh);
-    ctx.drawImage(img, sx, sy, sw, sh, x, y, g, h);
+    ctx.drawImage(img, (img.naturalWidth - sw) / 2, (img.naturalHeight - sh) / 2, sw, sh, x, y, g, h);
   }
 
-  function camPanel(x, y, g, h, r) {
-    golgeli(function () {
-      yuvarlak(ctx, x, y, g, h, r);
-      ctx.fillStyle = 'rgba(255,252,246,0.86)';
-      ctx.fill();
-    }, 'rgba(20,10,5,0.45)', 30, 0, 12);
-    yuvarlak(ctx, x, y, g, h, r);
-    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
+  function acikMi(hex) {
+    var m = /^#?([0-9a-f]{6})$/i.exec(String(hex || ''));
+    if (!m) return false;
+    var n = parseInt(m[1], 16);
+    return 0.299 * (n >> 16 & 255) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255) > 215;
   }
 
-  function cizGercek(gercek, amb, kur, kart, cik, tema, urun, tip) {
-    var vurgu = (tema && tema.vurgu) || '#a98336';
-    kaplaCiz(gercek.img, 0, 0, OLCO, OLCO, gercek.odak, gercek.yakin);
+  function yaziRengi(amb) { return durum.yaziRenk || (amb && amb.metin) || '#3d2016'; }
 
-    // Alt ve üst karartma: yazı okunurluğu
-    var ust = ctx.createLinearGradient(0, 0, 0, 220);
-    ust.addColorStop(0, 'rgba(20,10,5,0.42)');
-    ust.addColorStop(1, 'rgba(20,10,5,0)');
-    ctx.fillStyle = ust;
-    ctx.fillRect(0, 0, OLCO, 220);
-    var alt = ctx.createLinearGradient(0, OLCO - 420, 0, OLCO);
-    alt.addColorStop(0, 'rgba(20,10,5,0)');
-    alt.addColorStop(1, 'rgba(20,10,5,0.55)');
-    ctx.fillStyle = alt;
-    ctx.fillRect(0, OLCO - 420, OLCO, 420);
-
-    // Özel gün rozeti (sol üst)
-    var etiket = tema ? ((tema.ikon ? tema.ikon + '  ' : '') + tema.ad.toLocaleUpperCase('tr-TR')) : '';
-    ctx.font = '600 22px ' + fontCss();
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'middle';
-    var rg = ctx.measureText(etiket).width + 56;
-    golgeli(function () {
-      yuvarlak(ctx, 48, 44, rg, 50, 25);
-      ctx.fillStyle = vurgu;
-      ctx.fill();
-    }, 'rgba(0,0,0,0.35)', 14, 0, 4);
-    ctx.fillStyle = metinRengi(vurgu) === '#3d2016' ? '#2b1a12' : '#fffaf2';
-    ctx.fillText(etiket, 76, 70);
-
-    // Ürün ve seçim çipi (sağ üst)
-    var adetMetin = /^\d+$/.test(durum.boyut) ? durum.boyut + ' adet' : durum.boyut;
-    var cip = (urun ? urun.ad : '') + ' · ' + adetMetin + ' · ' + (cik ? cik.ad : '') + ' · ' + amb.ad + ' ambalaj';
-    ctx.font = '500 19px ' + fontCss();
-    var cg = ctx.measureText(cip).width + 44;
-    if (48 + rg + 16 + cg < OLCO - 48) {
-      yuvarlak(ctx, OLCO - 48 - cg, 44, cg, 50, 25);
-      ctx.fillStyle = 'rgba(255,252,246,0.9)';
-      ctx.fill();
-      ctx.fillStyle = '#3d2016';
-      ctx.fillText(cip, OLCO - 48 - cg + 22, 70);
-    }
-
-    // İsim plakası (sol alt)
-    var pX = 56, pG = fotograf ? OLCO - 56 - 300 - 32 : OLCO - 112, pH = durum.tarih ? 190 : 150, pY = OLCO - 150 - pH - 24;
-    camPanel(pX, pY, pG, pH, 18);
-    ctx.fillStyle = vurgu;
-    ctx.fillRect(pX, pY + 24, 6, pH - 48);
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'alphabetic';
-    var isim = durum.isim || 'İsminiz burada';
-    var punto = sigdir(68, fontCss(), isim, pG - 80);
-    ctx.font = '500 ' + punto + 'px ' + fontCss();
-    kabartmaYazi(isim, pX + 36, pY + 92, durum.isim ? '#3d2016' : 'rgba(61,32,22,0.45)', 'rgba(255,255,255,0.8)');
-    if (durum.tarih) {
-      ctx.font = '400 26px ' + fontCss();
-      ctx.fillStyle = 'rgba(61,32,22,0.75)';
-      ctx.fillText(tarihYaz(durum.tarih), pX + 36, pY + 136);
-    }
-    ctx.font = '500 15px ' + fontCss();
-    ctx.fillStyle = 'rgba(61,32,22,0.55)';
-    ctx.fillText('ATÖLYEDEN GERÇEK ÇALIŞMA · KİŞİSELLEŞTİRME ÖN İZLEMESİ', pX + 36, pY + pH - 24);
-
-    // Yüklenen fotoğraf (sağ alt, çerçeveli)
-    if (fotograf) {
-      var fG = 300, fX = OLCO - 56 - fG, fY = pY + pH - fG;
-      golgeli(function () {
-        yuvarlak(ctx, fX - 10, fY - 10, fG + 20, fG + 20, 16);
-        ctx.fillStyle = '#fffdf9';
-        ctx.fill();
-      }, 'rgba(20,10,5,0.45)', 26, 0, 10);
-      ctx.save();
-      yuvarlak(ctx, fX, fY, fG, fG, 10);
-      ctx.clip();
-      kaplaCiz(fotograf.img, fX, fY, fG, fG);
-      ctx.restore();
-    }
-
-    // Kurdele: alt kenarda saten bant + fiyonk (kart varsa fiyonk kartın yanında)
-    if (kur.renk) {
-      satenBant(0, OLCO - 118, OLCO, 40, kur.renk, false);
-      fiyonk(OLCO - 120, OLCO - 98, 30, kur.renk);
-    }
-    // Kart notu (bandın üstünde, sağda; fotoğraf varsa sola kayar)
-    if (kart.zemin) kartCiz(kart, fotograf ? pX + pG - 300 : OLCO - 56 - 300, pY - 118 - 24, 300, 112);
-
-    // Filigran
-    ctx.font = '400 20px ' + fontCss();
-    ctx.fillStyle = 'rgba(255,250,242,0.85)';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'alphabetic';
-    ctx.fillText(C.marka + ' · tasarım önizlemesi', 56, OLCO - 44);
-    ctx.textAlign = 'right';
-    ctx.fillText(tasarimKodu(), OLCO - 56, OLCO - 44);
-  }
-
-  function gorunumDugmeleri() {
-    var dugmeler = document.querySelectorAll('.onizleme-mod button[data-gorunum]');
-    var aciklama = document.querySelector('.onizleme-alt span');
-    function guncelle() {
-      Array.prototype.forEach.call(dugmeler, function (b) {
-        b.setAttribute('aria-pressed', b.getAttribute('data-gorunum') === durum.gorunum ? 'true' : 'false');
-      });
-      if (aciklama) {
-        aciklama.textContent = durum.gorunum === 'gercek'
-          ? 'Gerçek görsel — atölyenin bu özel gün için yaptığı çalışma; isim, tarih, kurdele ve kart seçimleriniz üstüne işlendi.'
-          : 'Taslak çizim — adet, çikolata tipi ve ambalaj rengini şematik gösterir; birebir üretim provası değildir.';
-      }
-    }
-    Array.prototype.forEach.call(dugmeler, function (b) {
-      b.addEventListener('click', function () {
-        durum.gorunum = b.getAttribute('data-gorunum');
-        guncelle();
-        ciz();
-      });
+  function yaziKatmani(alan, amb, kart) {
+    var isim = durum.isim || '';
+    var tarih = durum.tarih ? tarihYaz(durum.tarih) : '';
+    var not = (!kart || !kart.zemin) && durum.mesaj ? durum.mesaj : '';
+    var bos = !isim && !tarih && !not;
+    var olcek = durum.yerlesim.yazi.olcek || 1;
+    var enFazla = alan.g * 0.84;
+    var satirlar = [];
+    var ana = isim || (bos ? 'İsminiz burada' : '');
+    var punto = ana ? sigdir(Math.round(92 * olcek), fontCss(), ana, enFazla) : Math.round(40 * olcek);
+    if (ana) satirlar.push({ m: ana, p: punto, a: 500 });
+    if (tarih) satirlar.push({ m: tarih, p: Math.max(22, Math.round(punto * 0.36)), a: 400 });
+    if (not) satirlar.push({ m: not, p: sigdir(Math.max(22, Math.round(punto * 0.32)), fontCss(), not, enFazla), a: 400 });
+    var toplam = 0, genislik = 0;
+    satirlar.forEach(function (sat, i) {
+      ctx.font = sat.a + ' ' + sat.p + 'px ' + fontCss();
+      genislik = Math.max(genislik, ctx.measureText(sat.m).width);
+      toplam += sat.p * (i === satirlar.length - 1 ? 1 : 1.3);
     });
-    guncelle();
+    var cx = alan.x + durum.yerlesim.yazi.x * alan.g;
+    var cy = alan.y + durum.yerlesim.yazi.y * alan.h;
+    var renk = yaziRengi(amb);
+    var y = cy - toplam / 2;
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.globalAlpha = bos ? 0.5 : 1;
+    satirlar.forEach(function (sat) {
+      ctx.font = sat.a + ' ' + sat.p + 'px ' + fontCss();
+      ctx.fillStyle = acikMi(renk) ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.55)';
+      ctx.fillText(sat.m, cx, y + 1.5);
+      ctx.fillStyle = renk;
+      ctx.fillText(sat.m, cx, y);
+      y += sat.p * 1.3;
+    });
+    ctx.restore();
+    var g = Math.max(genislik, 140) + 32;
+    katmanKutu.yazi = { x: cx - g / 2, y: cy - toplam / 2 - 14, g: g, h: toplam + 28 };
   }
-  gorunumDugmeleri();
+
+  function fotoKatmani(alan) {
+    if (!fotograf) { katmanKutu.foto = null; return; }
+    var boy = Math.min(alan.g, alan.h) * 0.34 * (durum.yerlesim.foto.olcek || 1);
+    var cx = alan.x + durum.yerlesim.foto.x * alan.g;
+    var cy = alan.y + durum.yerlesim.foto.y * alan.h;
+    var x = cx - boy / 2, y = cy - boy / 2;
+    golgeli(function () {
+      yuvarlak(ctx, x - 6, y - 6, boy + 12, boy + 12, 14);
+      ctx.fillStyle = '#fffdf9';
+      ctx.fill();
+    }, 'rgba(20,10,5,0.35)', 18, 0, 6);
+    ctx.save();
+    yuvarlak(ctx, x, y, boy, boy, 10);
+    ctx.clip();
+    kaplaCiz(fotograf.img, x, y, boy, boy);
+    ctx.restore();
+    katmanKutu.foto = { x: x - 6, y: y - 6, g: boy + 12, h: boy + 12 };
+  }
+
+  // Sürükleme: işaretçi hangi katmanın kutusundaysa o katman taşınır (fotoğraf yazının üstünde).
+  function tuvalNoktasi(e) {
+    var r = canvas.getBoundingClientRect();
+    return { x: (e.clientX - r.left) * OLCO / r.width, y: (e.clientY - r.top) * OLCO / r.height };
+  }
+  function icinde(k, p) { return !!k && p.x >= k.x && p.x <= k.x + k.g && p.y >= k.y && p.y <= k.y + k.h; }
+  var surukleme = null;
+  canvas.addEventListener('pointerdown', function (e) {
+    var p = tuvalNoktasi(e);
+    var katman = icinde(katmanKutu.foto, p) ? 'foto' : icinde(katmanKutu.yazi, p) ? 'yazi' : null;
+    if (!katman) return;
+    var urun = UI.urunBul(durum.urun);
+    surukleme = { katman: katman, alan: baskiAlani(urun, cizimTipi(urun)), bas: p, ilk: { x: durum.yerlesim[katman].x, y: durum.yerlesim[katman].y } };
+    canvas.setPointerCapture(e.pointerId);
+    canvas.classList.add('surukleniyor');
+    e.preventDefault();
+  });
+  canvas.addEventListener('pointermove', function (e) {
+    if (!surukleme) return;
+    var p = tuvalNoktasi(e);
+    var yer = durum.yerlesim[surukleme.katman];
+    yer.x = Math.min(1, Math.max(0, surukleme.ilk.x + (p.x - surukleme.bas.x) / surukleme.alan.g));
+    yer.y = Math.min(1, Math.max(0, surukleme.ilk.y + (p.y - surukleme.bas.y) / surukleme.alan.h));
+    ciz();
+  });
+  function suruklemeBitir() {
+    if (!surukleme) return;
+    surukleme = null;
+    canvas.classList.remove('surukleniyor');
+    ozetGuncelle();
+  }
+  canvas.addEventListener('pointerup', suruklemeBitir);
+  canvas.addEventListener('pointercancel', suruklemeBitir);
 
   /* ------------------------------ Özet metni ---------------------------- */
 
@@ -977,6 +896,8 @@
     satirlar.push('• Ambalaj: ' + etiketAd(durum.ambalaj, D.studyo.ambalajRenkleri));
     satirlar.push('• Kurdele: ' + etiketAd(durum.kurdele, D.studyo.kurdeler));
     satirlar.push('• Kart: ' + etiketAd(durum.kart, D.studyo.kartlar));
+    if (durum.sablon) satirlar.push('• Şablon: ' + ((UI.tasarimBul(durum.sablon) || {}).ad || durum.sablon));
+    if (durum.yaziRenk) satirlar.push('• Yazı rengi: ' + durum.yaziRenk);
     if (durum.isim) satirlar.push('• İsim: ' + durum.isim);
     if (durum.tarih) satirlar.push('• Tarih: ' + tarihYaz(durum.tarih));
     if (durum.mesaj) satirlar.push('• Kart notu: ' + durum.mesaj);
@@ -1227,11 +1148,6 @@
       .join('');
 
     var temaAlan = document.getElementById('alan-tema');
-    temaAlan.innerHTML = D.temalar
-      .map(function (t) {
-        return secimHTML('tema', t.id, t.ikon + ' ' + t.kisa, t.id === durum.tema);
-      })
-      .join('');
 
     var cikAlan = document.getElementById('alan-cikolata');
     cikAlan.innerHTML = D.studyo.cikolataTipleri
@@ -1322,6 +1238,79 @@
     }
     boyutlariCiz();
 
+    /* Özel günler ürün tipine göre (panel: "uygun özel günler"; boşsa hepsi) */
+    function urunTemalari(u) {
+      return u.temalar && u.temalar.length ? D.temalar.filter(function (t) { return u.temalar.indexOf(t.id) > -1; }) : D.temalar;
+    }
+    function temaOnerisi() {
+      var t = UI.temaBul(durum.tema);
+      if (!t || !t.oneri) return;
+      if (t.oneri.ambalaj) durum.ambalaj = t.oneri.ambalaj;
+      if (t.oneri.kurdele) durum.kurdele = t.oneri.kurdele;
+      if (t.oneri.cikolata && UI.urunBul(durum.urun).tip !== 'bar') durum.cikolata = t.oneri.cikolata;
+      formaYansit();
+    }
+    function temalariCiz() {
+      var liste = urunTemalari(UI.urunBul(durum.urun));
+      if (liste.length && !liste.some(function (t) { return t.id === durum.tema; })) { durum.tema = liste[0].id; temaOnerisi(); }
+      temaAlan.innerHTML = liste.map(function (t) { return secimHTML('tema', t.id, t.ikon + ' ' + t.kisa, t.id === durum.tema); }).join('');
+    }
+    // Durumdaki seçimleri form denetimlerine yansıt (şablon ve tema önerisi uygulanınca)
+    function formaYansit() {
+      ['ambalaj', 'kurdele', 'kart', 'font', 'cikolata', 'yaziRenk'].forEach(function (ad) {
+        var hepsi = document.querySelectorAll('input[name="' + ad + '"]');
+        var var_ = false;
+        hepsi.forEach(function (i) { i.checked = i.value === (durum[ad] || ''); if (i.checked) var_ = true; });
+        if (!var_ && ad === 'yaziRenk') document.getElementById('yazi-renk-ozel').value = durum.yaziRenk || '#3d2016';
+      });
+      document.getElementById('isim').value = durum.isim;
+      document.getElementById('mesaj').value = durum.mesaj;
+    }
+
+    /* Şablonlar: boş şablon + bu ürün (ve özel gün) için hazır tasarımlar */
+    var sablonAlan = document.getElementById('alan-sablon');
+    function sablonlariCiz() {
+      var urunun = D.tasarimlar.filter(function (t) { return t.urun === durum.urun; });
+      var liste = urunun.filter(function (t) { return t.tema === durum.tema; });
+      if (!liste.length) liste = urunun;
+      if (durum.sablon && !liste.some(function (t) { return t.id === durum.sablon; })) durum.sablon = '';
+      sablonAlan.innerHTML =
+        '<label class="secim"><input type="radio" name="sablon" value=""' + (!durum.sablon ? ' checked' : '') + '><span><span class="sablon-bos" aria-hidden="true">✦</span>Boş şablon<small>Kendi tasarımını yap</small></span></label>' +
+        liste.map(function (t) {
+          return '<label class="secim"><input type="radio" name="sablon" value="' + t.id + '"' + (t.id === durum.sablon ? ' checked' : '') + '><span>' +
+            (t.gorsel ? '<img src="' + t.gorsel + '" alt="" loading="lazy" width="160" height="160">' : '<span class="sablon-bos" aria-hidden="true">✦</span>') +
+            UI.kacir(t.ad) + '<small>' + UI.kacir(t.ozet || '') + '</small></span></label>';
+        }).join('');
+    }
+    function sablonUygula() {
+      var t = UI.tasarimBul(durum.sablon);
+      if (!t) return;
+      var sb = t.sablon || {};
+      if (t.boyut && UI.urunBul(durum.urun).boyutlar.indexOf(t.boyut) > -1) {
+        durum.boyut = t.boyut;
+        boyutlariCiz();
+        if (/^\d+$/.test(t.boyut)) { durum.adet = t.boyut; adetSecim.value = t.boyut; }
+      }
+      if (t.cikolata) durum.cikolata = t.cikolata;
+      if (sb.isim !== undefined) durum.isim = sb.isim;
+      if (sb.not !== undefined) durum.mesaj = sb.not;
+      if (sb.font) durum.font = sb.font;
+      if (sb.renk) durum.yaziRenk = sb.renk;
+      if (sb.ambalaj) durum.ambalaj = sb.ambalaj;
+      if (sb.kurdele) durum.kurdele = sb.kurdele;
+      if (sb.kart) durum.kart = sb.kart;
+      formaYansit();
+      durumYaz('“' + t.ad + '” şablonu uygulandı; yazıyı, renkleri ve yerleşimi değiştirebilirsin.', true);
+    }
+
+    var YAZI_RENKLERI = [['', 'Otomatik', '#d9c7b2'], ['#A98336', 'Altın', '#A98336'], ['#512730', 'Bordo', '#512730'], ['#3D2016', 'Kahve', '#3D2016'], ['#FFFAF2', 'Beyaz', '#FFFAF2'], ['#1A1A1A', 'Siyah', '#1A1A1A']];
+    document.getElementById('alan-yazi-renk').innerHTML = YAZI_RENKLERI.map(function (r) {
+      return renkSecimHTML('yaziRenk', r[0], r[1], r[2], (durum.yaziRenk || '') === r[0]);
+    }).join('');
+
+    temalariCiz();
+    sablonlariCiz();
+
     var isimGirdi = document.getElementById('isim');
     isimGirdi.maxLength = C.studyo.isimKarakter;
     var mesajGirdi = document.getElementById('mesaj');
@@ -1334,11 +1323,28 @@
       if (h.name === 'urun') {
         durum.urun = h.value;
         boyutlariCiz();
+        temalariCiz();
+        sablonlariCiz();
         var u = UI.urunBul(durum.urun);
         if (u.tip === 'bar' && /^\d+$/.test(durum.adet)) durum.adet = '1';
         if (u.tip === 'tepsi' && /^\d+$/.test(durum.adet)) durum.adet = '1';
         adetSecim.value = durum.adet;
         if (u.tip === 'bar') durum.cikolata = durum.cikolata === 'karisik' ? 'sutlu' : durum.cikolata;
+        formaYansit();
+      } else if (h.name === 'tema') {
+        durum.tema = h.value;
+        temaOnerisi();
+        sablonlariCiz();
+      } else if (h.name === 'sablon') {
+        durum.sablon = h.value;
+        sablonUygula();
+      } else if (h.id === 'yazi-boyut') {
+        durum.yerlesim.yazi.olcek = parseFloat(h.value) || 1;
+      } else if (h.id === 'foto-boyut') {
+        durum.yerlesim.foto.olcek = parseFloat(h.value) || 1;
+      } else if (h.id === 'yazi-renk-ozel') {
+        durum.yaziRenk = h.value.toUpperCase();
+        document.querySelectorAll('input[name="yaziRenk"]').forEach(function (i) { i.checked = false; });
       } else if (h.name === 'boyut') {
         durum.boyut = h.value;
         if (/^\d+$/.test(h.value)) {
@@ -1487,7 +1493,7 @@
         secimler: {
           cikolata: durum.cikolata, ambalaj: durum.ambalaj, kurdele: durum.kurdele, kart: durum.kart, font: durum.font,
           isim: durum.isim, tarih: durum.tarih, mesaj: durum.mesaj, ekstralar: durum.ekstralar, teslimNotu: durum.teslimNotu || '',
-          fotograf: !!fotograf, gorunum: durum.gorunum
+          fotograf: !!fotograf, sablon: durum.sablon, yaziRenk: durum.yaziRenk, yerlesim: durum.yerlesim
         }
       };
     }
@@ -1582,6 +1588,8 @@
     sifirla.addEventListener('click', function () {
       location.href = '/studyo';
     });
+
+    if (durum.sablon) sablonUygula();
   }
 
   /* --------------------------------- Başlat ----------------------------- */
@@ -1594,7 +1602,10 @@
     document.querySelectorAll('.studio-reference').forEach(function (button) {
       button.addEventListener('click', function () {
         var choice = document.querySelector('input[name="tema"][value="' + button.dataset.tema + '"]');
-        if (!choice) return;
+        if (!choice) {
+          document.getElementById('ilham-durum').textContent = 'Bu özel gün seçili ürün tipi için sunulmuyor; önce 1. adımda ürünü değiştirin.';
+          return;
+        }
         choice.click();
         document.querySelectorAll('.studio-reference').forEach(function (item) {
           item.classList.toggle('studio-reference--selected', item === button);

@@ -9,7 +9,7 @@ import { deliveryBands, getSettings, whatsappLink } from './settings';
 const camel = (slug) => slug.replace(/-([a-z0-9])/g, (_, h) => h.toUpperCase());
 
 export const getStudioData = cache(async () => {
-  const [occasions, recipients, segments, types, designs, recipientLinks, options, settings, rules] = await Promise.all([
+  const [occasions, recipients, segments, types, designs, recipientLinks, options, settings, rules, typeOccasions] = await Promise.all([
     query('SELECT * FROM bb_occasions WHERE published ORDER BY position, title'),
     query('SELECT * FROM bb_recipients WHERE published ORDER BY position, title'),
     query('SELECT * FROM bb_segments ORDER BY position, title'),
@@ -19,7 +19,10 @@ export const getStudioData = cache(async () => {
     query('SELECT * FROM bb_studio_options WHERE published ORDER BY option_group, position, title'),
     getSettings(),
     query('SELECT kind, product_type_slug, size, option_slug, min_qty, max_qty, amount, mode, currency FROM bb_price_rules ORDER BY kind, min_qty'),
+    query('SELECT product_type_slug, occasion_slug FROM bb_product_type_occasions'),
   ]);
+  const urunGunleri = {};
+  for (const r of typeOccasions.rows) (urunGunleri[r.product_type_slug] ??= []).push(r.occasion_slug);
   const alicilar = {};
   for (const r of recipientLinks.rows) (alicilar[r.design_slug] ??= []).push(r.recipient_slug);
   const grup = (ad, donustur) => options.rows.filter((o) => o.option_group === ad).map((o) => ({ id: o.slug, ad: o.title, ...donustur(o.data || {}) }));
@@ -36,9 +39,11 @@ export const getStudioData = cache(async () => {
       kime: alicilar[t.slug] || [], segment: t.segment_slug || '', cokSatan: t.bestseller, yeni: t.is_new, oneCikan: t.featured,
       ozet: t.summary, etiketler: t.tags || [], gorsel: t.image, gorselAlt: t.alt,
       baslangicFiyat: t.starting_price === null ? null : Number(t.starting_price),
+      sablon: t.template || {},
     })),
     studyo: {
-      urunTipleri: types.rows.map((u) => ({ id: u.slug, ad: u.title, ozet: u.body, tip: u.draw_type, boyutlar: u.sizes || [], altlik: u.image })),
+      // altlik: panelden yüklenen boş ürün fotoğrafı; baskiAlani: {x,y,w,h} 0–1 (boş: çizim tipine göre varsayılan); temalar: uygun özel günler (boş: hepsi)
+      urunTipleri: types.rows.map((u) => ({ id: u.slug, ad: u.title, ozet: u.body, tip: u.draw_type, boyutlar: u.sizes || [], altlik: u.image, baskiAlani: u.print_area || {}, temalar: urunGunleri[u.slug] || [] })),
       cikolataTipleri: grup('chocolate', ({ dolgu, kenar }) => ({ dolgu, kenar })),
       ambalajRenkleri: grup('wrap_color', ({ zemin, kenar, metin }) => ({ zemin, kenar, metin })),
       kurdeler: grup('ribbon', ({ renk }) => ({ renk: renk ?? null })),

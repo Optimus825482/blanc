@@ -1,5 +1,6 @@
 import { query } from '../../lib/db';
-import { VERI_ALANLARI, grupAdi, katalog } from '../../lib/katalog';
+import { SABLON_ALANLARI, VERI_ALANLARI, grupAdi, katalog } from '../../lib/katalog';
+import BaskiAlani from './baski-alani';
 import { deleteCatalog, saveCatalog } from './actions';
 import SilDugmesi from './sil-dugmesi';
 
@@ -48,6 +49,26 @@ function Alan({ alan, item, id, secenekler }) {
       // Mevcut kayıtta grup belli; yeni kayıtta tüm gruplar çizilir, CSS seçili gruba göre gösterir.
       return item ? <VeriAlanlari grup={item.option_group} veri={deger} id={id} />
         : Object.keys(VERI_ALANLARI).map((g) => <div key={g} className="bb-veri" data-grup={g}><VeriAlanlari grup={g} veri={null} id={id + '-' + g} /></div>);
+    case 'alan':
+      return <BaskiAlani id={id} gorsel={item?.image ? onizleme(item.image) : ''} deger={deger || {}} cizim={item?.draw_type || 'kutu'} />;
+    case 'sablon': {
+      const t = deger || {};
+      return <fieldset className="bb-oneri"><legend>{etiket}</legend>
+        {SABLON_ALANLARI.map((a) => {
+          const ida = id + '-' + a.ad;
+          if (a.tip === 'metin') return <label key={a.ad} htmlFor={ida}>{a.etiket}<input id={ida} name={'sablon_' + a.ad} defaultValue={t[a.ad] || ''} maxLength={a.max} /></label>;
+          if (a.tip === 'renk') return <label key={a.ad} htmlFor={ida} className="bb-renk">{a.etiket}
+            <span><input id={ida} type="color" name={'sablon_' + a.ad} defaultValue={hex6(t[a.ad], '#3D2016')} /> <code>{t[a.ad] || 'varsayılan'}</code></span>
+          </label>;
+          return <label key={a.ad} htmlFor={ida}>{a.etiket}
+            <select id={ida} name={'sablon_' + a.ad} defaultValue={t[a.ad] || ''}>
+              <option value="">Şablonda belirtilmesin</option>
+              {(secenekler[a.secenek] || []).map(([v, isim]) => <option key={v} value={v}>{isim}</option>)}
+            </select>
+          </label>;
+        })}
+      </fieldset>;
+    }
     case 'oneri': {
       const o = deger || {};
       const liste = [['ambalaj', 'Ambalaj rengi', 'wrap_colors'], ['kurdele', 'Kurdele', 'ribbons'], ['cikolata', 'Çikolata', 'chocolate']];
@@ -125,13 +146,16 @@ export default async function KatalogBolumleri({ kinds }) {
   for (const [kind, tanim] of Object.entries(katalog)) {
     satirlar[kind] = (await query(`SELECT * FROM ${tanim.table} ORDER BY ${tanim.order}`)).rows;
   }
-  const [alicilar, ozelGunler] = await Promise.all([
+  const [alicilar, ozelGunler, urunGunleri] = await Promise.all([
     query('SELECT design_slug, recipient_slug FROM bb_design_recipients'),
     query('SELECT design_slug, occasion_slug FROM bb_design_occasions'),
+    query('SELECT product_type_slug, occasion_slug FROM bb_product_type_occasions'),
   ]);
+  // İlişkiler tür+slug ile anahtarlanır (tasarım ve ürün tipi slug'ları çakışabilir).
   const iliskiler = {};
-  for (const r of alicilar.rows) ((iliskiler[r.design_slug] ??= { recipients: [], occasions: [] }).recipients).push(r.recipient_slug);
-  for (const r of ozelGunler.rows) ((iliskiler[r.design_slug] ??= { recipients: [], occasions: [] }).occasions).push(r.occasion_slug);
+  for (const r of alicilar.rows) ((iliskiler['design:' + r.design_slug] ??= { recipients: [], occasions: [] }).recipients).push(r.recipient_slug);
+  for (const r of ozelGunler.rows) ((iliskiler['design:' + r.design_slug] ??= { recipients: [], occasions: [] }).occasions).push(r.occasion_slug);
+  for (const r of urunGunleri.rows) ((iliskiler['product_type:' + r.product_type_slug] ??= { occasions: [] }).occasions).push(r.occasion_slug);
   const cift = (liste) => liste.map((r) => [r.slug, r.title]);
   const secenekler = {
     occasions: cift(satirlar.occasion),
@@ -142,6 +166,8 @@ export default async function KatalogBolumleri({ kinds }) {
     wrap_colors: cift(satirlar.studio_option.filter((o) => o.option_group === 'wrap_color')),
     ribbons: cift(satirlar.studio_option.filter((o) => o.option_group === 'ribbon')),
     extras: cift(satirlar.studio_option.filter((o) => o.option_group === 'extra')),
+    cards: cift(satirlar.studio_option.filter((o) => o.option_group === 'card')),
+    fonts: cift(satirlar.studio_option.filter((o) => o.option_group === 'font')),
   };
   return <>
     {!kinds && <h2 id="katalog">Katalog</h2>}
@@ -151,7 +177,7 @@ export default async function KatalogBolumleri({ kinds }) {
       {kind === 'price_rule' && <p className="kucuk">Temel fiyat: ürün tipi + (isteğe bağlı) boyut + adet aralığı için fiyat. Ekstra: seçilen stüdyo ekstrası için ek ücret. Stüdyodaki tahmini fiyat bu kurallardan hesaplanır; kural yoksa tahmin gösterilmez.</p>}
       {satirlar[kind].map((item) => <details key={(item.option_group || '') + (tanim.numericKey ? item.id : item.slug)}>
         <summary>{tanim.ozet ? tanim.ozet(item) : <>{tanim.group ? grupAdi(item.option_group) + ' · ' : ''}{item.title}{'published' in item ? (item.published ? ' · Yayında' : ' · Taslak') : ''}</>}</summary>
-        <Duzenleyici kind={kind} tanim={tanim} item={item} secenekler={secenekler} iliskiler={iliskiler[item.slug]} />
+        <Duzenleyici kind={kind} tanim={tanim} item={item} secenekler={secenekler} iliskiler={iliskiler[kind + ':' + item.slug]} />
       </details>)}
       <details><summary>Yeni {tanim.single} ekle</summary><Duzenleyici kind={kind} tanim={tanim} secenekler={secenekler} /></details>
     </section>)}

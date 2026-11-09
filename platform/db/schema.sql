@@ -148,6 +148,16 @@ CREATE INDEX IF NOT EXISTS bb_price_rules_lookup_idx ON bb_price_rules (kind, pr
 -- 1.3: ürün tipine altlık fotoğrafı (stüdyo gerçek görsel zemini)
 ALTER TABLE bb_product_types ADD COLUMN IF NOT EXISTS image text NOT NULL DEFAULT '';
 ALTER TABLE bb_product_types ADD COLUMN IF NOT EXISTS alt text NOT NULL DEFAULT '';
+-- 2.3b: stüdyo tasarım editörü. print_area: boş ürün fotoğrafında yazının/logonun oturacağı baskı alanı
+-- ({x,y,w,h} fotoğrafa oranla 0–1; boş: çizim tipine göre varsayılan). Ürün tipine uygun özel günler (boş: hepsi).
+ALTER TABLE bb_product_types ADD COLUMN IF NOT EXISTS print_area jsonb NOT NULL DEFAULT '{}'::jsonb;
+CREATE TABLE IF NOT EXISTS bb_product_type_occasions (
+  product_type_slug text NOT NULL REFERENCES bb_product_types(slug) ON DELETE CASCADE ON UPDATE CASCADE,
+  occasion_slug text NOT NULL REFERENCES bb_occasions(slug) ON DELETE CASCADE ON UPDATE CASCADE,
+  PRIMARY KEY (product_type_slug, occasion_slug)
+);
+-- Hazır tasarımın stüdyo şablonu: {isim, not, font, renk, ambalaj, kurdele, kart}; seçilince stüdyoya dolar.
+ALTER TABLE bb_designs ADD COLUMN IF NOT EXISTS template jsonb NOT NULL DEFAULT '{}'::jsonb;
 -- 1.6: sıkça sorulan sorular (panelden yönetilir)
 CREATE TABLE IF NOT EXISTS bb_faq (
   id serial PRIMARY KEY,

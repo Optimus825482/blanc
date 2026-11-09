@@ -298,3 +298,12 @@
 /* Yönetim paneli: oturum eylemleri (plan 3.5) */
 .bb-admin__eylem { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
 .bb-admin__eylem form { margin: 0; }
+
+/* --- Baskı alanı çizici (2.3b) --- */
+.bb-baski { display: grid; gap: .6rem; }
+.bb-baski__sahne { position: relative; max-width: 26rem; user-select: none; touch-action: none; }
+.bb-baski__sahne img { display: block; width: 100%; height: auto; max-width: none; border: 1px solid #dfd0be; }
+.bb-baski__kutu { position: absolute; border: 2px dashed #512730; background: rgba(81,39,48,.14); cursor: move; box-sizing: border-box; }
+.bb-baski__tutamac { position: absolute; right: -8px; bottom: -8px; width: 18px; height: 18px; border-radius: 50%; background: #512730; border: 2px solid #fffaf5; cursor: nwse-resize; }
+.bb-baski__sayilar { display: flex; flex-wrap: wrap; gap: .5rem .8rem; align-items: end; }
+.bb-baski__sayilar label { width: 6.5rem; }

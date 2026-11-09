@@ -65,3 +65,18 @@ body[data-sayfa="studyo"] { background: #f6f0e8; }
 
 /* hidden özniteliği .btn ve flex kapsayıcıların display kuralını yensin */
 .onay-diyalog [hidden] { display: none !important; }
+
+/* Tasarım editörü (2.3b): sürüklenebilir yazı/logo, şablon kartları */
+.onizleme-kart canvas { touch-action: none; cursor: grab; }
+.onizleme-kart canvas.surukleniyor { cursor: grabbing; }
+.onizleme-ipucu { margin: 0; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: #715241; text-align: right; }
+.sablonlar { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: .6rem; }
+.sablonlar .secim { display: block; }
+.sablonlar .secim > span { display: grid; gap: .35rem; padding: .5rem; text-align: left; font-size: .82rem; line-height: 1.3; }
+.sablonlar .secim img, .sablonlar .sablon-bos { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; background: #efe6da; }
+.sablonlar .sablon-bos { display: grid; place-items: center; font-size: 1.6rem; color: #9a7c5e; }
+.sablonlar small { color: #715241; font-weight: 400; }
+.renk-ozel { display: inline-flex; align-items: center; gap: .5rem; margin-top: .5rem; font-size: .85rem; color: #4a3a30; }
+.renk-ozel input { width: 2.4rem; height: 2rem; padding: 0; border: 1px solid #c9b79c; border-radius: 6px; background: none; }
+input[type="range"] { width: 100%; accent-color: #512730; }
+

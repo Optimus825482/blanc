@@ -8,7 +8,7 @@ import { revalidatePath } from 'next/cache';
 import { clearAllSessions, clearSession, createSession, equalText, requireAdmin } from '../../lib/auth';
 import { query } from '../../lib/db';
 import { clearInstagramCache, encryptToken, verifyInstagram } from '../../lib/instagram';
-import { VERI_ALANLARI, katalog, slugDeseni } from '../../lib/katalog';
+import { VERI_ALANLARI, katalog, slugDeseni, SABLON_ALANLARI } from '../../lib/katalog';
 import { panelBolumu } from './bolumler';
 
 class InvalidInput extends Error {}
@@ -218,6 +218,30 @@ function katalogDeger(alan, data) {
       if (grup === 'extra') nesne.varsayilan = !!bayraklar.varsayilan;
       return JSON.stringify(nesne);
     }
+    case 'alan': {
+      // Baskı alanı: yüzde girişleri → 0–1 oranları; dört değer de yoksa boş nesne (çizim tipine göre varsayılan).
+      const n = {};
+      for (const ad of ['x', 'y', 'w', 'h']) {
+        const v = data.get('alan_' + ad);
+        if (typeof v !== 'string' || v.trim() === '') return '{}';
+        const sayi = Number(v.replace(',', '.'));
+        if (!Number.isFinite(sayi) || sayi < 0 || sayi > 100) throw new InvalidInput();
+        n[ad] = Math.round(sayi * 10) / 1000;
+      }
+      if (n.w < 0.05 || n.h < 0.05 || n.x + n.w > 1.001 || n.y + n.h > 1.001) throw new InvalidInput();
+      return JSON.stringify(n);
+    }
+    case 'sablon': {
+      const nesne = {};
+      for (const a of SABLON_ALANLARI) {
+        const v = data.get('sablon_' + a.ad);
+        if (typeof v !== 'string' || !v.trim()) continue;
+        if (a.tip === 'metin') { if (v.length > a.max) throw new InvalidInput(); nesne[a.ad] = v.trim(); }
+        else if (a.tip === 'renk') { if (!/^#[0-9A-Fa-f]{6}$/.test(v)) throw new InvalidInput(); nesne[a.ad] = v.toUpperCase(); }
+        else { if (!slugDeseni.test(v) || v.length > 72) throw new InvalidInput(); nesne[a.ad] = v; }
+      }
+      return JSON.stringify(nesne);
+    }
     case 'oneri': {
       const nesne = {};
       for (const ad of ['ambalaj', 'kurdele', 'cikolata']) {
@@ -304,9 +328,10 @@ export async function saveCatalog(data) {
     if (gorsel) await query('INSERT INTO bb_media(id,bytes,width,height) VALUES ($1,$2,$3,$4)', [gorsel.id, gorsel.data, gorsel.width, gorsel.height]);
     for (const iliski of tanim.relations || []) {
       const secili = data.getAll(iliski.name).filter((s) => typeof s === 'string' && slugDeseni.test(s)).slice(0, 50);
-      await query(`DELETE FROM ${iliski.table} WHERE design_slug=$1`, [anahtar.key]);
+      const anahtarSutun = iliski.key || 'design_slug';
+      await query(`DELETE FROM ${iliski.table} WHERE ${anahtarSutun}=$1`, [anahtar.key]);
       if (secili.length) {
-        await query(`INSERT INTO ${iliski.table}(design_slug,${iliski.column}) SELECT $1, unnest($2::text[]) ON CONFLICT DO NOTHING`, [anahtar.key, secili]);
+        await query(`INSERT INTO ${iliski.table}(${anahtarSutun},${iliski.column}) SELECT $1, unnest($2::text[]) ON CONFLICT DO NOTHING`, [anahtar.key, secili]);
       }
     }
   } catch (error) {

@@ -55,7 +55,12 @@ export const katalog = {
       { name: 'body', label: 'Kısa açıklama', type: 'textarea', max: 600 },
       { name: 'draw_type', label: 'Stüdyo çizim tipi', type: 'select', options: CIZIM, required: true },
       { name: 'sizes', label: 'Boyut / adet seçenekleri (virgülle)', type: 'tags', max: 200 },
-      { ...ortak.image, label: 'Altlık fotoğrafı (stüdyo gerçek görsel zemini)' }, ortak.alt, ortak.position, ortak.published,
+      { ...ortak.image, label: 'Boş ürün fotoğrafı (stüdyo şablonu: üzerinde yazı olmayan, beyaz/krem ürün; kare, tepeden)' }, ortak.alt,
+      { name: 'print_area', label: 'Baskı alanı (yazı ve logonun oturacağı bölge)', type: 'alan' },
+      ortak.position, ortak.published,
+    ],
+    relations: [
+      { name: 'occasions', label: 'Uygun özel günler (hiçbiri seçili değilse hepsi)', table: 'bb_product_type_occasions', key: 'product_type_slug', column: 'occasion_slug', options: 'occasions' },
     ],
   },
   design: {
@@ -74,11 +79,12 @@ export const katalog = {
       { name: 'is_new', label: 'Yeni', type: 'check' },
       { name: 'featured', label: 'Vitrinde öne çıkar', type: 'check' },
       { name: 'tags', label: 'Etiketler (virgülle)', type: 'tags', max: 300 },
+      { name: 'template', label: 'Stüdyo şablonu (bu tasarım seçilince stüdyoya dolan değerler)', type: 'sablon' },
       ortak.image, ortak.alt, ortak.position, ortak.published,
     ],
     relations: [
-      { name: 'recipients', label: 'Alıcılar', table: 'bb_design_recipients', column: 'recipient_slug', options: 'recipients' },
-      { name: 'occasions', label: 'Ek özel günler', table: 'bb_design_occasions', column: 'occasion_slug', options: 'occasions' },
+      { name: 'recipients', label: 'Alıcılar', table: 'bb_design_recipients', key: 'design_slug', column: 'recipient_slug', options: 'recipients' },
+      { name: 'occasions', label: 'Ek özel günler', table: 'bb_design_occasions', key: 'design_slug', column: 'occasion_slug', options: 'occasions' },
     ],
   },
   studio_option: {
@@ -155,6 +161,17 @@ export const VERI_ALANLARI = {
   delivery: [],
   quantity: [],
 };
+
+// Hazır tasarım şablonu alt alanları (form adı: sablon_<ad>). secenek: panel seçenek listesi adı.
+export const SABLON_ALANLARI = [
+  { ad: 'isim', etiket: 'Üzerindeki yazı (isim / baş harf)', tip: 'metin', max: 22 },
+  { ad: 'not', etiket: 'Kart notu', tip: 'metin', max: 60 },
+  { ad: 'font', etiket: 'Yazı tipi', tip: 'secenek', secenek: 'fonts' },
+  { ad: 'renk', etiket: 'Yazı rengi', tip: 'renk' },
+  { ad: 'ambalaj', etiket: 'Ambalaj rengi', tip: 'secenek', secenek: 'wrap_colors' },
+  { ad: 'kurdele', etiket: 'Kurdele', tip: 'secenek', secenek: 'ribbons' },
+  { ad: 'kart', etiket: 'Kart', tip: 'secenek', secenek: 'cards' },
+];
 
 export const slugDeseni = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 export const grupAdi = (slug) => GRUPLAR.find(([g]) => g === slug)?.[1] ?? slug;
