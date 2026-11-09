@@ -16,7 +16,6 @@ export default function BaskiAlani({ id, gorsel, deger, cizim }) {
   const surukle = useRef(null);
 
   useEffect(() => {
-    if (!surukle.current) return undefined;
     const hareket = (e) => {
       const s = surukle.current;
       if (!s) return;
@@ -33,13 +32,11 @@ export default function BaskiAlani({ id, gorsel, deger, cizim }) {
     return () => { window.removeEventListener('pointermove', hareket); window.removeEventListener('pointerup', birak); };
   });
 
-  const basla = (mod) => (e) => {
+  function basla(mod, e) {
     e.preventDefault();
     setBos(false);
     surukle.current = { mod, x0: e.clientX, y0: e.clientY, alan: { ...alan } };
-    // useEffect bağımlılığı yok; dinleyiciler her render'da yeniden bağlanır, ilk hareketi kaçırmamak için tetikle
-    setAlan((a) => ({ ...a }));
-  };
+  }
   const sayi = (ad) => (e) => { setBos(false); setAlan((a) => ({ ...a, [ad]: sinirla(Number(e.target.value) || 0, 0, 100) })); };
   const deg = (ad) => (bos ? '' : String(Math.round(alan[ad] * 10) / 10));
 
@@ -48,8 +45,8 @@ export default function BaskiAlani({ id, gorsel, deger, cizim }) {
     {gorsel ? <div className="bb-baski__sahne" ref={kutuRef}>
       <img src={gorsel} alt="" draggable="false" />
       <div className="bb-baski__kutu" style={{ left: alan.x + '%', top: alan.y + '%', width: alan.w + '%', height: alan.h + '%', opacity: bos ? 0.55 : 1 }}
-        onPointerDown={basla('tasi')} role="presentation">
-        <span className="bb-baski__tutamac" onPointerDown={(e) => { e.stopPropagation(); basla('boyut')(e); }} role="presentation" />
+        onPointerDown={(e) => basla('tasi', e)} role="presentation">
+        <span className="bb-baski__tutamac" onPointerDown={(e) => { e.stopPropagation(); basla('boyut', e); }} role="presentation" />
       </div>
     </div> : <p className="kucuk">Önce boş ürün fotoğrafını yükleyip kaydedin; sonra alanı fotoğraf üstünde sürükleyerek seçebilirsiniz.</p>}
     <div className="bb-baski__sayilar">
