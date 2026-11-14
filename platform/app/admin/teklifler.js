@@ -1,5 +1,5 @@
 import { DURUMLAR, getQuotes, takipYolu, tarihYaz } from '../../lib/teklif';
-import { saveQuote } from './actions';
+import { saveQuote, sendQuoteReply } from './actions';
 import YanitDugmeleri from './yanit-dugmeleri';
 
 // Panel: teklif talepleri listesi; durum ve not satır içi formla güncellenir.
@@ -28,6 +28,7 @@ function Liste({ id, baslik, aciklama, teklifler }) {
           {t.logo_id && <img src={'/admin/media/' + t.logo_id} alt="Logo" width="144" height="144" loading="lazy" />}
           <div>
             {t.company?.firma && <p><strong>{t.company.firma}</strong> · {t.company.yetkili} · <a href={'mailto:' + t.company.eposta}>{t.company.eposta}</a>{t.company.telefon ? ' · ' + t.company.telefon : ''}<br />{t.company.kademe} · Kişi başı {t.company.butce}{t.company.numune ? ' · Numune istiyor' : ''}</p>}
+            {!t.company?.firma && (t.company?.eposta || t.company?.telefon) && <p><strong>Müşteri İletişim:</strong> {t.company?.eposta ? <a href={'mailto:' + t.company.eposta}>{t.company.eposta}</a> : '—'}{t.company?.telefon ? ' · ' + t.company.telefon : ''}</p>}
             <p><strong>Kanal:</strong> {t.contact_channel || 'seçilmedi'} · <strong>Teslim:</strong> {t.delivery_method || '—'} {t.delivery_date ? tarihYaz(t.delivery_date) : ''} · <strong>Alıcı:</strong> {t.recipient_name || '—'} · <strong>Tahmin:</strong> {t.estimate !== null ? Number(t.estimate).toLocaleString('tr-TR') + ' TL' : '—'}</p>
             <a href={takipYolu(t.code, t.token)} target="_blank" rel="noopener">Müşterinin gördüğü takip sayfası ↗</a>
             <YanitDugmeleri code={t.code} takipYolu={takipYolu(t.code, t.token)} telefon={t.company?.telefon} eposta={t.company?.eposta} firma={t.company?.firma} yetkili={t.company?.yetkili} />
@@ -39,6 +40,25 @@ function Liste({ id, baslik, aciklama, teklifler }) {
         </label>
         <label htmlFor={'not-' + t.id}>Panel notu (müşteri görmez)<textarea id={'not-' + t.id} name="admin_note" defaultValue={t.admin_note} maxLength="2000" /></label>
         <button className="btn btn--birincil" type="submit">Kaydet</button>
+      </form>
+      <form action={sendQuoteReply} style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px dashed #c8b6a2' }}>
+        <input type="hidden" name="id" value={t.id} />
+        <p style={{ margin: '0 0 0.5rem', fontWeight: 600 }}>Teklif Yanıtı Hazırla ve Müşteriye E-posta Gönder</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.6rem' }}>
+          <label htmlFor={'eposta-' + t.id}>Müşteri e-postası
+            <input id={'eposta-' + t.id} name="customer_email" type="email" required defaultValue={t.company?.eposta || ''} placeholder="musteri@ornek.com" maxLength="120" />
+          </label>
+          <label htmlFor={'fiyat-' + t.id}>Teklif tutarı (TL)
+            <input id={'fiyat-' + t.id} name="quoted_price" type="number" min="0" step="0.01" defaultValue={t.estimate ?? ''} placeholder="Örn. 1450" />
+          </label>
+          <label htmlFor={'teslim-' + t.id}>Teslim / hazırlık bilgisi
+            <input id={'teslim-' + t.id} name="delivery_info" type="text" maxLength="240" placeholder="Örn. 3 iş günü içinde kargoya verilir" />
+          </label>
+        </div>
+        <label htmlFor={'mesaj-' + t.id} style={{ display: 'block', marginTop: '0.5rem' }}>Müşteriye teklif mesajı
+          <textarea id={'mesaj-' + t.id} name="reply_message" rows="3" maxLength="2000" placeholder="Fiyat detayı, ödeme / teslimat bilgisi ve atölye notunuzu yazın..." />
+        </label>
+        <button className="btn btn--wa" type="submit" style={{ marginTop: '0.5rem' }}>Teklifi Kaydet ve E-posta Gönder</button>
       </form>
     </details>)}
   </>;

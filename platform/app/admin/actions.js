@@ -7,7 +7,11 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { clearAllSessions, clearSession, createSession, equalText, requireAdmin } from '../../lib/auth';
 import { query } from '../../lib/db';
+import { collectSiteUrls, submitToIndexNow } from '../../lib/indexnow';
 import { clearInstagramCache, encryptToken, verifyInstagram } from '../../lib/instagram';
+import { quoteReplyEmail, sendMail } from '../../lib/mail';
+import { getSettings } from '../../lib/settings';
+import { takipYolu } from '../../lib/teklif';
 import { VERI_ALANLARI, katalog, slugDeseni, SABLON_ALANLARI } from '../../lib/katalog';
 import { panelBolumu } from './bolumler';
 
@@ -109,6 +113,7 @@ export async function save(data) {
     redirect('/admin?bolum=icerik&durum=gecersiz');
   }
   revalidatePath('/', 'layout');
+  void submitToIndexNow(['/', '/hakkimizda', '/kurumsal', '/koleksiyonlar']);
   redirect('/admin?bolum=icerik&durum=kaydedildi');
 }
 
@@ -146,6 +151,7 @@ const settingLimits = {
   address_region: 60, address_country: 60, maps_url: 400, hours_text: 600, hours_schema: 300,
   announcement_text: 200, announcement_link: 400, announcement_link_text: 60, announcement_until: 10,
   last_order_note: 240, delivery_bands: 600, studio_corporate_qty_note: 240,
+  notification_email: 120,
   ga_measurement_id: 20, google_site_verification: 120, bing_site_verification: 120, yandex_verification: 120,
 };
 
@@ -159,7 +165,7 @@ export async function saveSettings(data) {
     if (typeof value !== 'string' || value.length > max) redirect('/admin?bolum=' + geri + '&durum=gecersiz');
     const trimmed = value.trim();
     if (key === 'maps_url' && trimmed && !/^https:\/\/(www\.)?(google\.[a-z.]+\/maps|maps\.app\.goo\.gl|goo\.gl\/maps)\//.test(trimmed)) redirect('/admin?bolum=' + geri + '&durum=gecersiz');
-    if (key === 'contact_email' && trimmed && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) redirect('/admin?bolum=' + geri + '&durum=gecersiz');
+    if ((key === 'contact_email' || key === 'notification_email') && trimmed && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) redirect('/admin?bolum=' + geri + '&durum=gecersiz');
     if (key === 'announcement_link' && trimmed && !/^(\/[^\s]*|https:\/\/[^\s]+)$/.test(trimmed)) redirect('/admin?bolum=' + geri + '&durum=gecersiz');
     if (key === 'ga_measurement_id' && trimmed && !/^G-[A-Z0-9]{4,16}$/.test(trimmed)) redirect('/admin?bolum=' + geri + '&durum=gecersiz');
     if (key.endsWith('_verification') && trimmed && !/^[A-Za-z0-9_\-=.]{8,120}$/.test(trimmed)) redirect('/admin?bolum=' + geri + '&durum=gecersiz');
@@ -295,12 +301,14 @@ const veritabaniHatasi = (error) => ['23503', '22P02', '23514', '23505'].include
 export async function saveCatalog(data) {
   await requireAdmin();
   let kind;
+  let savedKey = '';
   try {
     kind = field(data, 'kind', 20);
     const tanim = katalog[kind];
     if (!tanim) throw new InvalidInput();
     const yeni = data.get('new') === '1';
     const anahtar = katalogAnahtar(tanim, data, yeni);
+    savedKey = anahtar.key;
     const sutunlar = [];
     const degerler = [];
     let gorsel = null;
@@ -339,7 +347,17 @@ export async function saveCatalog(data) {
     redirect('/admin?bolum=' + (panelBolumu[kind] || 'katalog') + '&durum=gecersiz#' + (kind || ''));
   }
   revalidatePath('/', 'layout');
+  if (kind === 'design' && savedKey) void submitToIndexNow(['/tasarim/' + savedKey, '/koleksiyonlar']);
+  else if (kind === 'occasion' && savedKey) void submitToIndexNow(['/koleksiyonlar/' + savedKey, '/koleksiyonlar']);
+  else if (kind === 'faq') void submitToIndexNow(['/sss']);
   redirect('/admin?bolum=' + (panelBolumu[kind] || 'katalog') + '&durum=kaydedildi#' + kind);
+}
+
+export async function pingIndexNow() {
+  await requireAdmin();
+  const urls = await collectSiteUrls();
+  const sonuc = await submitToIndexNow(urls);
+  redirect('/admin?bolum=arama&durum=' + (sonuc.ok ? 'indexnow_ok' : 'indexnow_yok'));
 }
 
 export async function deleteCatalog(data) {
@@ -371,6 +389,65 @@ export async function saveQuote(data) {
   if (!Number.isInteger(id) || id < 1 || !durumlar.includes(status) || typeof note !== 'string' || note.length > 2000) redirect('/admin?bolum=talepler&durum=gecersiz');
   await query('UPDATE bb_quotes SET status=$2, admin_note=$3, updated_at=now() WHERE id=$1', [id, status, note.trim()]);
   redirect('/admin?bolum=talepler&durum=kaydedildi');
+}
+
+export async function sendQuoteReply(data) {
+  await requireAdmin();
+  const id = Number(data.get('id'));
+  const customerEmail = String(data.get('customer_email') || '').trim().slice(0, 120);
+  const priceRaw = String(data.get('quoted_price') || '').trim().replace(',', '.');
+  const deliveryInfo = String(data.get('delivery_info') || '').trim().slice(0, 240);
+  const message = String(data.get('reply_message') || '').trim().slice(0, 2000);
+  if (!Number.isInteger(id) || id < 1 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
+    redirect('/admin?bolum=talepler&durum=gecersiz');
+  }
+  const priceNum = priceRaw ? Number(priceRaw) : null;
+  if (priceRaw && (!Number.isFinite(priceNum) || priceNum < 0 || priceNum > 10000000)) {
+    redirect('/admin?bolum=talepler&durum=gecersiz');
+  }
+
+  const { rows: [quote] } = await query('SELECT code, token, company, recipient_name, estimate, summary FROM bb_quotes WHERE id=$1', [id]);
+  if (!quote) redirect('/admin?bolum=talepler&durum=gecersiz');
+
+  const updatedCompany = { ...(quote.company || {}), eposta: customerEmail };
+  const noteAppend = `\n\n[Teklif E-postası · ${new Date().toLocaleString('tr-TR', { dateStyle: 'short', timeStyle: 'short' })}]: ${priceNum !== null ? priceNum + ' TL · ' : ''}${deliveryInfo ? deliveryInfo + ' · ' : ''}${message}`;
+  await query(
+    `UPDATE bb_quotes
+     SET status = CASE WHEN status IN ('new', 'contacted') THEN 'quoted' ELSE status END,
+         estimate = COALESCE($2, estimate),
+         company = $3::jsonb,
+         summary = summary || $4,
+         updated_at = now()
+     WHERE id = $1`,
+    [id, priceNum, JSON.stringify(updatedCompany), noteAppend]
+  );
+
+  const settings = await getSettings();
+  const origin = process.env.SITE_URL?.trim() || 'https://beyzablanc.com';
+  const trackingUrl = origin + takipYolu(quote.code, quote.token);
+  const emailPayload = quoteReplyEmail({
+    code: quote.code,
+    customerName: quote.company?.yetkili || quote.recipient_name || '',
+    price: priceNum !== null ? priceNum.toLocaleString('tr-TR') : (quote.estimate ? Number(quote.estimate).toLocaleString('tr-TR') : ''),
+    deliveryInfo,
+    message,
+    trackingUrl,
+    settings,
+  });
+
+  const mailSonuc = await sendMail({
+    to: customerEmail,
+    replyTo: settings.notification_email || settings.contact_email || undefined,
+    ...emailPayload,
+  });
+
+  if (mailSonuc.ok) {
+    redirect('/admin?bolum=talepler&durum=mail_gonderildi');
+  }
+  if (mailSonuc.reason === 'not_configured') {
+    redirect('/admin?bolum=talepler&durum=mail_yapilandirilmadi');
+  }
+  redirect('/admin?bolum=talepler&durum=mail_hata');
 }
 
 /* ---------------------------------- Yorumlar (plan 3.2) ---------------------------------- */

@@ -1,5 +1,28 @@
+import { Cormorant_Garamond, Inter, Pinyon_Script } from 'next/font/google';
 import './platform.css';
 import { siteUrl } from '../lib/seo';
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['500', '600'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  variable: '--font-cormorant',
+});
+
+const inter = Inter({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['400', '500', '600'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const pinyon = Pinyon_Script({
+  subsets: ['latin'],
+  weight: ['400'],
+  display: 'swap',
+  variable: '--font-pinyon',
+});
 
 export const metadata = {
   title: { default: 'Beyza Blanc', template: '%s | Beyza Blanc' },
@@ -9,5 +32,14 @@ export const metadata = {
 };
 
 export default function Layout({ children }) {
-  return <html lang="tr" suppressHydrationWarning><head><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" /><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet" /><link rel="stylesheet" href="/assets/css/style.css" /><link rel="stylesheet" href="/assets/css/vitrin.css" /></head><body>{children}</body></html>;
+  const fontVars = `${cormorant.variable} ${inter.variable} ${pinyon.variable}`;
+  return (
+    <html lang="tr" className={fontVars} data-scroll-behavior="smooth" suppressHydrationWarning>
+      <head>
+        <link rel="stylesheet" href="/assets/css/style.css" />
+        <link rel="stylesheet" href="/assets/css/vitrin.css" />
+      </head>
+      <body>{children}</body>
+    </html>
+  );
 }

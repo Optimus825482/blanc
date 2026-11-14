@@ -1,7 +1,8 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { eskiKategori, getDesigns, getOccasion, getProductTypes, getRecipients, getSegments, temizFiltre } from '../../../../lib/katalog-oku';
-import { contact, pageMetadata } from '../../../../lib/seo';
+import { breadcrumbJsonLd, collectionJsonLd, contact, pageMetadata, safeJsonLd } from '../../../../lib/seo';
 import Filtreler from '../../filtreler';
 import { TasarimIzgarasi } from '../../tasarim-karti';
 
@@ -23,7 +24,15 @@ export default async function Collection({ params, searchParams }) {
   const designs = await getDesigns({ occasion: item.slug, ...filtre });
   const oneri = item.suggested || {};
   const studyo = '/studyo?tema=' + item.slug;
+  const breadcrumb = breadcrumbJsonLd([
+    ['Ana sayfa', '/'],
+    ['Koleksiyonlar', '/koleksiyonlar'],
+    [item.short_title, '/koleksiyonlar/' + item.slug],
+  ]);
+  const collection = collectionJsonLd(item.title, item.body, '/koleksiyonlar/' + item.slug, designs);
   return <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumb) }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(collection) }} />
     <section className="v-kabuk v-bolum v-acilis bb-gun" style={{ '--gun-vurgu': item.accent || '#B08D57' }}>
       <div className="bb-prose v-acilis-metin">
         <Link className="v-metin-link" href="/koleksiyonlar">← Tüm koleksiyonlar</Link>
@@ -36,7 +45,7 @@ export default async function Collection({ params, searchParams }) {
         </div>
         {(oneri.ambalaj || oneri.kurdele) && <p className="bb-gun__oneri">Atölyenin önerisi: {[oneri.ambalaj && oneri.ambalaj + ' ambalaj', oneri.kurdele && oneri.kurdele + ' kurdele', oneri.cikolata && oneri.cikolata + ' çikolata'].filter(Boolean).join(', ')}.</p>}
       </div>
-      {item.card_image && <img decoding="async" className="bb-detail-image v-acilis-gorsel" src={item.card_image} alt={item.card_alt} width="640" height="640" fetchPriority="high" />}
+      {item.card_image && <Image className="bb-detail-image v-acilis-gorsel" src={item.card_image} alt={item.card_alt} width={640} height={640} sizes="(max-width: 900px) 100vw, 45vw" priority unoptimized={item.card_image.startsWith('/media/')} />}
     </section>
     <section className="v-kabuk v-bolum" aria-labelledby="tasarimlar-baslik">
       <div className="v-bolum-baslik"><div><p className="v-etiket">Hazır tasarımlar</p><h2 id="tasarimlar-baslik">{item.short_title} için {designs.length} tasarım</h2></div></div>

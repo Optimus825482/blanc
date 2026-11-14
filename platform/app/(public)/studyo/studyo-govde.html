@@ -35,7 +35,9 @@
       <div class="studyo__onizleme">
         <div class="onizleme-kart">
           <div class="studio-preview-heading"><div><p class="studio-kicker">DİJİTAL ÜRÜN MAKETİ</p><h2>Tasarımınız hayat buluyor</h2></div><p class="onizleme-ipucu" id="onizleme-ipucu">Yazıyı ve logoyu sürükleyerek yerleştirin</p></div>
-          <canvas id="onizleme" width="1000" height="1000" role="img" aria-label="Tasarımının canlı önizlemesi"></canvas>
+          <div class="studio-canvas-frame" id="studio-canvas-frame">
+            <canvas id="onizleme" width="1000" height="1000" role="img" aria-label="Tasarımının canlı önizlemesi"></canvas>
+          </div>
           <div class="studio-live-summary" id="studio-live-summary"></div>
           <div class="onizleme-alt">
             <span id="onizleme-aciklama">Fotoğraf gerçekçiliğinde dijital maket; gerçek ürün çekimi değildir.</span>
@@ -46,6 +48,8 @@
           <button type="button" id="studio-undo" disabled>↶ Geri al</button>
           <button type="button" id="studio-redo" disabled>↷ Yinele</button>
           <button type="button" id="studio-preview-toggle" aria-pressed="false">Önizlemeyi büyüt</button>
+          <button type="button" id="studio-zoom-toggle" aria-pressed="false">Detaya yakınlaş</button>
+          <button type="button" id="tasarim-link-kopyala">Paylaşım bağlantısı</button>
           <button type="button" id="studio-scene-retry" hidden>Görseli yeniden yükle</button>
         </div>
         <p class="studio-feedback" id="studio-feedback" role="status"></p>
@@ -146,6 +150,7 @@
             <div class="alan">
               <label class="alan__etiket" for="mesaj">Kart notu (isteğe bağlı)</label>
               <textarea id="mesaj" name="mesaj" placeholder="Örn. İyi ki doğdun, hep mutlu ol."></textarea>
+              <div class="studio-note-chips" id="not-onerileri" aria-label="Ne yazsam önerileri"></div>
               <p class="alan__yardim">En fazla 60 karakter. Kart seçtiysen not kartın üzerine, seçmediysen ismin altına yazılır.</p>
             </div>
 
@@ -231,6 +236,16 @@
               <input type="text" id="aliciAdi" name="aliciAdi" autocomplete="off" placeholder="Örn. Ayşe Yılmaz">
             </div>
 
+            <div class="alan">
+              <label class="alan__etiket" for="musteriEposta">E-posta adresiniz (teklif yanıtı için)</label>
+              <input type="email" id="musteriEposta" name="musteriEposta" autocomplete="email" placeholder="Örn. adiniz@ornek.com">
+            </div>
+
+            <div class="alan">
+              <label class="alan__etiket" for="musteriTelefon">Telefon / WhatsApp (isteğe bağlı)</label>
+              <input type="tel" id="musteriTelefon" name="musteriTelefon" autocomplete="tel" placeholder="Örn. +90 533 000 00 00">
+            </div>
+
             <fieldset class="alan">
               <legend class="alan__etiket">Teslim şekli</legend>
               <div class="secimler" id="alan-teslim"></div>
@@ -295,6 +310,10 @@
         </div>
       </div>
 
+    </div>
+    <div class="studio-mobile-bar" id="studio-mobile-bar" aria-label="Mobil hızlı işlem çubuğu">
+      <div class="studio-mobile-bar__ozet" id="studio-mobile-ozet">Tasarımınız hazırlanıyor</div>
+      <button type="button" class="btn btn--birincil btn--kucuk" id="studio-mobile-cta">Devam et →</button>
     </div>
   </section>
 

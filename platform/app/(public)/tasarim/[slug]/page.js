@@ -1,7 +1,8 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { fiyatYaz, getDesign, getDesigns } from '../../../../lib/katalog-oku';
-import { contact, pageMetadata, siteUrl } from '../../../../lib/seo';
+import { breadcrumbJsonLd, contact, pageMetadata, safeJsonLd, siteUrl } from '../../../../lib/seo';
 import { TasarimIzgarasi } from '../../tasarim-karti';
 
 export const dynamic = 'force-dynamic'; // veri tablolardan; derleme anında DB yok, önbellek yanıt başlıklarıyla (1.7)
@@ -31,11 +32,18 @@ export default async function Tasarim({ params }) {
     ['Kime uygun', t.recipient_titles?.length ? t.recipient_titles.join(', ') : null],
     ['Kişiselleştirme', t.tags?.length ? t.tags.join(', ') : null],
   ].filter(([, v]) => v);
+  const breadcrumb = breadcrumbJsonLd([
+    ['Ana sayfa', '/'],
+    ['Koleksiyonlar', '/koleksiyonlar'],
+    [t.occasion_short, '/koleksiyonlar/' + t.occasion_slug],
+    [t.title, '/tasarim/' + t.slug],
+  ]);
   return <>
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(urun).replace(/</g, '\\u003c') }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(urun) }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumb) }} />
     <section className="v-kabuk v-bolum v-acilis bb-tasarim-detay" style={{ '--gun-vurgu': t.occasion_accent || '#B08D57' }}>
       <div className="bb-tasarim-detay__gorsel">
-        {t.image ? <img decoding="async" src={t.image} alt={t.alt || t.title} width="640" height="640" fetchPriority="high" /> : <span aria-hidden="true">{t.occasion_icon}</span>}
+        {t.image ? <Image src={t.image} alt={t.alt || t.title} width={640} height={640} sizes="(max-width: 900px) 100vw, 45vw" priority unoptimized={t.image.startsWith('/media/')} /> : <span aria-hidden="true">{t.occasion_icon}</span>}
         {(t.bestseller || t.is_new) && <span className="bb-tasarim__rozet">{t.bestseller ? 'Çok tercih edilen' : 'Yeni'}</span>}
       </div>
       <div className="bb-prose v-acilis-metin">
@@ -52,6 +60,10 @@ export default async function Tasarim({ params }) {
           <a className="v-metin-link" href={contact}>Atölyeye sor</a>
         </div>
         <p className="bb-gun__oneri">Stüdyoda isim, tarih, kurdele ve kart notunu ekleyip canlı önizlemeyi görürsünüz; özet ve görsel atölyeye tek mesajla gider.</p>
+      </div>
+      <div className="bb-sticky-cta">
+        <span>{t.starting_price !== null ? fiyatYaz(t.starting_price) + '’den başlayan' : t.title}</span>
+        <Link className="v-dugme" href={studyo}>Kişiselleştir ↗</Link>
       </div>
     </section>
     {benzerler.length > 0 && <section className="v-kabuk v-bolum" aria-labelledby="benzer-baslik">

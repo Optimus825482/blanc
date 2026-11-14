@@ -1,14 +1,29 @@
-import { getSettings } from '../../lib/settings';
+import { query } from '../../lib/db';
+import { INDEXNOW_KEY } from '../../lib/indexnow';
 import { siteUrl } from '../../lib/seo';
-import { saveSettings } from './actions';
+import { getSettings } from '../../lib/settings';
+import { pingIndexNow, saveSettings } from './actions';
 
 // Arama motorları ve analitik: doğrulama etiketleri ve GA4 kimliği panelden; etiketler vitrin <head>'ine yazılır.
 export default async function Arama() {
-  const s = await getSettings();
+  const [s, seoStats] = await Promise.all([
+    getSettings(),
+    query("SELECT count(*)::int AS total, count(*) FILTER (WHERE alt = '')::int AS missing_alt, count(*) FILTER (WHERE summary = '')::int AS missing_summary FROM bb_designs WHERE published = true"),
+  ]);
   const kok = siteUrl || 'https://ALANADINIZ';
+  const stat = seoStats.rows[0] || { total: 0, missing_alt: 0, missing_summary: 0 };
   return <>
     <h2>Arama motoru kayıtları ve analitik</h2>
     <p>Aşağıdaki değerler kaydedilince sitenin tüm sayfalarına gerekli etiketler otomatik eklenir; kod değişikliği gerekmez. Site haritası: <code>{kok}/sitemap.xml</code></p>
+    <div className="bb-panel-kutu">
+      <h3>Hızlı indeksleme (IndexNow) ve SEO durumu</h3>
+      <p><strong>Alan adı (SITE_URL):</strong> {siteUrl ? <code>{siteUrl}</code> : 'Tanımlı değil — canlı sunucuda SITE_URL ayarlanmadan robots.txt indekslemeyi kapatır.'}</p>
+      <p><strong>IndexNow anahtar dosyası:</strong> <code>{kok}/{INDEXNOW_KEY}.txt</code> · Tasarım, özel gün veya SSS kaydedildiğinde Bing/Yandex otomatik bilgilendirilir.</p>
+      <p><strong>Yayındaki tasarımlar ({stat.total}):</strong> Eksik alt metni: <b>{stat.missing_alt}</b> · Eksik özet: <b>{stat.missing_summary}</b></p>
+      <form action={pingIndexNow}>
+        <button className="btn btn--birincil" type="submit" disabled={!siteUrl}>Tüm sayfaları IndexNow’a bildir</button>
+      </form>
+    </div>
     <form action={saveSettings}>
       <input type="hidden" name="bolum" value="arama" />
       <label htmlFor="a-ga">Google Analytics 4 ölçüm kimliği<input id="a-ga" name="ga_measurement_id" defaultValue={s.ga_measurement_id} maxLength="20" placeholder="G-XXXXXXXXXX" pattern="G-[A-Z0-9]{4,16}" /></label>

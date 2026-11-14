@@ -19,3 +19,40 @@ export function pageMetadata(title, description, path, image = socialImage) {
     twitter: cover ? { card: 'summary_large_image', title, description, images: [cover] } : undefined,
   };
 }
+
+export function safeJsonLd(data) {
+  return JSON.stringify(data).replace(/</g, '\\u003c');
+}
+
+export function breadcrumbJsonLd(items) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map(([name, path], index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name,
+      item: siteUrl && path ? new URL(path, siteUrl).href : undefined,
+    })),
+  };
+}
+
+export function collectionJsonLd(name, description, path, items = []) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name,
+    description,
+    url: siteUrl ? new URL(path, siteUrl).href : undefined,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: items.length,
+      itemListElement: items.slice(0, 30).map((item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.title,
+        url: siteUrl ? new URL(item.url || '/tasarim/' + item.slug, siteUrl).href : undefined,
+      })),
+    },
+  };
+}

@@ -43,8 +43,8 @@
   --golge-2: 0 4px 14px rgba(61, 32, 22, 0.06);
 
   /* Tipografi */
-  --font-baslik: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-  --font-govde: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-baslik: var(--font-cormorant), 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-govde: var(--font-inter), 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   --genislik: 1180px;
   --gecis: 180ms ease;

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { contact } from '../../lib/seo';
 
 export default function ContentPage({ item, children, cta }) {
@@ -7,6 +8,6 @@ export default function ContentPage({ item, children, cta }) {
       <a className="v-dugme" href={cta?.href ?? contact}>{cta?.label ?? 'Atölyeye yaz'}</a>
       {children}
     </div>
-    <img decoding="async" data-reveal="" className="bb-detail-image" src={item.image} alt={item.alt} width="640" height="640" fetchPriority="high" />
+    <Image data-reveal="" className="bb-detail-image" src={item.image} alt={item.alt} width={640} height={640} sizes="(max-width: 900px) 100vw, 45vw" priority unoptimized={item.image.startsWith('/media/')} />
   </section>;
 }

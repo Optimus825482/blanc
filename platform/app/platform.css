@@ -7,7 +7,7 @@
 .bb-prose { max-width:62ch; }
 .bb-prose p { white-space:pre-line; }
 .bb-nav { display:flex; flex-wrap:wrap; gap:1rem; }
-.bb-detail-image { display:block; width:100%; height:auto; aspect-ratio:1; object-fit:cover; border:1px solid var(--v-cizgi); }
+.bb-detail-image { display:block; width:100%; height:auto; aspect-ratio:1; object-fit:cover; border:1px solid var(--v-cizgi); background:#f5ede1; filter:contrast(1.02) saturate(1.03); }
 .bb-admin { width:min(100% - 2rem, 70rem); margin:2rem auto; }
 .bb-admin form { display:grid; gap:.8rem; padding:1.25rem; margin-block:1rem; border:1px solid var(--cizgi); background:var(--beyaz); }
 .bb-admin label { display:grid; gap:.25rem; min-width:0; }
@@ -117,8 +117,8 @@
 
 .bb-tasarimlar { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 1.5rem; }
 .bb-tasarim { display: flex; flex-direction: column; border: 1px solid var(--v-cizgi); background: #fffdf9; }
-.bb-tasarim__gorsel { position: relative; display: grid; place-items: center; aspect-ratio: 1; background: #efe4d6; overflow: hidden; font-size: 4rem; }
-.bb-tasarim__gorsel img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+.bb-tasarim__gorsel { position: relative; display: grid; place-items: center; aspect-ratio: 1; background: #f5ede1; overflow: hidden; font-size: 4rem; }
+.bb-tasarim__gorsel img { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.02) saturate(1.03); transition: transform .45s cubic-bezier(.22, 1, .36, 1), filter .35s ease; }
 .bb-tasarim:hover .bb-tasarim__gorsel img { transform: scale(1.03); }
 .bb-tasarim__rozet { position: absolute; top: .75rem; left: .75rem; padding: .3rem .6rem; background: var(--v-bordo); color: #fffaf5; font: 600 .64rem/1 "Inter", system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; }
 .bb-tasarim__metin { display: flex; flex-direction: column; gap: .4rem; padding: 1rem 1.1rem 1.1rem; flex: 1; }
@@ -379,3 +379,65 @@
     box-shadow: 0 14px 30px -22px rgba(40, 20, 10, .38);
   }
 }
+
+.bb-letterhead-head,
+.bb-letterhead-foot { display: none; }
+
+.bb-teklif__araclar { margin-top: 1.5rem; display: grid; gap: 1rem; }
+.bb-teklif__eknot-form { display: grid; gap: .55rem; padding: 1rem; border: 1px solid #dfd3c3; border-radius: 10px; background: #fffaf4; }
+.bb-teklif__eknot-form label { font-size: .85rem; font-weight: 600; color: #512730; }
+.bb-teklif__eknot-form textarea { width: 100%; padding: .6rem .75rem; border: 1px solid #c8b6a2; border-radius: 8px; font: inherit; background: #fff; }
+
+.bb-sticky-cta { display: none; }
+@media (max-width: 56rem) {
+  .bb-sticky-cta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    padding: .7rem 1rem;
+    background: rgba(255, 250, 244, .96);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid #d9cbb8;
+    box-shadow: 0 -4px 16px rgba(43, 21, 26, .08);
+    font-size: .86rem;
+    font-weight: 600;
+    color: #512730;
+  }
+}
+
+@page { size: A4; margin: 14mm; }
+@media print {
+  header, footer, nav, .v-eylemler, .bb-no-print, .bb-sticky-cta { display: none !important; }
+  body { background: #fff !important; color: #1f120e !important; }
+  .bb-letterhead-head {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-bottom: 12pt;
+    margin-bottom: 14pt;
+    border-bottom: 2pt solid #512730;
+  }
+  .bb-letterhead-head__marka { font-family: Georgia, serif; font-size: 20pt; font-weight: 600; letter-spacing: 2pt; color: #512730; margin: 0; }
+  .bb-letterhead-head__alt { font-size: 9pt; color: #6e564a; margin: 2pt 0 0; }
+  .bb-letterhead-head__bilgi { text-align: right; font-size: 9pt; line-height: 1.45; }
+  .bb-letterhead-head__bilgi p { margin: 0; }
+  .bb-letterhead-foot {
+    display: flex !important;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 18pt;
+    padding-top: 10pt;
+    border-top: 1pt solid #c8b6a2;
+    font-size: 8.5pt;
+    color: #6e564a;
+  }
+  .bb-teklif__ozet { display: block !important; }
+}
+

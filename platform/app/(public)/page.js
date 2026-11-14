@@ -1,7 +1,8 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { getContent } from '../../lib/db';
 import { getOccasions, getRecipients } from '../../lib/katalog-oku';
-import { contact, instagram, pageMetadata, siteUrl } from '../../lib/seo';
+import { contact, instagram, pageMetadata, safeJsonLd, siteUrl } from '../../lib/seo';
 import Cards from './cards';
 import InstagramFeed from './instagram-feed';
 import { getInstagram } from '../../lib/instagram';
@@ -30,6 +31,10 @@ export default async function Home() {
   // Vitrinde görseli olan ilk 6 özel gün; kişisel günler önce.
   const categories = occasions.filter((o) => o.card_image).sort((a, b) => (a.root === 'kurumsal') - (b.root === 'kurumsal')).slice(0, 6)
     .map((o) => ({ slug: o.slug, title: o.title, body: o.body, image: o.card_image, alt: o.card_alt, icon: o.icon, count: Number(o.design_count) }));
+  const ratingCount = yorumlar.length;
+  const ratingAvg = ratingCount
+    ? Number((yorumlar.reduce((sum, y) => sum + Number(y.rating || 5), 0) / ratingCount).toFixed(1))
+    : null;
   const business = {
     '@context': 'https://schema.org', '@type': 'LocalBusiness', name: 'Beyza Blanc',
     description: home.body, url: siteUrl || undefined,
@@ -39,9 +44,25 @@ export default async function Home() {
     email: settings.contact_email || undefined,
     hasMap: settings.maps_url || undefined,
     openingHours: hoursSchema(settings),
+    ...(ratingCount ? {
+      aggregateRating: { '@type': 'AggregateRating', ratingValue: ratingAvg, reviewCount: ratingCount, bestRating: 5, worstRating: 1 },
+      review: yorumlar.slice(0, 5).map((y) => ({
+        '@type': 'Review',
+        author: { '@type': 'Person', name: kisaAd(y.name) },
+        reviewRating: { '@type': 'Rating', ratingValue: y.rating, bestRating: 5, worstRating: 1 },
+        reviewBody: y.text,
+      })),
+    } : {}),
+  };
+  const website = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Beyza Blanc',
+    url: siteUrl || undefined,
   };
   return <div className="bb-home">
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(business).replace(/</g, '\\u003c') }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(business) }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(website) }} />
     <section className="bb-cover" aria-labelledby="cover-title">
       <div className="v-kabuk bb-cover-grid">
         <div className="bb-cover-copy">
@@ -54,7 +75,7 @@ export default async function Home() {
           </div>
         </div>
         <figure className="bb-cover-figure">
-          <div className="bb-cover-photo"><img decoding="async" src={home.image} alt={home.alt} width="640" height="640" fetchPriority="high" /></div>
+          <div className="bb-cover-photo"><Image src={home.image} alt={home.alt} width={640} height={640} sizes="(max-width: 704px) 100vw, 46vw" priority unoptimized={home.image.startsWith('/media/')} /></div>
           <figcaption><span>BEYZA BLANC</span><span>ALSANCAK · GİRNE</span></figcaption>
         </figure>
       </div>
@@ -109,14 +130,14 @@ export default async function Home() {
       </div>
     </section>
     <section className="v-kabuk v-eslesme bb-atelier">
-      <img decoding="async" data-reveal="" src={about.image} alt={about.alt} width="640" height="640" loading="lazy" />
+      <Image data-reveal="" src={about.image} alt={about.alt} width={640} height={640} sizes="(max-width: 896px) 100vw, 50vw" unoptimized={about.image.startsWith('/media/')} />
       <div className="v-panel bb-prose" data-reveal=""><p className="v-etiket">Alsancak / Atölye</p>
         <h2>{about.title}</h2><p>{about.body}</p><Link className="v-dugme" href="/hakkimizda">Atölyeyi tanıyın</Link></div>
     </section>
     <section className="v-kabuk v-eslesme v-kurumsal bb-atelier" id="kurumsal">
       <div className="v-panel bb-prose" data-reveal=""><p className="v-etiket">03 / Kurumsal hediyeler</p>
         <h2>{corporate.title}</h2><p>{corporate.body}</p><Link className="v-dugme v-dugme--cizgi" href="/kurumsal">Kurumsal hediyeleri inceleyin</Link></div>
-      <img decoding="async" data-reveal="" src={corporate.image} alt={corporate.alt} width="640" height="640" loading="lazy" />
+      <Image data-reveal="" src={corporate.image} alt={corporate.alt} width={640} height={640} sizes="(max-width: 896px) 100vw, 50vw" unoptimized={corporate.image.startsWith('/media/')} />
     </section>
     <InstagramFeed feed={feed} fallback={posts.map(([id, title, image]) => ({
       id, caption: title, image: '/assets/img/instagram/' + image + '.webp',

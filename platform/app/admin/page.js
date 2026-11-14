@@ -20,6 +20,11 @@ const messages = {
   limit: 'Çok fazla giriş denemesi yapıldı. Lütfen daha sonra tekrar deneyin.',
   gecersiz: 'Değişiklik kaydedilemedi. Alanları, kategori adresinin benzersiz olduğunu ve görsel biçimini kontrol edin.',
   kaydedildi: 'Değişiklik kaydedildi.',
+  mail_gonderildi: 'Teklif bilgileri kaydedildi ve müşteriye e-posta ile gönderildi.',
+  mail_yapilandirilmadi: 'Teklif bilgileri kaydedildi; ancak sunucuda SMTP ayarları (SMTP_HOST) tanımlı olmadığı için otomatik e-posta gönderilemedi. Aşağıdaki “E-posta ile yanıtla” bağlantısını kullanabilirsiniz.',
+  mail_hata: 'Teklif bilgileri kaydedildi ancak e-posta gönderimi sırasında sunucu hatası oluştu.',
+  indexnow_ok: 'Tüm yayındaki sayfalar IndexNow (Bing/Yandex) dizinine bildirildi.',
+  indexnow_yok: 'IndexNow bildirimi gönderilemedi (SITE_URL tanımlı değil veya ağ yanıt vermedi).',
   oturumlar: 'Tüm yönetim oturumları kapatıldı. Yeniden giriş yapmanız gerekir.',
   silindi: 'Kayıt silindi.',
   bagli: 'Bu kayıt başka kayıtlar tarafından kullanıldığı için silinemedi. Önce ona bağlı tasarımları değiştirin.',
@@ -106,6 +111,7 @@ async function Ayarlar() {
       <label htmlFor="s-phone">Telefon<input id="s-phone" name="contact_phone" defaultValue={settings.contact_phone} maxLength="32" placeholder="+90 533 000 00 00" /></label>
       <label htmlFor="s-wa">WhatsApp<input id="s-wa" name="contact_whatsapp" defaultValue={settings.contact_whatsapp} maxLength="32" placeholder="+90 533 000 00 00" /></label>
       <label htmlFor="s-email">E-posta<input id="s-email" name="contact_email" type="email" defaultValue={settings.contact_email} maxLength="120" /></label>
+      <label htmlFor="s-notif-email">Teklif bildirim e-postası (yeni taleplerin gideceği adres)<input id="s-notif-email" name="notification_email" type="email" defaultValue={settings.notification_email} maxLength="120" placeholder="Boşsa üstteki E-posta adresi kullanılır" /></label>
       <label htmlFor="s-street">Adres satırı<input id="s-street" name="address_street" defaultValue={settings.address_street} maxLength="160" /></label>
       <label htmlFor="s-loc">Semt<input id="s-loc" name="address_locality" defaultValue={settings.address_locality} maxLength="60" /></label>
       <label htmlFor="s-region">İlçe / Şehir<input id="s-region" name="address_region" defaultValue={settings.address_region} maxLength="60" /></label>

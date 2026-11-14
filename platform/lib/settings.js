@@ -3,7 +3,7 @@ import { cache } from 'react';
 import { query } from './db';
 
 export const settingKeys = [
-  'contact_phone', 'contact_whatsapp', 'contact_email', 'address_street', 'address_locality',
+  'contact_phone', 'contact_whatsapp', 'contact_email', 'notification_email', 'address_street', 'address_locality',
   'address_region', 'address_country', 'maps_url', 'hours_text', 'hours_schema',
   // Plan 3.4: vitrin metinleri panelden
   'announcement_text', 'announcement_link', 'announcement_link_text', 'announcement_until',

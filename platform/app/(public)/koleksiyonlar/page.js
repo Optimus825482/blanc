@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { KOKLER, eskiKategori, getDesigns, getOccasions, getProductTypes, getRecipients, getSegments, temizFiltre } from '../../../lib/katalog-oku';
-import { pageMetadata } from '../../../lib/seo';
+import { breadcrumbJsonLd, collectionJsonLd, pageMetadata, safeJsonLd } from '../../../lib/seo';
 import Cards from '../cards';
 import Filtreler from '../filtreler';
 import { TasarimIzgarasi } from '../tasarim-karti';
@@ -23,7 +23,20 @@ export default async function Collections({ searchParams }) {
     ? [ad(recipients, filtre.recipient), ad(products, filtre.product), ad(segments, filtre.segment)].filter(Boolean).join(' · ')
     : null;
 
+  const breadcrumb = breadcrumbJsonLd([
+    ['Ana sayfa', '/'],
+    ['Koleksiyonlar', '/koleksiyonlar'],
+  ]);
+  const collection = collectionJsonLd(
+    baslik ? baslik : 'Özel gün koleksiyonları',
+    'Girne Alsancak’ta söz, nişan, doğum günü, bebek ve kurumsal kutlamalar için kişiye özel çikolata ve hediyelik tasarımları.',
+    '/koleksiyonlar',
+    filtreli ? designs : occasions.map((o) => ({ title: o.title, url: '/koleksiyonlar/' + o.slug })),
+  );
+
   return <section className="v-kabuk v-bolum bb-koleksiyonlar">
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumb) }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(collection) }} />
     <div className="bb-page-intro">
       <p className="v-etiket">Beyza Blanc · Girne Alsancak</p>
       <h1>{baslik ? baslik : 'Özel gün koleksiyonları'}</h1>

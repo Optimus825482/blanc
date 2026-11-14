@@ -1,6 +1,10 @@
 const config = {
   poweredByHeader: false,
   output: 'standalone', // Docker imajı için (plan 0.6)
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    remotePatterns: [{ protocol: 'https', hostname: '**' }],
+  },
   experimental: { serverActions: { bodySizeLimit: '6mb' } },
   async rewrites() {
     return [

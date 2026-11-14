@@ -5,6 +5,7 @@ import { contact } from '../../../../lib/seo';
 import { getSettings, whatsappLink } from '../../../../lib/settings';
 import { DURUMLAR, getQuote, sorguIzinli, tarihYaz } from '../../../../lib/teklif';
 import { fiyatYaz } from '../../../../lib/katalog-oku';
+import TeklifEtkilesim from './teklif-etkilesim';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,7 +44,21 @@ export default async function Teklif({ params, searchParams }) {
     ? 'Merhaba Beyza Blanc, ' + q.code + ' kodlu kurumsal talebimiz (' + (f.firma || '') + ') hakkında yazıyorum.\n' + (q.summary || '')
     : 'Merhaba Beyza Blanc, ' + q.code + ' kodlu tasarımım hakkında yazıyorum.';
   const wa = whatsappLink(settings, mesaj);
+  const adresSatir = [settings.address_street, settings.address_locality, settings.address_region].filter(Boolean).join(', ') || 'Alsancak, Girne';
   return <section className="v-kabuk v-bolum bb-inner-page bb-teklif">
+    <div className="bb-letterhead-head" aria-hidden="true">
+      <div>
+        <p className="bb-letterhead-head__marka">BEYZA BLANC</p>
+        <p className="bb-letterhead-head__alt">Kişiye Özel Belçika Çikolatası &amp; Kurumsal Hediyelik Atölyesi</p>
+      </div>
+      <div className="bb-letterhead-head__bilgi">
+        <p><strong>Teklif Kodu:</strong> {q.code}</p>
+        <p><strong>Tarih:</strong> {tarihYaz(q.created_at)}</p>
+        <p>{adresSatir}</p>
+        {settings.contact_phone && <p>{settings.contact_phone}</p>}
+        {settings.contact_email && <p>{settings.contact_email}</p>}
+      </div>
+    </div>
     <div className="bb-page-intro">
       <p className="v-etiket">{kurumsal ? 'Kurumsal teklif takibi' : 'Teklif takibi'}</p>
       <h1>{q.code}</h1>
@@ -86,9 +101,14 @@ export default async function Teklif({ params, searchParams }) {
           <Link className="v-metin-link" href="/studyo">Yeni tasarım</Link>
         </div>
         {q.summary && <details className="bb-teklif__ozet"><summary>Gönderilen özet</summary><pre>{q.summary}</pre></details>}
+        <TeklifEtkilesim kod={q.code} anahtar={typeof t === 'string' ? t : ''} />
       </div>
       {q.image_id ? <img decoding="async" loading="lazy" className="bb-detail-image" src={'/media/' + q.image_id} alt="Tasarım önizlemesi" width="640" height="640" />
         : q.logo_id ? <img decoding="async" loading="lazy" className="bb-detail-image bb-logo" src={'/media/' + q.logo_id} alt={(f.firma || '') + ' logosu'} width="640" height="640" /> : null}
+    </div>
+    <div className="bb-letterhead-foot" aria-hidden="true">
+      <p>Bu belge Beyza Blanc dijital tasarım ve teklif önizleme özetidir. Kesin üretim, stok ve teslimat koşulları atölye onayı ile netleşir.</p>
+      <p>beyzablanc.com · @beyzablanc</p>
     </div>
   </section>;
 }

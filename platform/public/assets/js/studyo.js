@@ -49,6 +49,8 @@
     tarih: '',
     mesaj: '',
     aliciAdi: '',
+    musteriEposta: '',
+    musteriTelefon: '',
     teslimSekli: (D.studyo.teslimSekilleri[0] || {}).id || '',
     teslimTarihi: '',
     teslimNotu: '',
@@ -1183,7 +1185,43 @@
     uyariEl.hidden = !metin;
   }
 
+  var NOT_ONERILERI = {
+    'soz-nisan': ['Bir ömür boyu mutluluklar', 'En güzel başlangıcımıza', 'Sözümüz söz'],
+    'dugun': ['Sonsuza dek birlikte', 'En mutlu günümüzün hatırası', 'Sevgiyle kalın'],
+    'bebek': ['Hoş geldin küçük mucize', 'Sağlıkla, sevgiyle büyü', 'Dünyamıza hoş geldin'],
+    'dogum-gunu': ['İyi ki doğdun, hep mutlu ol', 'Nice güzel yaşlara', 'Yeni yaşın kutlu olsun'],
+    'tesekkur': ['Nazik desteğiniz için teşekkürler', 'İyi ki varsınız', 'Gönülden teşekkürler'],
+    'kurumsal': ['Değerli iş birliğiniz için teşekkürler', 'Birlikte nice başarılara', 'Saygılarımızla'],
+    'sevgililer': ['Seninle her an özel', 'Kalbim hep seninle', 'İyi ki benimlesin'],
+    'mezuniyet': ['Yeni başlangıçlara, tebrikler', 'Başarıların daim olsun', 'Gururumuzsun']
+  };
+  var sonNotTema = '';
+
+  function notOnerileriniCiz() {
+    var kap = document.getElementById('not-onerileri');
+    if (!kap) return;
+    sonNotTema = durum.tema || '';
+    var liste = NOT_ONERILERI[durum.tema] || ['Mutlu günlerin hatırasına', 'Sevgiyle hazırlandı', 'İyi ki varsınız'];
+    kap.replaceChildren();
+    liste.forEach(function (metin) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'studio-note-chip';
+      b.textContent = metin;
+      b.addEventListener('click', function () {
+        var kisa = metin.slice(0, C.studyo.mesajKarakter);
+        durum.mesaj = kisa;
+        var el = document.getElementById('mesaj');
+        if (el) el.value = kisa;
+        ciz();
+        ozetGuncelle();
+      });
+      kap.appendChild(b);
+    });
+  }
+
   function ozetGuncelle() {
+    if (durum.tema !== sonNotTema) notOnerileriniCiz();
     teslimKontrol();
     var metin = ozetUret();
     var t = fiyatGuncelle();
@@ -1295,6 +1333,13 @@
       document.getElementById('studio-back').hidden = adim === 0;
       document.getElementById('studio-next').hidden = adim === 4;
       document.getElementById('studio-next').textContent = (sonraki[adim] || '') + ' →';
+      var mobilCta = document.getElementById('studio-mobile-cta');
+      var mobilOzet = document.getElementById('studio-mobile-ozet');
+      if (mobilCta) mobilCta.textContent = adim < 4 ? (sonraki[adim] || 'Devam et') + ' →' : '✅ Onayla ve gönder';
+      if (mobilOzet) {
+        var urunBilgi = secili(durum.urun, D.studyo.urunTipleri);
+        mobilOzet.textContent = (urunBilgi ? urunBilgi.ad : 'Tasarım') + ' · ' + durum.adet + ' adet · ' + (adim + 1) + '/5';
+      }
       sonDuzenleme.alan = null;
       if (odak) {
         var baslik = document.querySelector('[data-editor-step="' + adim + '"] h2');
@@ -1325,6 +1370,40 @@
       this.textContent = buyuk ? 'Önizlemeyi küçült' : 'Önizlemeyi büyüt';
       document.querySelector('.studyo__onizleme').classList.toggle('studio-preview-expanded', buyuk);
     });
+    var yakinBtn = document.getElementById('studio-zoom-toggle');
+    var tuvalCerceve = document.getElementById('studio-canvas-frame');
+    if (yakinBtn && tuvalCerceve) {
+      yakinBtn.addEventListener('click', function () {
+        var yakin = this.getAttribute('aria-pressed') !== 'true';
+        this.setAttribute('aria-pressed', String(yakin));
+        this.textContent = yakin ? 'Normal görünüme dön' : 'Detaya yakınlaş';
+        tuvalCerceve.classList.toggle('is-zoomed', yakin);
+      });
+    }
+    var paylasLinkBtn = document.getElementById('tasarim-link-kopyala');
+    if (paylasLinkBtn) {
+      paylasLinkBtn.addEventListener('click', async function () {
+        try {
+          var kod = btoa(unescape(encodeURIComponent(JSON.stringify(durum)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+          var baglanti = location.origin + location.pathname + '?durum=' + kod;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(baglanti);
+            durumYaz('Paylaşım bağlantısı kopyalandı. Eşinizle veya ekibinizle paylaşabilirsiniz.', true);
+          } else {
+            window.prompt('Paylaşım bağlantısı:', baglanti);
+          }
+        } catch (e) {
+          durumYaz('Paylaşım bağlantısı oluşturulamadı.', false);
+        }
+      });
+    }
+    var mobilCtaBtn = document.getElementById('studio-mobile-cta');
+    if (mobilCtaBtn) {
+      mobilCtaBtn.addEventListener('click', function () {
+        if (adim < 4) adimaGit(adim + 1, true);
+        else document.getElementById('btn-paylas').click();
+      });
+    }
     document.querySelectorAll('[data-center]').forEach(function (b) {
       b.addEventListener('click', function () { durum.yerlesim[b.dataset.center].x = 0.5; ciz(); ozetGuncelle(); });
     });
@@ -1385,8 +1464,51 @@
     durumEl.style.color = iyi === false ? '#a32338' : '';
   }
 
+  function filigranliPngBlob(cb) {
+    if (!/^(photo-mockup|product-photo)$/.test(canvas.dataset.renderMode || '')) {
+      durumYaz('Önce ürün görselinin yüklenmesini bekleyin; hata varsa “Görseli yeniden yükle”yi kullanın.', false);
+      return;
+    }
+    var cikti = document.createElement('canvas');
+    cikti.width = canvas.width;
+    cikti.height = canvas.height;
+    var kCtx = cikti.getContext('2d');
+    kCtx.drawImage(canvas, 0, 0);
+    kCtx.save();
+    kCtx.translate(cikti.width / 2, cikti.height / 2);
+    kCtx.rotate(-26 * Math.PI / 180);
+    kCtx.textAlign = 'center';
+    kCtx.textBaseline = 'middle';
+    kCtx.font = '600 ' + Math.round(cikti.width * 0.042) + 'px "Cormorant Garamond", Georgia, serif';
+    kCtx.strokeStyle = 'rgba(255, 250, 244, 0.28)';
+    kCtx.lineWidth = 3;
+    kCtx.strokeText('BEYZA BLANC · TASARIM ÖNİZLEMESİ', 0, 0);
+    kCtx.fillStyle = 'rgba(45, 24, 18, 0.2)';
+    kCtx.fillText('BEYZA BLANC · TASARIM ÖNİZLEMESİ', 0, 0);
+    kCtx.restore();
+    kCtx.save();
+    kCtx.textAlign = 'right';
+    kCtx.textBaseline = 'bottom';
+    kCtx.font = '600 ' + Math.round(cikti.width * 0.022) + 'px "Cormorant Garamond", Georgia, serif';
+    kCtx.strokeStyle = 'rgba(255, 250, 244, 0.65)';
+    kCtx.lineWidth = 4;
+    kCtx.strokeText('BEYZA BLANC', cikti.width - 22, cikti.height - 18);
+    kCtx.fillStyle = 'rgba(45, 24, 18, 0.55)';
+    kCtx.fillText('BEYZA BLANC', cikti.width - 22, cikti.height - 18);
+    kCtx.restore();
+    if (cikti.toBlob) {
+      cikti.toBlob(cb, 'image/png');
+    } else {
+      var veri = cikti.toDataURL('image/png').split(',')[1];
+      var ikili = atob(veri);
+      var dizi = new Uint8Array(ikili.length);
+      for (var i = 0; i < ikili.length; i++) dizi[i] = ikili.charCodeAt(i);
+      cb(new Blob([dizi], { type: 'image/png' }));
+    }
+  }
+
   function indir() {
-    pngBlob(function (blob) {
+    filigranliPngBlob(function (blob) {
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
       a.href = url;
@@ -1397,7 +1519,7 @@
       setTimeout(function () {
         URL.revokeObjectURL(url);
       }, 4000);
-      durumYaz('Görsel indirildi. Instagram sohbetine ekleyebilirsin.', true);
+      durumYaz('Filigranlı tasarım görseli indirildi. Instagram sohbetine ekleyebilirsin.', true);
     });
   }
 
@@ -1759,6 +1881,10 @@
         durum.tarih = h.value;
       } else if (h.id === 'aliciAdi') {
         durum.aliciAdi = h.value;
+      } else if (h.id === 'musteriEposta') {
+        durum.musteriEposta = h.value;
+      } else if (h.id === 'musteriTelefon') {
+        durum.musteriTelefon = h.value;
       } else if (h.id === 'teslimTarihi') {
         durum.teslimTarihi = h.value;
       } else if (h.id === 'teslimNotu') {
@@ -1911,6 +2037,7 @@
         tema: durum.tema, urun: durum.urun, boyut: durum.boyut, adet: durum.adet,
         tasarim: durum.sablon || '',
         teslimSekli: durum.teslimSekli, teslimTarihi: durum.teslimTarihi || '', aliciAdi: durum.aliciAdi || '',
+        musteriEposta: durum.musteriEposta || '', musteriTelefon: durum.musteriTelefon || '',
         tahmin: tahmin ? tahmin.toplam : null,
         ozet: ozetEl ? ozetEl.value : ozetUret(),
         secimler: {
@@ -2028,6 +2155,17 @@
     adimlariKur();
     ilkTasarim = { json: JSON.stringify(durum), foto: fotograf };
     gecmisHazir = true;
+    try {
+      var paylasilan = new URLSearchParams(location.search).get('durum');
+      if (paylasilan) {
+        var b64 = paylasilan.replace(/-/g, '+').replace(/_/g, '/');
+        while (b64.length % 4) b64 += '=';
+        var cozulmus = JSON.parse(decodeURIComponent(escape(atob(b64))));
+        durum = taslagiDogrula(cozulmus);
+        kontrolleriYansit();
+        durumYaz('Paylaşılan tasarım yüklendi. Dilediğiniz detayı değiştirebilirsiniz.', true);
+      }
+    } catch (e) { /* geçersiz paylaşım parametresi yok sayılır */ }
     document.querySelectorAll('.studio-reference').forEach(function (button) {
       button.addEventListener('click', function () {
         var choice = document.querySelector('input[name="tema"][value="' + button.dataset.tema + '"]');

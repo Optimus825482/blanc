@@ -29,7 +29,7 @@
 .v-ust, .v-alt-ic { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .v-ust { min-height: 5.5rem; border-bottom: 1px solid var(--v-cizgi); }
 .v-marka { font: 600 clamp(1.28rem, 1rem + 1vw, 1.9rem)/1.1 var(--font-baslik); letter-spacing: .17em; text-decoration: none; }
-.v-marka-script { font: 400 1.32em/1 "Pinyon Script", "Great Vibes", cursive; letter-spacing: 0; text-transform: none; margin-left: .08em; position: relative; top: .06em; }
+.v-marka-script { font: 400 1.32em/1 var(--font-pinyon), "Pinyon Script", "Great Vibes", cursive; letter-spacing: 0; text-transform: none; margin-left: .08em; position: relative; top: .06em; }
 .v-ust nav { display: flex; flex-wrap: wrap; gap: 0 1.75rem; }
 .v-ust nav a { display: grid; align-items: center; min-height: 44px; font-size: .8rem; text-decoration: none; }
 .v-ust nav a:hover { text-decoration: underline; }

@@ -6,6 +6,8 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import sharp from 'sharp';
 import { query } from '../../../lib/db';
+import { quoteNotificationEmail, sendMail } from '../../../lib/mail';
+import { getSettings } from '../../../lib/settings';
 import { ADET_KADEMELERI, BUTCELER, kodUret, sorguIzinli, takipYolu, tokenUret } from '../../../lib/teklif';
 
 // Kurumsal teklif formu (plan 3.1). Kayıt bb_quotes'a kind='corporate' olarak düşer; firma bilgileri
@@ -83,5 +85,25 @@ export async function kurumsalTeklif(data) {
     if (r.rowCount) code = r.rows[0].code;
   }
   if (!code) hata('kayit');
+  const settings = await getSettings();
+  const bildirimAdres = settings.notification_email || settings.contact_email;
+  if (bildirimAdres) {
+    const origin = process.env.SITE_URL?.trim() || 'https://beyzablanc.com';
+    const mailVerisi = quoteNotificationEmail({
+      code,
+      kind: 'corporate',
+      productTitle: urunSatir.rows[0]?.title || 'Kurumsal Hediye',
+      quantity: kademe[2],
+      estimate: null,
+      recipientName: firma,
+      customerEmail: company.eposta,
+      customerPhone: company.telefon,
+      summary: ozet,
+      trackingUrl: origin + takipYolu(code, token),
+      adminUrl: origin + '/admin?bolum=talepler',
+      company,
+    });
+    await sendMail({ to: bildirimAdres, replyTo: company.eposta || undefined, ...mailVerisi }).catch(() => {});
+  }
   redirect(takipYolu(code, token) + '&yeni=1');
 }

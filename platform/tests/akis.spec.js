@@ -42,4 +42,11 @@ test('ana sayfadan teklif koduna kadar', async ({ page }) => {
   const takip = await page.locator('#onay-takip').getAttribute('href');
   await page.goto(takip);
   await expect(page.getByRole('heading', { level: 1 })).toContainText(kodMetni);
+  await expect(page.locator('.bb-letterhead-head')).toBeAttached();
+  await expect(page.locator('.bb-letterhead-foot')).toBeAttached();
+  await expect(page.getByRole('button', { name: /Antetli Teklif Özeti Yazdır/i })).toBeVisible();
+
+  await page.locator('#bb-ek-not').fill('Kurdele rengi bordo olabilir mi?');
+  await page.getByRole('button', { name: 'Ek Not Gönder' }).click();
+  await expect(page.getByText('Ek notunuz / revize talebiniz atölyeye iletildi.')).toBeVisible({ timeout: 15_000 });
 });

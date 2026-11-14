@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { fiyatYaz } from '../../lib/katalog-oku';
 
@@ -6,7 +7,7 @@ export default function TasarimKarti({ tasarim }) {
   const t = tasarim;
   return <article className="bb-tasarim" data-reveal="">
     <Link className="bb-tasarim__gorsel" href={'/tasarim/' + t.slug} aria-label={t.title + ' detayı'}>
-      {t.image ? <img src={t.image} alt={t.alt || t.title} width="640" height="640" loading="lazy" decoding="async" /> : <span aria-hidden="true">{t.occasion_icon}</span>}
+      {t.image ? <Image src={t.image} alt={t.alt || t.title} width={640} height={640} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" unoptimized={t.image.startsWith('/media/')} /> : <span aria-hidden="true">{t.occasion_icon}</span>}
       {(t.bestseller || t.is_new) && <span className="bb-tasarim__rozet">{t.bestseller ? 'Çok tercih edilen' : 'Yeni'}</span>}
     </Link>
     <div className="bb-tasarim__metin">
