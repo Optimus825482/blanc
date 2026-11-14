@@ -67,15 +67,15 @@ export default async function Home() {
     <section className="v-kabuk bb-niyet" aria-labelledby="niyet-baslik">
       <p className="bb-overline" id="niyet-baslik">Bugün ne için geldiniz?</p>
       <div className="bb-niyet__secenekler">
-        <Link href="/koleksiyonlar"><strong>Bir özel gün için hediye</strong><span>Söz, nişan, doğum günü, bebek… güne göre keşfedin</span></Link>
-        <Link href="/koleksiyonlar?kime=es-sevgili"><strong>Birine göre seçmek</strong><span>{recipients.slice(0, 4).map((r) => r.short_title).join(', ')}…</span></Link>
-        <Link href="/kurumsal"><strong>Kurumsal hediye</strong><span>Logo baskılı toplu kutular, ekip ve müşteri hediyeleri</span></Link>
-        <Link href="/studyo"><strong>Kendi tasarımımı yapmak</strong><span>Stüdyoda isim, tarih ve renklerinizle canlı önizleme</span></Link>
+        <Link data-reveal="" href="/koleksiyonlar"><strong>Bir özel gün için hediye</strong><span>Söz, nişan, doğum günü, bebek… güne göre keşfedin</span></Link>
+        <Link data-reveal="" href="/koleksiyonlar?kime=es-sevgili"><strong>Birine göre seçmek</strong><span>{recipients.slice(0, 4).map((r) => r.short_title).join(', ')}…</span></Link>
+        <Link data-reveal="" href="/kurumsal"><strong>Kurumsal hediye</strong><span>Logo baskılı toplu kutular, ekip ve müşteri hediyeleri</span></Link>
+        <Link data-reveal="" href="/studyo"><strong>Kendi tasarımımı yapmak</strong><span>Stüdyoda isim, tarih ve renklerinizle canlı önizleme</span></Link>
       </div>
     </section>
     {bantlar.length > 0 && <section className="v-kabuk bb-teslim" aria-labelledby="teslim-baslik">
       <p className="bb-overline" id="teslim-baslik">Hazırlık süreleri</p>
-      <div className="bb-teslim__bantlar">{bantlar.map((b) => <div key={b.title}><p className="bb-teslim__adet">{b.title}</p><p className="bb-teslim__sure">{b.text}</p></div>)}</div>
+      <div className="bb-teslim__bantlar">{bantlar.map((b) => <div data-reveal="" key={b.title}><p className="bb-teslim__adet">{b.title}</p><p className="bb-teslim__sure">{b.text}</p></div>)}</div>
       {settings.last_order_note && <p className="bb-teslim__not">📅 {settings.last_order_note}</p>}
     </section>}
     <section className="v-kabuk v-bolum bb-collection" id="koleksiyonlar">
@@ -85,9 +85,9 @@ export default async function Home() {
       {!categories.length && <p>Yeni koleksiyonlarımız hazırlanıyor.</p>}
     </section>
     {yorumlar.length > 0 && <section className="v-kabuk bb-yorumlar" aria-labelledby="yorumlar-baslik">
-      <p className="v-etiket">Müşterilerimiz</p>
-      <h2 id="yorumlar-baslik">Sizden gelenler</h2>
-      <div className="bb-yorumlar__izgara">{yorumlar.map((y) => <figure key={y.id} className="bb-yorum">
+      <p className="v-etiket" data-reveal="">Müşterilerimiz</p>
+      <h2 id="yorumlar-baslik" data-reveal="">Sizden gelenler</h2>
+      <div className="bb-yorumlar__izgara">{yorumlar.map((y) => <figure data-reveal="" key={y.id} className="bb-yorum">
         <p className="bb-yorum__puan" aria-label={y.rating + ' yıldız'}>{'★'.repeat(y.rating)}{'☆'.repeat(5 - y.rating)}</p>
         <blockquote>{y.text}</blockquote>
         <figcaption>{kisaAd(y.name)}{y.occasion_title ? ' · ' + y.occasion_title : ''}</figcaption>

@@ -18,7 +18,7 @@ export default async function Studyo() {
   const [html, veri] = await Promise.all([govde(), getStudioData()]);
   return <>
     <link rel="stylesheet" href="/assets/css/studyo-v2.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Great+Vibes&family=Bodoni+Moda:wght@500&family=Dancing+Script:wght@500&family=Montserrat:wght@500&display=swap" rel="stylesheet" />
     <StudyoIstemci html={html} veri={veri} />
   </>;
 }

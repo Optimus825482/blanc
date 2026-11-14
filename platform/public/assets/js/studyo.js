@@ -2,7 +2,7 @@
    Beyza Blanc — tasarım stüdyosu
    Tarayıcıda çalışır: seçimler canvas üzerinde canlı önizlenir, tasarım PNG
    olarak üretilir ve özet metniyle birlikte Instagram'a aktarılır.
-   Sunucuya hiçbir şey gönderilmez; yüklenen fotoğraf cihazdan çıkmaz.
+   Önizleme cihazda işlenir; kullanıcı teklif gönderdiğinde görsel sunucuya kaydedilir.
    ========================================================================== */
 
 (function () {
@@ -20,14 +20,23 @@
   var durumEl = document.getElementById('studyo-durum');
   var ozetEl = document.getElementById('studyo-ozet');
   var fotograf = null; // { img: HTMLImageElement, ad: string }
+  var kontrolleriYansit = function () {};
+  var gecmis = [];
+  var gecmisKonum = -1;
+  var geriYukleniyor = false;
+  var gecmisHazir = false;
+  var sonDuzenleme = { alan: null, zaman: 0 };
+  var adimaGit = function () {};
+  var ilkTasarim = null;
 
   /* ----------------------------- Başlangıç durumu ----------------------- */
 
   var durum = {
     sablon: '',
+    cerceve: 'yok',
     yaziRenk: '',
     // Yazı ve logo konumu baskı alanına oranla (0–1); olcek kaydırıcıdan.
-    yerlesim: { yazi: { x: 0.5, y: 0.2, olcek: 1 }, foto: { x: 0.76, y: 0.74, olcek: 1 } },
+    yerlesim: { yazi: { x: 0.5, y: 0.5, olcek: 1 }, foto: { x: 0.78, y: 0.76, olcek: 1 } },
     urun: D.studyo.urunTipleri[0].id,
     boyut: D.studyo.urunTipleri[0].boyutlar[1],
     tema: D.temalar[0].id,
@@ -175,7 +184,7 @@
       })
       .catch(function () {});
   }
-  altliklariYukle();
+  // Fotoğraf maketleri isteğe göre yüklenir; eski vektör sahneleri ağdan alınmaz.
 
   /* ------------------------------ Renk yardımcıları ---------------------- */
 
@@ -362,35 +371,55 @@
     var tema = UI.temaBul(durum.tema);
 
     ctx.clearRect(0, 0, OLCO, OLCO);
+    canvas.dataset.chocolateCount = '0';
     var tip = cizimTipi(urun);
     var alan = baskiAlani(urun, tip);
     var foto = sablonGorsel(urun);
-    if (foto) {
-      // Panelden yüklenen boş ürün fotoğrafı: baskı alanı seçilen ambalaj rengine boyanır (açık renkler zemini korur)
-      kaplaCiz(foto, 0, 0, OLCO, OLCO);
-      if (amb.zemin && !acikMi(amb.zemin)) tonla(function () { yuvarlak(ctx, alan.x, alan.y, alan.g, alan.h, 18); }, amb.zemin, 0.85);
-      if (kur.renk) {
-        satenBant(alan.x + alan.g * 0.74, alan.y - 10, 36, alan.h + 20, kur.renk, true);
-        fiyonk(alan.x + alan.g * 0.74 + 18, alan.y + 8, 26, kur.renk);
-      }
-      if (kart.zemin) kartCiz(kart, OLCO - 56 - 300, OLCO - 64 - 112, 300, 112);
-    } else {
-      zeminCiz(tip);
-      if (tip === 'bar') cizBar(amb, kur, kart, cik, tema);
-      else if (tip === 'tepsi') cizTepsi(amb, kur, kart, cik, tema);
-      else cizKutu(amb, kur, kart, cik, tema);
+    var sahne = fotoSahne(urun);
+    var malzeme = sahne && tip === 'kutu' ? maketGorseli('/assets/img/studyo/photo-kutu-v1.webp') : true;
+    var kurdeleGorsel = kur.renk ? maketGorseli('/assets/img/studyo/photo-ribbon-v1.webp') : true;
+    var hazir = !!foto && !!malzeme && !!kurdeleGorsel;
+    var hata = !foto && sablonImg[urun.altlik || sahne.yol] === false;
+    if (malzeme === false || kurdeleGorsel === false) hata = true;
+    canvas.dataset.renderMode = hazir ? (sahne ? 'photo-mockup' : 'product-photo') : hata ? 'error' : 'loading';
+    var tekrar = document.getElementById('studio-scene-retry');
+    if (tekrar) tekrar.hidden = !hata;
+    var aciklama = document.getElementById('onizleme-aciklama');
+    if (aciklama) aciklama.textContent = sahne
+      ? 'Fotoğraf gerçekçiliğinde dijital maket; gerçek ürün çekimi değildir. İçerik, gramaj ve tepsi katları üretimde netleştirilir.'
+      : 'Atölyenin ürün fotoğrafı üzerine dijital kişiselleştirme. Üretim öncesi son onay alınır.';
+    if (!hazir) {
+      ctx.fillStyle = '#f3ede4'; ctx.fillRect(0, 0, OLCO, OLCO);
+      ctx.fillStyle = '#512730'; ctx.font = '26px Georgia'; ctx.textAlign = 'center';
+      ctx.fillText(hata ? 'Ürün görseli yüklenemedi' : 'Ürün görseli hazırlanıyor…', OLCO / 2, OLCO / 2);
+      katmanKutu.yazi = null; katmanKutu.foto = null;
+      return;
     }
+    kaplaCiz(foto, 0, 0, OLCO, OLCO);
+    yuzeyRengi(sahne ? sahne.renk : alan, amb.zemin);
+    if (sahne && tip === 'kutu') fotograflikCikolatalar(malzeme, amb, tema);
+    if (sahne && tip === 'tepsi') tepsiEtiketleri(amb, tema);
+    // Kişiselleştirme baskı yüzeyinden taşmaz; kâğıt dokusu korunur.
+    ctx.save(); ctx.beginPath(); ctx.rect(alan.x, alan.y, alan.g, alan.h); ctx.clip();
+    cerceveCiz(alan, amb);
     yaziKatmani(alan, amb, kart);
     fotoKatmani(alan);
+    if (durum.mesaj && kart.zemin) {
+      ctx.fillStyle = yaziRengi(amb); ctx.textAlign = 'center';
+      sigdir(22, fontCss(), durum.mesaj, alan.g * 0.85);
+      ctx.fillText(durum.mesaj, alan.x + alan.g / 2, alan.y + alan.h * 0.87);
+    }
+    ctx.restore();
+    if (kur.renk) fotografikKurdele(kurdeleGorsel, kur.renk, sahne ? sahne.kurdele : { x: alan.x, y: alan.y + alan.h * 0.65, g: alan.g });
 
     // Filigran
-    ctx.font = '400 20px ' + fontCss();
+    ctx.font = '400 14px Georgia';
     ctx.fillStyle = 'rgba(61,32,22,0.5)';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
-    ctx.fillText(C.marka + ' · tasarım önizlemesi', 56, OLCO - 44);
+    ctx.fillText(C.marka + ' · ' + (sahne ? 'dijital maket' : 'tasarım önizlemesi'), 32, OLCO - 22);
     ctx.textAlign = 'right';
-    ctx.fillText(tasarimKodu(), OLCO - 56, OLCO - 44);
+    ctx.fillText(tasarimKodu(), OLCO - 32, OLCO - 22);
   }
 
   function kabartmaYazi(metin, x, y, acikRenk, koyuRenk) {
@@ -723,6 +752,115 @@
   // alanın içinde sürüklenir; konumlar alana oranla saklanır, fotoğraf değişince yerleşim bozulmaz.
   var sablonImg = {};
   var katmanKutu = { yazi: null, foto: null }; // son çizimdeki piksel kutuları (isabet testi)
+  var kurdeleDokulari = {};
+
+  // Piksel alanları 1000×1000 maketlere göre ölçüldü; panel fotoğrafı bunların önüne geçer.
+  function fotoSahne(urun) {
+    if (urun.altlik) return null;
+    var tip = cizimTipi(urun);
+    if (tip === 'bar') return {
+      yol: '/assets/img/studyo/photo-bar-v1.webp',
+      baski: { x: 235, y: 330, g: 525, h: 330 },
+      renk: { x: 216, y: 316, g: 563, h: 363 },
+      kurdele: { x: 90, y: 540, g: 820 }
+    };
+    if (tip === 'tepsi') return {
+      yol: '/assets/img/studyo/photo-tepsi-v1.webp',
+      baski: { x: 266, y: 235, g: 453, h: 210 },
+      renk: { x: 250, y: 217, g: 486, h: 241 },
+      kurdele: { x: 220, y: 362, g: 560 }
+    };
+    return {
+      yol: '/assets/img/studyo/photo-empty-v1.webp',
+      baski: { x: 188, y: 95, g: 625, h: 270 },
+      renk: { x: 177, y: 78, g: 645, h: 310 },
+      kurdele: { x: 150, y: 268, g: 700 }
+    };
+  }
+
+  function cerceveCiz(alan, amb) {
+    var stil = (secili(durum.cerceve, D.studyo.cerceveler || []) || {}).stil || 'yok';
+    if (stil === 'yok') return;
+    var bosluk = Math.min(alan.g, alan.h) * 0.055;
+    var x = alan.x + bosluk, y = alan.y + bosluk, w = alan.g - bosluk * 2, h = alan.h - bosluk * 2;
+    ctx.save(); ctx.strokeStyle = yaziRengi(amb); ctx.globalAlpha = 0.65; ctx.lineWidth = 1.5;
+    if (stil === 'ince' || stil === 'cift') {
+      ctx.strokeRect(x, y, w, h);
+      if (stil === 'cift') ctx.strokeRect(x + 5, y + 5, w - 10, h - 10);
+    } else if (stil === 'kose' || stil === 'art-deco') {
+      var kol = Math.min(w, h) * 0.22;
+      [[x,y,1,1],[x+w,y,-1,1],[x,y+h,1,-1],[x+w,y+h,-1,-1]].forEach(function (k) {
+        ctx.beginPath(); ctx.moveTo(k[0], k[1] + k[3] * kol); ctx.lineTo(k[0], k[1]); ctx.lineTo(k[0] + k[2] * kol, k[1]); ctx.stroke();
+        if (stil === 'art-deco') { ctx.beginPath(); ctx.moveTo(k[0] + k[2] * 5, k[1] + k[3] * kol * .7); ctx.lineTo(k[0] + k[2] * 5, k[1] + k[3] * 5); ctx.lineTo(k[0] + k[2] * kol * .7, k[1] + k[3] * 5); ctx.stroke(); }
+      });
+    }
+    ctx.restore();
+  }
+
+  function yuzeyRengi(alan, renk) {
+    if (!renk || !alan) return;
+    ctx.save();
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.fillStyle = renk;
+    ctx.fillRect(alan.x, alan.y, alan.g, alan.h);
+    ctx.restore();
+  }
+
+  function etiketBaskisi(alan, amb, tema) {
+    yuzeyRengi(alan, amb.zemin);
+    ctx.save();
+    ctx.beginPath(); ctx.rect(alan.x, alan.y, alan.g, alan.h); ctx.clip();
+    ctx.fillStyle = yaziRengi(amb);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    var isim = durum.isim || 'Beyza Blanc';
+    sigdir(alan.h * 0.18, fontCss(), isim, alan.g * 0.84);
+    ctx.fillText(isim, alan.x + alan.g / 2, alan.y + alan.h * 0.42);
+    ctx.globalAlpha = 0.65;
+    ctx.fillRect(alan.x + alan.g * 0.35, alan.y + alan.h * 0.59, alan.g * 0.3, 0.7);
+    sigdir(alan.h * 0.095, 'Georgia', durum.tarih ? tarihYaz(durum.tarih) : tema.kisa, alan.g * 0.82);
+    ctx.fillText(durum.tarih ? tarihYaz(durum.tarih) : tema.kisa, alan.x + alan.g / 2, alan.y + alan.h * 0.74);
+    ctx.restore();
+  }
+
+  function fotograflikCikolatalar(img, amb, tema) {
+    var sayi = [9, 16, 25].indexOf(Number(durum.boyut)) > -1 ? Number(durum.boyut) : 16;
+    var kolon = Math.sqrt(sayi);
+    var aralikX = 610 / kolon, aralikY = 475 / kolon;
+    var kenar = Math.min(aralikX - 12, aralikY - 10);
+    // Kaynak maketin sağ alt çikolatası gerçekçi folyo ve baskı yüzeyi sağlar.
+    for (var i = 0; i < sayi; i++) {
+      var x = 195 + (i % kolon) * aralikX + (aralikX - kenar) / 2;
+      var y = 440 + Math.floor(i / kolon) * aralikY + (aralikY - kenar) / 2;
+      ctx.save();
+      ctx.shadowColor = 'rgba(67,44,16,.24)'; ctx.shadowBlur = 7; ctx.shadowOffsetY = 5;
+      ctx.drawImage(img, 219, 440, 125, 112, x, y, kenar, kenar);
+      ctx.restore();
+      etiketBaskisi({ x: x + kenar * 0.105, y: y + kenar * 0.025, g: kenar * 0.77, h: kenar * 0.89 }, amb, tema);
+    }
+    canvas.dataset.chocolateCount = String(sayi);
+  }
+
+  function tepsiEtiketleri(amb, tema) {
+    var xs = [246, 381, 512, 646], ys = [493, 606, 719];
+    ys.forEach(function (y) { xs.forEach(function (x) { etiketBaskisi({ x: x, y: y, g: 86, h: 85 }, amb, tema); }); });
+    canvas.dataset.chocolateCount = '12';
+  }
+
+  function fotografikKurdele(img, renk, alan) {
+    if (!kurdeleDokulari[renk]) {
+      var doku = document.createElement('canvas');
+      doku.width = img.naturalWidth; doku.height = img.naturalHeight;
+      var d = doku.getContext('2d');
+      d.drawImage(img, 0, 0);
+      d.globalCompositeOperation = 'multiply'; d.fillStyle = renk; d.fillRect(0, 0, doku.width, doku.height);
+      d.globalCompositeOperation = 'destination-in'; d.drawImage(img, 0, 0);
+      kurdeleDokulari[renk] = doku;
+    }
+    ctx.save();
+    ctx.shadowColor = 'rgba(58,35,17,.17)'; ctx.shadowBlur = 5; ctx.shadowOffsetY = 3;
+    ctx.drawImage(kurdeleDokulari[renk], alan.x, alan.y, alan.g, alan.g * img.naturalHeight / img.naturalWidth);
+    ctx.restore();
+  }
 
   function cizimTipi(urun) { return urun.tip === 'bar' ? 'bar' : urun.tip === 'tepsi' ? 'tepsi' : 'kutu'; }
 
@@ -730,27 +868,33 @@
   function yerlesimiSifirla() {
     var tip = cizimTipi(UI.urunBul(durum.urun));
     durum.yerlesim.yazi.x = 0.5;
-    durum.yerlesim.yazi.y = tip === 'kutu' ? 0.2 : 0.5;
+    durum.yerlesim.yazi.y = 0.5;
     durum.yerlesim.foto.x = tip === 'bar' ? 0.5 : 0.76;
     durum.yerlesim.foto.y = tip === 'bar' ? 0.5 : 0.74;
   }
 
   function sablonGorsel(urun) {
-    var yol = urun && urun.altlik;
+    var yol = urun && (urun.altlik || fotoSahne(urun).yol);
+    return maketGorseli(yol);
+  }
+
+  function maketGorseli(yol) {
     if (!yol) return null;
     if (sablonImg[yol] === undefined) {
       sablonImg[yol] = null;
       var img = new Image();
-      img.onload = function () { sablonImg[yol] = img; ciz(); };
-      img.onerror = function () { sablonImg[yol] = false; ciz(); };
+      img.onload = function () { sablonImg[yol] = img; if (canvas.isConnected) ciz(); };
+      img.onerror = function () { sablonImg[yol] = false; if (canvas.isConnected) ciz(); };
       img.src = yol;
     }
-    return sablonImg[yol] || null;
+    return sablonImg[yol];
   }
 
   function baskiAlani(urun, tip) {
     var a = urun && urun.baskiAlani;
     if (a && a.w > 0 && a.h > 0) return { x: a.x * OLCO, y: a.y * OLCO, g: a.w * OLCO, h: a.h * OLCO };
+    var sahne = fotoSahne(urun);
+    if (sahne) return sahne.baski;
     var g = geo(tip);
     if (tip === 'bar') return { x: g.bar.x, y: g.bar.y, g: g.bar.g, h: g.bar.h };
     if (tip === 'tepsi') return { x: g.oval.cx - g.oval.rx, y: g.oval.cy - g.oval.ry, g: g.oval.rx * 2, h: g.oval.ry * 2 };
@@ -802,8 +946,7 @@
     ctx.globalAlpha = bos ? 0.5 : 1;
     satirlar.forEach(function (sat) {
       ctx.font = sat.a + ' ' + sat.p + 'px ' + fontCss();
-      ctx.fillStyle = acikMi(renk) ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.55)';
-      ctx.fillText(sat.m, cx, y + 1.5);
+      ctx.globalCompositeOperation = acikMi(renk) ? 'source-over' : 'multiply';
       ctx.fillStyle = renk;
       ctx.fillText(sat.m, cx, y);
       y += sat.p * 1.3;
@@ -819,14 +962,10 @@
     var cx = alan.x + durum.yerlesim.foto.x * alan.g;
     var cy = alan.y + durum.yerlesim.foto.y * alan.h;
     var x = cx - boy / 2, y = cy - boy / 2;
-    golgeli(function () {
-      yuvarlak(ctx, x - 6, y - 6, boy + 12, boy + 12, 14);
-      ctx.fillStyle = '#fffdf9';
-      ctx.fill();
-    }, 'rgba(20,10,5,0.35)', 18, 0, 6);
     ctx.save();
-    yuvarlak(ctx, x, y, boy, boy, 10);
+    yuvarlak(ctx, x, y, boy, boy, 2);
     ctx.clip();
+    ctx.globalCompositeOperation = 'multiply';
     kaplaCiz(fotograf.img, x, y, boy, boy);
     ctx.restore();
     katmanKutu.foto = { x: x - 6, y: y - 6, g: boy + 12, h: boy + 12 };
@@ -905,6 +1044,7 @@
     satirlar.push('• Ambalaj: ' + etiketAd(durum.ambalaj, D.studyo.ambalajRenkleri));
     satirlar.push('• Kurdele: ' + etiketAd(durum.kurdele, D.studyo.kurdeler));
     satirlar.push('• Kart: ' + etiketAd(durum.kart, D.studyo.kartlar));
+    satirlar.push('• Çerçeve: ' + etiketAd(durum.cerceve, D.studyo.cerceveler || []));
     if (durum.sablon) satirlar.push('• Şablon: ' + ((UI.tasarimBul(durum.sablon) || {}).ad || durum.sablon));
     if (durum.yaziRenk) satirlar.push('• Yazı rengi: ' + durum.yaziRenk);
     if (durum.isim) satirlar.push('• İsim: ' + durum.isim);
@@ -1049,11 +1189,179 @@
     var t = fiyatGuncelle();
     if (t) metin = metin.replace('\n\nTasarım görselini', '\n• Sitedeki tahmini fiyat: ' + paraYaz(t.toplam, t.para) + ' (kesin teklif atölyeden)\n\nTasarım görselini');
     if (ozetEl) ozetEl.value = metin;
+    editorGuncelle();
+  }
+
+  /* --------------------------- Adımlı tasarım editörü -------------------- */
+
+  function editorGuncelle() {
+    var ozet = document.getElementById('studio-live-summary');
+    if (ozet) {
+      ozet.textContent = [etiketAd(durum.urun, D.studyo.urunTipleri), durum.adet + ' adet',
+        durum.isim || 'İsminizi ekleyin', etiketAd(durum.ambalaj, D.studyo.ambalajRenkleri)].join(' · ');
+      canvas.setAttribute('aria-label', 'Canlı tasarım: ' + ozet.textContent);
+    }
+    ['yazi', 'foto'].forEach(function (katman) {
+      ['x', 'y'].forEach(function (eksen) {
+        var id = katman + '-' + eksen;
+        var alan = document.getElementById(id);
+        if (!alan) return;
+        alan.value = Math.round(durum.yerlesim[katman][eksen] * 100);
+        document.getElementById(id + '-deger').textContent = alan.value + '%';
+      });
+    });
+    if (!gecmisHazir) return;
+    var json = JSON.stringify(durum);
+    var son = gecmis[gecmisKonum];
+    if (!geriYukleniyor && (!son || son.json !== json || son.foto !== fotograf)) {
+      var aktif = document.activeElement;
+      var birlesebilir = aktif && aktif.matches('#studyo-form input[type="text"], #studyo-form textarea, #studyo-form input[type="range"]');
+      var zaman = Date.now();
+      var birlestir = birlesebilir && sonDuzenleme.alan === aktif && zaman - sonDuzenleme.zaman < 800 && gecmisKonum > 0 && gecmisKonum === gecmis.length - 1;
+      gecmis = gecmis.slice(0, gecmisKonum + 1);
+      var kayit = { json: json, foto: fotograf };
+      if (birlestir) gecmis[gecmisKonum] = kayit;
+      else { gecmis.push(kayit); if (gecmis.length > 40) gecmis.shift(); gecmisKonum = gecmis.length - 1; }
+      sonDuzenleme = { alan: birlesebilir ? aktif : null, zaman: zaman };
+    }
+    document.getElementById('studio-undo').disabled = gecmisKonum <= 0;
+    document.getElementById('studio-redo').disabled = gecmisKonum >= gecmis.length - 1;
+  }
+
+  function gecmisteGez(yon) {
+    var hedef = gecmisKonum + yon;
+    if (hedef < 0 || hedef >= gecmis.length) return;
+    gecmisKonum = hedef;
+    geriYukleniyor = true;
+    durum = JSON.parse(gecmis[hedef].json);
+    fotograf = gecmis[hedef].foto;
+    kontrolleriYansit();
+    ciz();
+    ozetGuncelle();
+    geriYukleniyor = false;
+    sonDuzenleme.alan = null;
+    durumYaz(yon < 0 ? 'Son değişiklik geri alındı.' : 'Değişiklik yeniden uygulandı.', true);
+  }
+
+  function taslagiDogrula(kayit) {
+    if (!kayit || typeof kayit !== 'object' || Array.isArray(kayit)) throw new Error('Geçersiz taslak');
+    var sonuc = JSON.parse(ilkTasarim.json);
+    Object.keys(sonuc).forEach(function (ad) {
+      if (typeof sonuc[ad] === 'string' && typeof kayit[ad] === 'string') sonuc[ad] = kayit[ad].slice(0, 1000);
+    });
+    var listeler = { urun: D.studyo.urunTipleri, tema: D.temalar, cikolata: D.studyo.cikolataTipleri,
+      ambalaj: D.studyo.ambalajRenkleri, kurdele: D.studyo.kurdeler, kart: D.studyo.kartlar,
+      font: D.studyo.fontlar, cerceve: D.studyo.cerceveler || [], teslimSekli: D.studyo.teslimSekilleri };
+    Object.keys(listeler).forEach(function (ad) {
+      if (listeler[ad].length && !secili(sonuc[ad], listeler[ad])) throw new Error('Seçenek artık sunulmuyor');
+    });
+    var urun = secili(sonuc.urun, D.studyo.urunTipleri);
+    if (!urun || !urun.boyutlar.includes(sonuc.boyut) || !D.studyo.adetler.includes(sonuc.adet)) throw new Error('Ürün veya adet değişmiş');
+    if (sonuc.yaziRenk && !/^#[\da-f]{6}$/i.test(sonuc.yaziRenk)) sonuc.yaziRenk = '';
+    sonuc.isim = sonuc.isim.slice(0, C.studyo.isimKarakter);
+    sonuc.mesaj = sonuc.mesaj.slice(0, C.studyo.mesajKarakter);
+    sonuc.ekstralar = Array.isArray(kayit.ekstralar) ? D.studyo.ekstralar.filter(function (e) { return kayit.ekstralar.includes(e.id); }).map(function (e) { return e.id; }) : [];
+    ['yazi', 'foto'].forEach(function (katman) {
+      ['x', 'y', 'olcek'].forEach(function (eksen) {
+        var v = kayit.yerlesim && kayit.yerlesim[katman] && kayit.yerlesim[katman][eksen];
+        if (typeof v !== 'number' || !Number.isFinite(v)) return;
+        sonuc.yerlesim[katman][eksen] = Math.max(eksen === 'olcek' ? 0.5 : 0, Math.min(eksen === 'olcek' ? (katman === 'yazi' ? 1.8 : 2) : 1, v));
+      });
+    });
+    return sonuc;
+  }
+
+  function adimlariKur() {
+    var paneller = Array.from(document.querySelectorAll('#studyo-form > .panel'));
+    var gruplar = [0, 0, 1, 2, 2, 3, 4, 3];
+    var adim = 0;
+    var adlar = ['Başlangıç', 'Şablon', 'Kişiselleştir', 'Son dokunuş', 'Tamamla'];
+    var sonraki = ['Şablona geç', 'Kişiselleştirmeye geç', 'Son dokunuşlara geç', 'Teslim ve özeti gör'];
+    paneller.forEach(function (panel, i) { panel.dataset.editorStep = gruplar[i]; panel.querySelector('h2').tabIndex = -1; });
+    document.getElementById('gonderim').dataset.editorStep = '4';
+    document.getElementById('studio-guide').hidden = false;
+    document.getElementById('studio-step-actions').hidden = false;
+    adimaGit = function (hedef, odak) {
+      adim = Math.max(0, Math.min(4, hedef));
+      document.querySelectorAll('[data-editor-step]').forEach(function (panel) { panel.hidden = Number(panel.dataset.editorStep) !== adim; });
+      document.querySelectorAll('[data-studio-step]').forEach(function (button) {
+        if (Number(button.dataset.studioStep) === adim) button.setAttribute('aria-current', 'step');
+        else button.removeAttribute('aria-current');
+      });
+      document.getElementById('studio-step-count').textContent = (adim + 1) + ' / 5';
+      var ilerleme = document.getElementById('studio-progress');
+      ilerleme.value = adim + 1;
+      ilerleme.setAttribute('aria-valuetext', (adim + 1) + '. adım: ' + adlar[adim]);
+      document.getElementById('studio-back').hidden = adim === 0;
+      document.getElementById('studio-next').hidden = adim === 4;
+      document.getElementById('studio-next').textContent = (sonraki[adim] || '') + ' →';
+      sonDuzenleme.alan = null;
+      if (odak) {
+        var baslik = document.querySelector('[data-editor-step="' + adim + '"] h2');
+        baslik.focus({ preventScroll: true });
+        document.getElementById('studio-guide').scrollIntoView({ block: 'start', behavior: 'instant' });
+      }
+    };
+    document.querySelectorAll('[data-studio-step]').forEach(function (b) { b.addEventListener('click', function () { adimaGit(Number(b.dataset.studioStep), true); }); });
+    document.getElementById('studio-next').addEventListener('click', function () { adimaGit(adim + 1, true); });
+    document.getElementById('studio-back').addEventListener('click', function () { adimaGit(adim - 1, true); });
+    document.querySelectorAll('.studio-steps a').forEach(function (a, i) {
+      a.addEventListener('click', function (e) { e.preventDefault(); adimaGit([0, 1, 4][i], true); });
+    });
+    document.getElementById('studyo-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (adim < 4) adimaGit(adim + 1, true);
+      else document.getElementById('btn-paylas').click();
+    });
+    document.getElementById('studio-undo').addEventListener('click', function () { gecmisteGez(-1); });
+    document.getElementById('studio-scene-retry').addEventListener('click', function () {
+      Object.keys(sablonImg).forEach(function (yol) { if (sablonImg[yol] === false) delete sablonImg[yol]; });
+      ciz();
+    });
+    document.getElementById('studio-redo').addEventListener('click', function () { gecmisteGez(1); });
+    document.getElementById('studio-preview-toggle').addEventListener('click', function () {
+      var buyuk = this.getAttribute('aria-pressed') !== 'true';
+      this.setAttribute('aria-pressed', String(buyuk));
+      this.textContent = buyuk ? 'Önizlemeyi küçült' : 'Önizlemeyi büyüt';
+      document.querySelector('.studyo__onizleme').classList.toggle('studio-preview-expanded', buyuk);
+    });
+    document.querySelectorAll('[data-center]').forEach(function (b) {
+      b.addEventListener('click', function () { durum.yerlesim[b.dataset.center].x = 0.5; ciz(); ozetGuncelle(); });
+    });
+    var paletler = [
+      { ad: 'İmza krem', ambalaj: 'krem', kurdele: 'altin' },
+      { ad: 'Romantik pudra', ambalaj: 'pudra', kurdele: 'altin' },
+      { ad: 'Zamansız bordo', ambalaj: 'bordo', kurdele: 'altin' }
+    ];
+    var paletAlan = document.getElementById('studio-palettes');
+    paletler.forEach(function (p) {
+      var amb = secili(p.ambalaj, D.studyo.ambalajRenkleri);
+      var kur = secili(p.kurdele, D.studyo.kurdeler);
+      if (!amb || !kur) return;
+      var b = document.createElement('button');
+      b.type = 'button';
+      var renk = document.createElement('span');
+      renk.style.backgroundColor = amb.zemin;
+      renk.style.borderColor = kur.renk;
+      renk.setAttribute('aria-hidden', 'true');
+      b.append(renk, document.createTextNode(p.ad));
+      b.addEventListener('click', function () {
+        durum.ambalaj = p.ambalaj; durum.kurdele = p.kurdele;
+        kontrolleriYansit(); ciz(); ozetGuncelle();
+        durumYaz(p.ad + ' renk uyumu uygulandı. Diğer seçimleriniz korundu.', true);
+      });
+      paletAlan.appendChild(b);
+    });
+    adimaGit(location.hash === '#gonderim' ? 4 : location.hash === '#sablon-baslik' ? 1 : tasarim ? 2 : 0, false);
   }
 
   /* --------------------------- PNG üretimi ve paylaşım ------------------- */
 
   function pngBlob(cb) {
+    if (!/^(photo-mockup|product-photo)$/.test(canvas.dataset.renderMode || '')) {
+      durumYaz('Önce ürün görselinin yüklenmesini bekleyin; hata varsa “Görseli yeniden yükle”yi kullanın.', false);
+      return;
+    }
     if (canvas.toBlob) {
       canvas.toBlob(cb, 'image/png');
     } else {
@@ -1070,6 +1378,8 @@
   }
 
   function durumYaz(metin, iyi) {
+    var bildirim = document.getElementById('studio-feedback');
+    if (bildirim) bildirim.textContent = metin;
     if (!durumEl) return;
     durumEl.textContent = metin;
     durumEl.style.color = iyi === false ? '#a32338' : '';
@@ -1266,7 +1576,7 @@
     }
     // Durumdaki seçimleri form denetimlerine yansıt (şablon ve tema önerisi uygulanınca)
     function formaYansit() {
-      ['ambalaj', 'kurdele', 'kart', 'font', 'cikolata', 'yaziRenk'].forEach(function (ad) {
+      ['ambalaj', 'kurdele', 'kart', 'font', 'cikolata', 'yaziRenk', 'cerceve'].forEach(function (ad) {
         var hepsi = document.querySelectorAll('input[name="' + ad + '"]');
         var var_ = false;
         hepsi.forEach(function (i) { i.checked = i.value === (durum[ad] || ''); if (i.checked) var_ = true; });
@@ -1280,14 +1590,53 @@
     var sablonAlan = document.getElementById('alan-sablon');
     function sablonlariCiz() {
       var urunun = D.tasarimlar.filter(function (t) { return t.urun === durum.urun; });
-      var liste = urunun.filter(function (t) { return t.tema === durum.tema; });
-      if (!liste.length) liste = urunun;
-      if (durum.sablon && !liste.some(function (t) { return t.id === durum.sablon; })) durum.sablon = '';
+      if (durum.sablon && !urunun.some(function (t) { return t.id === durum.sablon; })) durum.sablon = '';
+      var aramaHam = document.getElementById('sablon-ara').value.trim();
+      var arama = aramaHam.toLocaleLowerCase('tr');
+      var yalnizGun = document.getElementById('sablon-gunum').checked;
+      var izinliTemalar = urunTemalari(UI.urunBul(durum.urun)).map(function (t) { return t.id; });
+      var sirala = function (a, b) {
+        return Number(b.tema === durum.tema) - Number(a.tema === durum.tema) || Number(!!Object.keys(b.sablon || {}).length) - Number(!!Object.keys(a.sablon || {}).length);
+      };
+      var uygunlar = urunun.filter(function (t) {
+        return izinliTemalar.indexOf(t.tema) > -1 && (!yalnizGun || t.tema === durum.tema);
+      }).sort(sirala);
+      var liste = uygunlar.filter(function (t) {
+        if (!arama) return true;
+        var tema = UI.temaBul(t.tema);
+        var metin = [t.ad, t.ozet, (t.etiketler || []).join(' '), tema ? tema.ad : ''].join(' ').toLocaleLowerCase('tr');
+        return metin.includes(arama);
+      });
+      var sonucEl = document.getElementById('sablon-sonuc');
+      if (liste.length) {
+        sonucEl.textContent = liste.length + ' şablon · Seçimleriniz her zaman düzenlenebilir.';
+      } else {
+        var onerilen = (uygunlar.length ? uygunlar : urunun.slice().sort(sirala)).slice(0, 6);
+        liste = onerilen;
+        sonucEl.innerHTML = '';
+        if (aramaHam) {
+          sonucEl.append('“' + aramaHam + '” için birebir şablon adı yok; ürününüze uygun ' + onerilen.length + ' önerilen şablon listeleniyor. ');
+          var uygulaBtn = document.createElement('button');
+          uygulaBtn.type = 'button';
+          uygulaBtn.className = 'studio-template-apply';
+          uygulaBtn.textContent = '“' + aramaHam.slice(0, C.studyo.isimKarakter) + '” yazısını tasarıma isim olarak ekle';
+          uygulaBtn.addEventListener('click', function () {
+            durum.isim = aramaHam.slice(0, C.studyo.isimKarakter);
+            document.getElementById('isim').value = durum.isim;
+            ciz();
+            ozetGuncelle();
+            durumYaz('“' + durum.isim + '” tasarımdaki isim alanına eklendi.', true);
+          });
+          sonucEl.appendChild(uygulaBtn);
+        } else {
+          sonucEl.textContent = onerilen.length + ' önerilen şablon gösteriliyor.';
+        }
+      }
       sablonAlan.innerHTML =
-        '<label class="secim"><input type="radio" name="sablon" value=""' + (!durum.sablon ? ' checked' : '') + '><span><span class="sablon-bos" aria-hidden="true">✦</span>Boş şablon<small>Kendi tasarımını yap</small></span></label>' +
+        '<label class="secim"><input type="radio" name="sablon" value=""' + (!durum.sablon ? ' checked' : '') + '><span><span class="sablon-bos" aria-hidden="true">✦</span>Serbest tasarım<small>Seçimlerinle devam et</small></span></label>' +
         liste.map(function (t) {
-          return '<label class="secim"><input type="radio" name="sablon" value="' + t.id + '"' + (t.id === durum.sablon ? ' checked' : '') + '><span>' +
-            (t.gorsel ? '<img src="' + t.gorsel + '" alt="" loading="lazy" width="160" height="160">' : '<span class="sablon-bos" aria-hidden="true">✦</span>') +
+          return '<label class="secim"><input type="radio" name="sablon" value="' + UI.kacir(t.id) + '"' + (t.id === durum.sablon ? ' checked' : '') + '><span>' +
+            (t.gorsel ? '<img src="' + UI.kacir(t.gorsel) + '" alt="" loading="lazy" width="320" height="320">' : '<span class="sablon-bos" aria-hidden="true">✦</span>') +
             UI.kacir(t.ad) + '<small>' + UI.kacir(t.ozet || '') + '</small></span></label>';
         }).join('');
     }
@@ -1295,22 +1644,31 @@
       var t = UI.tasarimBul(durum.sablon);
       if (!t) return;
       var sb = t.sablon || {};
+      durum.tema = t.tema;
+      temalariCiz();
       if (t.boyut && UI.urunBul(durum.urun).boyutlar.indexOf(t.boyut) > -1) {
         durum.boyut = t.boyut;
         boyutlariCiz();
         if (/^\d+$/.test(t.boyut)) { durum.adet = t.boyut; adetSecim.value = t.boyut; }
       }
       if (t.cikolata) durum.cikolata = t.cikolata;
-      if (sb.isim !== undefined) durum.isim = sb.isim;
-      if (sb.not !== undefined) durum.mesaj = sb.not;
+      var koru = document.getElementById('sablon-kisisel-koru').checked;
+      if (sb.isim !== undefined && (!koru || !durum.isim.trim())) durum.isim = sb.isim;
+      if (sb.not !== undefined && (!koru || !durum.mesaj.trim())) durum.mesaj = sb.not;
       if (sb.font) durum.font = sb.font;
-      if (sb.renk) durum.yaziRenk = sb.renk;
+      durum.yaziRenk = sb.renk || '';
+      durum.cerceve = sb.cerceve || 'yok';
       if (sb.ambalaj) durum.ambalaj = sb.ambalaj;
       if (sb.kurdele) durum.kurdele = sb.kurdele;
       if (sb.kart) durum.kart = sb.kart;
       formaYansit();
       durumYaz('“' + t.ad + '” şablonu uygulandı; yazıyı, renkleri ve yerleşimi değiştirebilirsin.', true);
     }
+
+    document.getElementById('sablon-ara').addEventListener('input', sablonlariCiz);
+    document.getElementById('sablon-gunum').addEventListener('change', sablonlariCiz);
+    document.getElementById('alan-cerceve').innerHTML = (D.studyo.cerceveler || []).map(function (c) { return secimHTML('cerceve', c.id, c.ad, c.id === durum.cerceve); }).join('');
+    document.querySelectorAll('#alan-font input').forEach(function (i) { i.nextElementSibling.style.fontFamily = (secili(i.value, D.studyo.fontlar) || {}).css || ''; });
 
     var YAZI_RENKLERI = [['', 'Otomatik', '#d9c7b2'], ['#A98336', 'Altın', '#A98336'], ['#512730', 'Bordo', '#512730'], ['#3D2016', 'Kahve', '#3D2016'], ['#FFFAF2', 'Beyaz', '#FFFAF2'], ['#1A1A1A', 'Siyah', '#1A1A1A']];
     document.getElementById('alan-yazi-renk').innerHTML = YAZI_RENKLERI.map(function (r) {
@@ -1319,6 +1677,36 @@
 
     temalariCiz();
     sablonlariCiz();
+
+    // Tek bir eşitleme yolu: geri al/yinele ve taslak açma olay dinleyicilerini tekrar kurmaz.
+    kontrolleriYansit = function () {
+      fotoSurumu++;
+      boyutlariCiz();
+      temalariCiz();
+      sablonlariCiz();
+      document.querySelectorAll('#studyo-form input, #studyo-form textarea, #studyo-form select').forEach(function (alan) {
+        if (alan.type === 'file') { alan.value = ''; return; }
+        if (alan.dataset.ekstra) { alan.checked = durum.ekstralar.indexOf(alan.dataset.ekstra) > -1; return; }
+        if (!Object.prototype.hasOwnProperty.call(durum, alan.name)) return;
+        if (alan.type === 'radio') alan.checked = alan.value === String(durum[alan.name]);
+        else alan.value = durum[alan.name];
+      });
+      document.getElementById('yazi-boyut').value = durum.yerlesim.yazi.olcek;
+      document.getElementById('foto-boyut').value = durum.yerlesim.foto.olcek;
+      document.getElementById('yazi-renk-ozel').value = durum.yaziRenk || '#3d2016';
+      var onizleme = document.getElementById('foto-onizleme');
+      onizleme.replaceChildren();
+      if (fotograf) {
+        var kucuk = document.createElement('img');
+        kucuk.src = fotograf.img.src;
+        kucuk.alt = 'Yüklenen fotoğraf önizlemesi';
+        var ad = document.createElement('span');
+        ad.textContent = fotograf.ad;
+        onizleme.append(kucuk, ad);
+      }
+      document.getElementById('foto-kaldir').hidden = !fotograf;
+      document.querySelectorAll('.studio-reference').forEach(function (b) { b.classList.toggle('studio-reference--selected', b.dataset.tema === durum.tema); });
+    };
 
     var isimGirdi = document.getElementById('isim');
     isimGirdi.maxLength = C.studyo.isimKarakter;
@@ -1329,7 +1717,9 @@
     /* Olaylar */
     document.getElementById('studyo-form').addEventListener('input', function (olay) {
       var h = olay.target;
-      if (h.name === 'urun') {
+      if (h.dataset.layer && h.dataset.axis) {
+        durum.yerlesim[h.dataset.layer][h.dataset.axis] = Number(h.value) / 100;
+      } else if (h.name === 'urun') {
         durum.urun = h.value;
         yerlesimiSifirla();
         boyutlariCiz();
@@ -1392,19 +1782,33 @@
     /* Fotoğraf yükleme */
     var fotoGirdi = document.getElementById('foto');
     var fotoOnizleme = document.getElementById('foto-onizleme');
+    var fotoSurumu = 0;
+    var fotoHata = document.getElementById('foto-hata');
+    function fotoHatasi(metin) {
+      fotoHata.textContent = metin;
+      fotoHata.hidden = !metin;
+      fotoGirdi.setAttribute('aria-invalid', String(!!metin));
+      if (metin) { fotoGirdi.value = ''; durumYaz(metin, false); }
+    }
 
     fotoGirdi.addEventListener('change', function () {
+      var surum = ++fotoSurumu;
       var dosya = fotoGirdi.files && fotoGirdi.files[0];
       if (!dosya) return;
+      fotoHatasi('');
+      if (!/^image\/(jpeg|png|webp)$/.test(dosya.type)) {
+        fotoHatasi('Lütfen JPG, PNG veya WebP biçiminde bir fotoğraf seçin.');
+        return;
+      }
       if (dosya.size > C.studyo.maksFotoMB * 1024 * 1024) {
-        durumYaz('Fotoğraf çok büyük (en fazla ' + C.studyo.maksFotoMB + ' MB).', false);
-        fotoGirdi.value = '';
+        fotoHatasi('Fotoğraf çok büyük (en fazla ' + C.studyo.maksFotoMB + ' MB).');
         return;
       }
       var okuyucu = new FileReader();
       okuyucu.onload = function () {
         var img = new Image();
         img.onload = function () {
+          if (surum !== fotoSurumu || !canvas.isConnected) return;
           fotograf = { img: img, ad: dosya.name };
           fotoOnizleme.innerHTML =
             '<img src="' + okuyucu.result + '" alt="Yüklenen fotoğraf önizlemesi">' +
@@ -1414,12 +1818,16 @@
           ozetGuncelle();
           durumYaz('Fotoğraf önizlemeye eklendi. Cihazından çıkmadı.', true);
         };
+        img.onerror = function () { if (surum === fotoSurumu) fotoHatasi('Fotoğraf açılamadı. Başka bir JPG, PNG veya WebP dosyası deneyin.'); };
         img.src = okuyucu.result;
       };
+      okuyucu.onerror = function () { if (surum === fotoSurumu) fotoHatasi('Dosya okunamadı. Lütfen yeniden seçin.'); };
       okuyucu.readAsDataURL(dosya);
     });
 
     document.getElementById('foto-kaldir').addEventListener('click', function () {
+      fotoSurumu++;
+      fotoHatasi('');
       fotograf = null;
       fotoGirdi.value = '';
       fotoOnizleme.innerHTML = '';
@@ -1446,6 +1854,7 @@
         ['Çikolata', etiketAd(durum.cikolata, D.studyo.cikolataTipleri)],
         ['Ambalaj / kurdele', etiketAd(durum.ambalaj, D.studyo.ambalajRenkleri) + ' · ' + etiketAd(durum.kurdele, D.studyo.kurdeler)],
         ['Kart', etiketAd(durum.kart, D.studyo.kartlar)],
+        ['Yazı / çerçeve', etiketAd(durum.font, D.studyo.fontlar) + ' · ' + etiketAd(durum.cerceve, D.studyo.cerceveler || [])],
         ['İsim', durum.isim || '—'],
         ['Tarih', durum.tarih ? tarihYaz(durum.tarih) : '—'],
         ['Kart notu', durum.mesaj || '—'],
@@ -1455,11 +1864,15 @@
         ['Hedef teslim günü', durum.teslimTarihi ? tarihYaz(durum.teslimTarihi) : 'belirtilmedi'],
         ['Adet', durum.adet],
       ];
-      if (durum.teslimNotu) satirlar.splice(12, 0, ['Teslim notu', durum.teslimNotu]);
+      if (durum.teslimNotu) satirlar.splice(satirlar.length - 1, 0, ['Teslim notu', durum.teslimNotu]);
       return satirlar;
     }
 
     function onayAc() {
+      if (!/^(photo-mockup|product-photo)$/.test(canvas.dataset.renderMode || '')) {
+        durumYaz('Tasarımı onaylamadan önce ürün görselinin yüklenmesini bekleyin.', false);
+        return;
+      }
       kanalEl.hidden = true;
       document.querySelector('.onay-tasdik').hidden = false;
       document.querySelector('.onay-eylem').hidden = false;
@@ -1496,14 +1909,14 @@
     function teklifVerisi(tahmin) {
       return {
         tema: durum.tema, urun: durum.urun, boyut: durum.boyut, adet: durum.adet,
-        tasarim: new URLSearchParams(location.search).get('tasarim') || '',
+        tasarim: durum.sablon || '',
         teslimSekli: durum.teslimSekli, teslimTarihi: durum.teslimTarihi || '', aliciAdi: durum.aliciAdi || '',
         tahmin: tahmin ? tahmin.toplam : null,
         ozet: ozetEl ? ozetEl.value : ozetUret(),
         secimler: {
           cikolata: durum.cikolata, ambalaj: durum.ambalaj, kurdele: durum.kurdele, kart: durum.kart, font: durum.font,
           isim: durum.isim, tarih: durum.tarih, mesaj: durum.mesaj, ekstralar: durum.ekstralar, teslimNotu: durum.teslimNotu || '',
-          fotograf: !!fotograf, sablon: durum.sablon, yaziRenk: durum.yaziRenk, yerlesim: durum.yerlesim
+          fotograf: !!fotograf, sablon: durum.sablon, yaziRenk: durum.yaziRenk, yerlesim: durum.yerlesim, cerceve: durum.cerceve
         }
       };
     }
@@ -1596,7 +2009,10 @@
 
     var sifirla = document.getElementById('btn-sifirla');
     sifirla.addEventListener('click', function () {
-      location.href = '/studyo';
+      durum = JSON.parse(ilkTasarim.json);
+      fotograf = ilkTasarim.foto;
+      kontrolleriYansit(); ciz(); ozetGuncelle(); adimaGit(0, true);
+      durumYaz('Başlangıç tasarımına dönüldü. Geri al ile son tasarımınıza dönebilirsiniz.', true);
     });
 
     if (durum.sablon) sablonUygula();
@@ -1609,6 +2025,9 @@
     canvas.height = OLCO;
 
     kontrolleriKur();
+    adimlariKur();
+    ilkTasarim = { json: JSON.stringify(durum), foto: fotograf };
+    gecmisHazir = true;
     document.querySelectorAll('.studio-reference').forEach(function (button) {
       button.addEventListener('click', function () {
         var choice = document.querySelector('input[name="tema"][value="' + button.dataset.tema + '"]');
@@ -1617,11 +2036,11 @@
           return;
         }
         choice.click();
+        adimaGit(1, true);
         document.querySelectorAll('.studio-reference').forEach(function (item) {
           item.classList.toggle('studio-reference--selected', item === button);
         });
         document.getElementById('ilham-durum').textContent = button.querySelector('span').childNodes[0].textContent.trim() + ' teması seçildi. Aşağıdaki ayarları değiştirebilirsiniz.';
-        document.getElementById('tasarim-alani').scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
     document.getElementById('alan-tema').addEventListener('change', function (event) {
@@ -1645,13 +2064,7 @@
     }
     document.getElementById('taslak-kaydet').addEventListener('click', function () {
       try {
-        var alanlar = Array.from(document.querySelectorAll('#studyo-form input, #studyo-form select, #studyo-form textarea'));
-        var kayit = alanlar.filter(function (alan) {
-          return alan.type !== 'file' && (alan.name || alan.id || alan.dataset.ekstra) &&
-            (alan.type !== 'radio' || alan.checked);
-        }).map(function (alan) {
-          return { name: alan.name, id: alan.id, extra: alan.dataset.ekstra || '', value: alan.value, checked: alan.checked, type: alan.type };
-        });
+        var kayit = { version: 2, durum: durum, kayitZamani: new Date().toISOString() };
         localStorage.setItem(taslakAnahtar, JSON.stringify(kayit));
         taslakDugmeleriniGuncelle();
         durumYaz('Taslak bu cihazda kaydedildi. Fotoğrafı yeniden yüklemeniz gerekir.', true);
@@ -1662,22 +2075,33 @@
     taslakYukle.addEventListener('click', function () {
       try {
         var kayit = JSON.parse(localStorage.getItem(taslakAnahtar));
+        if (kayit && kayit.version === 2) {
+          var dogrulanan = taslagiDogrula(kayit.durum);
+          durum = dogrulanan;
+          fotograf = null;
+          kontrolleriYansit(); ciz(); ozetGuncelle();
+          adimaGit(2, true);
+          durumYaz('Taslak, renkleri ve yerleşimiyle açıldı. Fotoğraf kullandıysanız yeniden yükleyin.', true);
+          return;
+        }
         if (!Array.isArray(kayit)) throw new Error('Geçersiz taslak');
+        var eskiDurum = JSON.parse(ilkTasarim.json);
+        eskiDurum.ekstralar = [];
         kayit.forEach(function (item) {
-          var alan = Array.from(document.querySelectorAll('#studyo-form input, #studyo-form select, #studyo-form textarea')).find(function (candidate) {
-            if (item.extra) return candidate.dataset.ekstra === item.extra;
-            if (item.type === 'radio') return candidate.type === 'radio' && candidate.name === item.name && candidate.value === item.value;
-            return item.id && candidate.id === item.id;
-          });
-          if (!alan || alan.type === 'file') return;
-          if (alan.type === 'radio' || alan.type === 'checkbox') alan.checked = !!item.checked;
-          else alan.value = item.value;
-          alan.dispatchEvent(new Event('input', { bubbles: true }));
-          alan.dispatchEvent(new Event('change', { bubbles: true }));
+          if (!item || typeof item !== 'object') throw new Error('Geçersiz taslak alanı');
+          if (item.extra && item.checked) eskiDurum.ekstralar.push(item.extra);
+          var ad = item.name || item.id;
+          if (Object.prototype.hasOwnProperty.call(eskiDurum, ad) && typeof eskiDurum[ad] === 'string' && typeof item.value === 'string') eskiDurum[ad] = item.value;
+          if (item.id === 'yazi-renk-ozel' && !eskiDurum.yaziRenk) eskiDurum.yaziRenk = item.value;
+          if (item.id === 'yazi-boyut') eskiDurum.yerlesim.yazi.olcek = Number(item.value);
+          if (item.id === 'foto-boyut') eskiDurum.yerlesim.foto.olcek = Number(item.value);
         });
+        durum = taslagiDogrula(eskiDurum);
+        fotograf = null;
+        kontrolleriYansit(); ciz(); ozetGuncelle(); adimaGit(2, true);
         durumYaz('Taslak açıldı. Fotoğraf kullandıysanız yeniden yükleyin.', true);
       } catch (error) {
-        durumYaz('Taslak okunamadı.', false);
+        durumYaz('Taslak açılamadı; kayıt bozulmuş veya ürün seçenekleri değişmiş olabilir. Mevcut tasarımınız korundu.', false);
       }
     });
     taslakSil.addEventListener('click', function () {

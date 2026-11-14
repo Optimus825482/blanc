@@ -8,6 +8,7 @@ const CIZIM = [['kutu', 'Kutu'], ['bar', 'Bar'], ['tepsi', 'Tepsi']];
 const GRUPLAR = [
   ['chocolate', 'Çikolata tipi'], ['wrap_color', 'Ambalaj rengi'], ['ribbon', 'Kurdele'], ['card', 'Kart'],
   ['font', 'Yazı tipi'], ['extra', 'Ekstra'], ['delivery', 'Teslim şekli'], ['quantity', 'Adet'],
+  ['frame', 'Baskı çerçevesi'],
 ];
 
 const ortak = {
@@ -134,6 +135,9 @@ export const YAZI_TIPLERI = [
   ["'Great Vibes', cursive", 'Great Vibes (el yazısı)'],
   ["'Inter', system-ui, sans-serif", 'Inter (modern sans)'],
   ['Georgia, serif', 'Georgia (sistem serif)'],
+  ["'Bodoni Moda', Georgia, serif", 'Bodoni Moda'],
+  ["'Dancing Script', cursive", 'Dancing Script'],
+  ["'Montserrat', sans-serif", 'Montserrat'],
   ['system-ui, sans-serif', 'Sistem yazı tipi'],
 ];
 export const VERI_ALANLARI = {
@@ -157,6 +161,7 @@ export const VERI_ALANLARI = {
     { ad: 'yok', etiket: '"Kart istemiyorum" seçeneği (renkler kullanılmaz)', tip: 'bayrak' },
   ],
   font: [{ ad: 'css', etiket: 'Yazı tipi', tip: 'secim', secenekler: YAZI_TIPLERI }],
+  frame: [{ ad: 'stil', etiket: 'Çizim biçimi', tip: 'secim', secenekler: [['yok', 'Yok'], ['ince', 'İnce çizgi'], ['cift', 'Çift çizgi'], ['kose', 'Köşeler'], ['art-deco', 'Art déco']] }],
   extra: [{ ad: 'varsayilan', etiket: 'Stüdyoda varsayılan olarak seçili gelsin', tip: 'bayrak' }],
   delivery: [],
   quantity: [],
@@ -171,6 +176,7 @@ export const SABLON_ALANLARI = [
   { ad: 'ambalaj', etiket: 'Ambalaj rengi', tip: 'secenek', secenek: 'wrap_colors' },
   { ad: 'kurdele', etiket: 'Kurdele', tip: 'secenek', secenek: 'ribbons' },
   { ad: 'kart', etiket: 'Kart', tip: 'secenek', secenek: 'cards' },
+  { ad: 'cerceve', etiket: 'Baskı çerçevesi', tip: 'secenek', secenek: 'frames' },
 ];
 
 export const slugDeseni = /^[a-z0-9]+(-[a-z0-9]+)*$/;

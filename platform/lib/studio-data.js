@@ -49,6 +49,7 @@ export const getStudioData = cache(async () => {
       kurdeler: grup('ribbon', ({ renk }) => ({ renk: renk ?? null })),
       kartlar: grup('card', ({ zemin, metin }) => ({ zemin: zemin ?? null, metin: metin ?? null })),
       fontlar: grup('font', ({ css }) => ({ css })),
+      cerceveler: grup('frame', ({ stil }) => ({ stil })),
       ekstralar: grup('extra', ({ varsayilan }) => ({ varsayilan: !!varsayilan })).map((e) => ({ ...e, id: camel(e.id) })),
       teslimSekilleri: grup('delivery', () => ({})),
       // Hazırlık bantları (panel: "başlık = metin"); studyo.js adete göre en az iş günü uyarısı için okur.

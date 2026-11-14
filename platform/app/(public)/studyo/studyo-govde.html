@@ -1,9 +1,9 @@
   <section class="bolum bolum--dar studio-intro">
     <div class="kap">
       <p class="hero__etiket">Tasarım stüdyosu</p>
-      <h1>Kendi Tasarımını Oluştur</h1>
+      <h1>Bir hediyeden<br>çok daha fazlası.</h1>
       <p class="hero__metin">
-        Ürününüzü ve özel gününüzü seçin; boş ürünün üzerine isim, tarih, logo ve renklerinizi yerleştirin ya da hazır bir şablonu değiştirin. Önizlemeyi onaylayıp atölyeye iletin.
+        Sizin renkleriniz, sizin kelimeleriniz. Küçük bir fikirden size özel bir hatıraya; tasarımınızı adım adım birlikte şekillendirelim.
       </p>
       <nav class="studio-steps" aria-label="Tasarım adımları">
         <a href="#tasarim-alani">01 &nbsp; Ürün ve özel gün</a><span aria-hidden="true">→</span>
@@ -15,7 +15,8 @@
 
   <section class="bolum bolum--dar">
     <div class="kap">
-      <section class="studio-inspiration" aria-labelledby="ilham-baslik">
+      <details class="studio-inspiration">
+        <summary><span>Biraz ilham ister misiniz?</span><small>Atölyeden gerçek çalışmalar · açıp keşfedin</small></summary>
         <p class="studio-kicker">BEYZA BLANC ATÖLYESİNDEN</p>
         <h2 id="ilham-baslik">Bir örnekle başlayın</h2>
         <p>İlham için atölyenin gerçek çalışmaları. Birini seçerseniz özel gününüz ve önerilen renkler düzenleme alanına aktarılır; tasarımı boş ürün üzerinde kendiniz yaparsınız.</p>
@@ -26,31 +27,59 @@
           <button type="button" class="studio-reference" data-tema="kurumsal"><img decoding="async" loading="lazy" src="/assets/img/instagram/kurumsal/gokhan-turk-motors.webp" width="640" height="639" alt=""><span>Kurumsal <small>Bu temayla başla ↗</small></span></button>
         </div>
         <p id="ilham-durum" role="status" aria-live="polite"></p>
-      </section>
+      </details>
     </div>
     <div class="kap studyo" id="tasarim-alani">
 
       <!-- Önizleme -->
       <div class="studyo__onizleme">
         <div class="onizleme-kart">
-          <div class="studio-preview-heading"><div><p class="studio-kicker">TASARIMINIZ</p><h2>Canlı önizleme</h2></div><p class="onizleme-ipucu" id="onizleme-ipucu">Yazıyı ve logoyu sürükleyerek yerleştirin</p></div>
+          <div class="studio-preview-heading"><div><p class="studio-kicker">DİJİTAL ÜRÜN MAKETİ</p><h2>Tasarımınız hayat buluyor</h2></div><p class="onizleme-ipucu" id="onizleme-ipucu">Yazıyı ve logoyu sürükleyerek yerleştirin</p></div>
           <canvas id="onizleme" width="1000" height="1000" role="img" aria-label="Tasarımının canlı önizlemesi"></canvas>
+          <div class="studio-live-summary" id="studio-live-summary"></div>
           <div class="onizleme-alt">
-            <span id="onizleme-aciklama">Boş ürün üzerinde tasarım ön izlemesi; birebir üretim provası değildir.</span>
+            <span id="onizleme-aciklama">Fotoğraf gerçekçiliğinde dijital maket; gerçek ürün çekimi değildir.</span>
           </div>
           <div class="fiyat-tahmini" id="fiyat-tahmini" aria-live="polite" hidden></div>
         </div>
+        <div class="studio-tools" aria-label="Tasarım araçları">
+          <button type="button" id="studio-undo" disabled>↶ Geri al</button>
+          <button type="button" id="studio-redo" disabled>↷ Yinele</button>
+          <button type="button" id="studio-preview-toggle" aria-pressed="false">Önizlemeyi büyüt</button>
+          <button type="button" id="studio-scene-retry" hidden>Görseli yeniden yükle</button>
+        </div>
+        <p class="studio-feedback" id="studio-feedback" role="status"></p>
+        <details class="studio-draft">
+          <summary>Kaydet ve sonra devam et</summary>
+          <div class="studio-tools">
+            <button type="button" id="taslak-kaydet">Taslağı kaydet</button>
+            <button type="button" id="taslak-yukle" hidden>Taslağı aç</button>
+            <button type="button" id="taslak-sil" hidden>Taslağı sil</button>
+          </div>
+          <p class="alan__yardim">Yalnızca bu tarayıcıda saklanır. Renkler, yazılar ve konumlar kaydedilir; fotoğrafı tekrar yüklemeniz gerekir.</p>
+        </details>
         <p class="kucuk soluk" style="margin-top:1rem">
           Yüklediğiniz fotoğraf bu cihazda işlenir. İndirdiğiniz görseli Instagram mesajına kendiniz ekleyebilirsiniz.
         </p>
       </div>
 
       <!-- Kontroller -->
-      <div>
+      <div class="studio-editor" id="studio-editor">
+        <div class="studio-guide" id="studio-guide" hidden>
+          <div class="studio-guide-heading"><p class="studio-kicker">SİZE ÖZEL, ADIM ADIM</p><span id="studio-step-count">1 / 5</span></div>
+          <nav class="studio-step-nav" aria-label="Stüdyo adımları">
+            <button type="button" data-studio-step="0"><span>01</span>Başla</button>
+            <button type="button" data-studio-step="1"><span>02</span>Şablon</button>
+            <button type="button" data-studio-step="2"><span>03</span>Yazı / logo</button>
+            <button type="button" data-studio-step="3"><span>04</span>Renkler</button>
+            <button type="button" data-studio-step="4"><span>05</span>Tamamla</button>
+          </nav>
+          <progress id="studio-progress" max="5" value="1" aria-label="Bulunduğunuz tasarım adımı">1 / 5</progress>
+        </div>
         <form id="studyo-form" novalidate>
 
           <div class="panel">
-            <h2>1. Ürün ve adet</h2>
+            <h2>Nasıl bir hediye hayal ediyorsunuz?</h2>
             <p class="panel__ipucu">Ne hazırlıyoruz? Adet seçimin fiyatı belirleyen ana etkendir.</p>
 
             <fieldset class="alan">
@@ -76,7 +105,7 @@
           </div>
 
           <div class="panel">
-            <h2>2. Özel gün</h2>
+            <h2>Hangi özel gün için?</h2>
             <p class="panel__ipucu">Seçtiğin ürüne uygun özel günler listelenir. Tema, önerilen renk ve kurdeleyi ayarlar; sonra istediğini değiştirebilirsin.</p>
             <fieldset class="alan">
               <legend class="alan__etiket">Hangi özel gün için?</legend>
@@ -85,8 +114,14 @@
           </div>
 
           <div class="panel">
-            <h2 id="sablon-baslik">3. Şablon</h2>
-            <p class="panel__ipucu">Boş üründen başla ya da bu ürün ve özel gün için hazırladığımız tasarımlardan birini seç; üzerindeki yazıyı ve renkleri değiştirebilirsin.</p>
+            <h2 id="sablon-baslik">İlk ilhamınızı seçin</h2>
+            <p class="panel__ipucu">Ürününüze uygun hazır görünümleri keşfedin. Şablon; özel günü, renkleri, yazı tipini ve çerçeveyi birlikte uygular. Görseller dijital makettir.</p>
+            <div class="studio-template-filters">
+              <label for="sablon-ara">Şablon ara<input type="search" id="sablon-ara" placeholder="Örn. lavanta, bebek, modern" maxlength="80" autocomplete="off"></label>
+              <label class="studio-check"><input type="checkbox" id="sablon-gunum"> Yalnızca seçtiğim özel gün</label>
+              <label class="studio-check"><input type="checkbox" id="sablon-kisisel-koru" checked> Mevcut ismimi ve notumu koru</label>
+              <p id="sablon-sonuc" role="status" class="alan__yardim"></p>
+            </div>
             <fieldset class="alan">
               <legend class="alan__etiket">Nereden başlayalım?</legend>
               <div class="sablonlar" id="alan-sablon"></div>
@@ -94,7 +129,7 @@
           </div>
 
           <div class="panel">
-            <h2>4. Üzerindeki yazı</h2>
+            <h2>Sizin kelimelerinizle</h2>
             <p class="panel__ipucu">Ürünün üzerine işlenecek isim, tarih ve not. Yazıyı önizlemede sürükleyerek yerleştir; boyutunu kaydırıcıyla ayarla.</p>
 
             <div class="alan">
@@ -129,30 +164,44 @@
               <label class="alan__etiket" for="yazi-boyut">Yazı boyutu</label>
               <input type="range" id="yazi-boyut" min="0.5" max="1.8" step="0.05" value="1">
             </div>
+            <details class="studio-position"><summary>Yazıyı hassas yerleştir</summary>
+              <label for="yazi-x">Yatay konum <output id="yazi-x-deger">50%</output></label><input id="yazi-x" type="range" min="0" max="100" value="50" data-layer="yazi" data-axis="x">
+              <label for="yazi-y">Dikey konum <output id="yazi-y-deger">50%</output></label><input id="yazi-y" type="range" min="0" max="100" value="50" data-layer="yazi" data-axis="y">
+              <button type="button" class="btn btn--cizgili btn--kucuk" data-center="yazi">Yazıyı yatayda ortala</button>
+            </details>
           </div>
 
           <div class="panel">
-            <h2>5. Fotoğraf veya logo</h2>
+            <h2>Bir fotoğraf, bin hatıra</h2>
             <p class="panel__ipucu">Bebeğinizin fotoğrafı, çift fotoğrafı ya da şirket logonuz; ürünün üzerine yerleşir, sürükleyerek taşıyabilirsin.</p>
             <div class="alan">
               <label class="alan__etiket" for="foto">Fotoğraf / logo yükle</label>
               <div class="dosya-alani">
-                <input type="file" id="foto" accept="image/*">
+                <input type="file" id="foto" accept="image/jpeg,image/png,image/webp" aria-describedby="foto-yardim">
                 <div class="dosya-onizleme" id="foto-onizleme"></div>
                 <button class="btn btn--cizgili btn--kucuk" type="button" id="foto-kaldir" hidden style="margin-top:0.75rem">
                   Fotoğrafı kaldır
                 </button>
               </div>
-              <p class="alan__yardim">Dosya cihazından yüklenmez; önizleme tamamen tarayıcında oluşur.</p>
+              <p class="alan__yardim" id="foto-yardim">JPG, PNG veya WebP · en fazla 8 MB. Fotoğraf önizleme sırasında cihazınızda işlenir; teklif gönderirseniz tasarım görseline dahil edilir.</p>
+              <p class="alan__uyari" id="foto-hata" role="status" hidden></p>
             </div>
             <div class="alan">
               <label class="alan__etiket" for="foto-boyut">Fotoğraf / logo boyutu</label>
               <input type="range" id="foto-boyut" min="0.5" max="2" step="0.05" value="1">
             </div>
+            <details class="studio-position"><summary>Fotoğrafı hassas yerleştir</summary>
+              <label for="foto-x">Yatay konum <output id="foto-x-deger">76%</output></label><input id="foto-x" type="range" min="0" max="100" value="76" data-layer="foto" data-axis="x">
+              <label for="foto-y">Dikey konum <output id="foto-y-deger">74%</output></label><input id="foto-y" type="range" min="0" max="100" value="74" data-layer="foto" data-axis="y">
+              <button type="button" class="btn btn--cizgili btn--kucuk" data-center="foto">Fotoğrafı yatayda ortala</button>
+            </details>
           </div>
 
           <div class="panel">
-            <h2>6. Ambalaj, kurdele ve kart</h2>
+            <h2>Zarafet detaylarda</h2>
+            <p class="panel__ipucu">Uyumlu bir renk önerisiyle başlayın; her detayı ayrıca değiştirebilirsiniz.</p>
+            <div class="studio-palettes" id="studio-palettes" aria-label="Uyumlu renk önerileri"></div>
+            <fieldset class="alan"><legend class="alan__etiket">Baskı çerçevesi</legend><div class="secimler" id="alan-cerceve"></div><p class="alan__yardim">Seçtiğiniz çerçeve baskı yüzeyine uygulanır; rengini yazı renginden alır.</p></fieldset>
 
             <fieldset class="alan">
               <legend class="alan__etiket">Kutu / ambalaj rengi</legend>
@@ -171,7 +220,7 @@
           </div>
 
           <div class="panel">
-            <h2>7. Teslim</h2>
+            <h2>Güzel bir buluşmaya hazır</h2>
             <p class="panel__ipucu">
               Hediye kime gidecek, nasıl ulaşacak ve hangi gün elinde olmalı? Bunlar teklif
               mesajına eklenir; teslim gününü birlikte netleştiririz.
@@ -201,14 +250,14 @@
           </div>
 
           <div class="panel">
-            <h2>8. Ekstralar</h2>
+            <h2>Küçük, özel dokunuşlar</h2>
             <ul class="onay-listesi" id="ekstra-liste"></ul>
           </div>
 
         </form>
 
         <div class="panel" id="gonderim">
-          <h2>9. Tasarımı gönder</h2>
+          <h2>Son bir bakış, sonra atölyeye</h2>
           <p class="panel__ipucu">
             “Onayla ve gönder” dediğinde önce bir özet ekranı açılır: isim, tarih, renk ve teslim
             bilgilerini son bir kez kontrol edip onaylarsın. Ardından görseli ve özeti Instagram mesajına ekleyebilirsiniz.
@@ -224,15 +273,11 @@
             <button class="btn btn--cizgili btn--tam" type="button" id="btn-indir">
               Görseli indir (PNG)
             </button>
-            <button class="btn btn--cizgili btn--tam" type="button" id="taslak-kaydet">Taslağı bu cihazda kaydet</button>
-            <button class="btn btn--cizgili btn--tam" type="button" id="taslak-yukle" hidden>Kaydedilen taslağı aç</button>
-            <button class="btn btn--cizgili btn--tam" type="button" id="taslak-sil" hidden>Kaydedilen taslağı sil</button>
             <button class="btn btn--cizgili btn--tam" type="button" id="btn-sifirla">
               Baştan başla
             </button>
           </div>
 
-          <p class="alan__yardim">Taslak yalnızca bu tarayıcıya kaydedilir. Yüklenen fotoğraf taslağa dahil edilmez.</p>
           <p class="studyo__durum" id="studyo-durum" role="status" aria-live="polite"></p>
 
           <div class="alan" style="margin-top:1.25rem">
@@ -243,6 +288,10 @@
               Bu özeti kopyalayıp Instagram mesajınıza ekleyebilirsiniz.
             </p>
           </div>
+        </div>
+        <div class="studio-step-actions" id="studio-step-actions" hidden>
+          <button type="button" class="btn btn--cizgili" id="studio-back">← Önceki</button>
+          <button type="button" class="btn btn--birincil" id="studio-next">Şablona geç →</button>
         </div>
       </div>
 

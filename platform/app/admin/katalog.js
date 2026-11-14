@@ -168,6 +168,7 @@ export default async function KatalogBolumleri({ kinds }) {
     extras: cift(satirlar.studio_option.filter((o) => o.option_group === 'extra')),
     cards: cift(satirlar.studio_option.filter((o) => o.option_group === 'card')),
     fonts: cift(satirlar.studio_option.filter((o) => o.option_group === 'font')),
+    frames: cift(satirlar.studio_option.filter((o) => o.option_group === 'frame')),
   };
   return <>
     {!kinds && <h2 id="katalog">Katalog</h2>}

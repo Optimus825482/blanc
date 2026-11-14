@@ -94,6 +94,9 @@
 
 .bb-niyet { padding-block: clamp(1.5rem, 4vw, 3rem) 0; }
 .bb-niyet__secenekler { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; }
+@media (min-width: 40rem) and (max-width: 63.99rem) {
+  .bb-niyet__secenekler { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 .bb-niyet__secenekler a { display: grid; gap: .35rem; padding: 1.1rem 1.25rem; border: 1px solid var(--v-cizgi); background: #fffdf9; text-decoration: none; color: var(--v-metin); }
 .bb-niyet__secenekler a:hover { border-color: var(--v-bordo); }
 .bb-niyet__secenekler strong { font: 600 1.25rem/1.2 "Cormorant Garamond", Georgia, serif; }
@@ -140,7 +143,7 @@
 .bb-tasarim-detay__ozet { font-size: 1.15rem; }
 .bb-tasarim-detay__fiyat { color: var(--v-soluk); font-size: .92rem; }
 .bb-tasarim-detay__fiyat strong { color: var(--v-bordo); font: 600 1.6rem/1 "Cormorant Garamond", Georgia, serif; }
-.bb-ozellikler { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: .75rem 1.5rem; margin: 1.25rem 0; padding: 1rem 0; border-block: 1px solid var(--v-cizgi); }
+.bb-ozellikler { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: .75rem 1.5rem; margin: 1.25rem 0; padding: 1rem 0; border-block: 1px solid var(--v-cizgi); }
 .bb-ozellikler div { display: grid; gap: .2rem; }
 .bb-ozellikler dt { font: 600 .66rem/1.4 "Inter", system-ui, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--gun-vurgu, var(--v-bordo)); }
 .bb-ozellikler dd { margin: 0; font-size: .92rem; }
@@ -175,7 +178,7 @@
 /* --- Kurumsal teklif formu (plan 3.1) --- */
 .bb-kurumsal { padding-top: 0; }
 .bb-kurumsal__form { display: grid; gap: 1.25rem; max-width: 52rem; padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--v-cizgi); background: #fffdf9; }
-.bb-kurumsal__izgara { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; }
+.bb-kurumsal__izgara { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1rem; }
 .bb-kurumsal__form label { display: grid; gap: .35rem; font-size: .9rem; }
 .bb-kurumsal__form label small { color: var(--v-soluk); font-weight: 400; }
 .bb-kurumsal__form input:not([type="radio"]):not([type="checkbox"]), .bb-kurumsal__form select, .bb-kurumsal__form textarea { width: 100%; padding: .65rem .8rem; border: 1px solid var(--v-cizgi); background: #fff; font: inherit; color: var(--v-metin); }
@@ -227,7 +230,7 @@
 
 /* --- Hazırlık süreleri (3.4) --- */
 .bb-teslim { padding-block: clamp(1.5rem, 4vw, 3rem) 0; }
-.bb-teslim__bantlar { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1px; background: var(--v-cizgi); border: 1px solid var(--v-cizgi); }
+.bb-teslim__bantlar { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1px; background: var(--v-cizgi); border: 1px solid var(--v-cizgi); }
 .bb-teslim__bantlar > div { padding: 1.1rem 1.25rem; background: #fffdf9; }
 .bb-teslim__adet { margin: 0; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--v-soluk); }
 .bb-teslim__sure { margin: .35rem 0 0; font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.35rem; color: var(--v-metin); }
@@ -253,7 +256,7 @@
 /* Yorumlar (plan 3.2) */
 .bb-yorum__form { margin-top: 1rem; }
 .bb-yorumlar { padding-block: clamp(2rem, 5vw, 3.5rem); }
-.bb-yorumlar__izgara { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem; margin-top: 1.25rem; }
+.bb-yorumlar__izgara { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 1rem; margin-top: 1.25rem; }
 .bb-yorum { margin: 0; padding: 1.25rem; border: 1px solid var(--v-cizgi); background: #fffdf9; display: grid; gap: .6rem; }
 .bb-yorum__puan { margin: 0; color: var(--v-bordo); letter-spacing: .12em; }
 .bb-yorum blockquote { margin: 0; font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.1rem; line-height: 1.5; }
@@ -307,3 +310,72 @@
 .bb-baski__tutamac { position: absolute; right: -8px; bottom: -8px; width: 18px; height: 18px; border-radius: 50%; background: #512730; border: 2px solid #fffaf5; cursor: nwse-resize; }
 .bb-baski__sayilar { display: flex; flex-wrap: wrap; gap: .5rem .8rem; align-items: end; }
 .bb-baski__sayilar label { width: 6.5rem; }
+
+/* --- Kaydırma animasyonları ve etkileşim cilası --- */
+.bb-scroll-progress { display: none; }
+
+@keyframes bb-scroll-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+
+  @supports (animation-timeline: scroll()) {
+    .bb-scroll-progress {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      z-index: 60;
+      background: linear-gradient(90deg, var(--v-bordo, #512730), #c79a52);
+      transform-origin: 0 50%;
+      transform: scaleX(0);
+      pointer-events: none;
+      animation: bb-scroll-progress linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+
+  .bb-anim-ready [data-reveal]:not(.reveal-enter):not(:focus-within) {
+    opacity: 0;
+    transform: translateY(22px) scale(0.985);
+  }
+  .bb-anim-ready [data-reveal] {
+    transition:
+      opacity 680ms cubic-bezier(.22, 1, .36, 1) var(--reveal-delay, 0ms),
+      transform 680ms cubic-bezier(.22, 1, .36, 1) var(--reveal-delay, 0ms);
+  }
+  .bb-anim-ready [data-reveal].reveal-enter,
+  .bb-anim-ready [data-reveal]:focus-within {
+    opacity: 1;
+    transform: none;
+  }
+
+  .bb-menu__panel {
+    transition: opacity 220ms ease, transform 220ms cubic-bezier(.22, 1, .36, 1);
+  }
+  @starting-style {
+    .bb-menu details[open] .bb-menu__panel {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+}
+
+@media (hover: hover) {
+  .bb-niyet__secenekler a,
+  .bb-tasarim,
+  .bb-yorum {
+    transition: transform 320ms cubic-bezier(.22, 1, .36, 1), box-shadow 320ms ease, border-color 240ms ease;
+  }
+  .bb-niyet__secenekler a:hover,
+  .bb-tasarim:hover,
+  .bb-yorum:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px -22px rgba(40, 20, 10, .38);
+  }
+}

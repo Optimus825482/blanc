@@ -24,6 +24,7 @@ export default async function PublicLayout({ children }) {
   const duyuru = announcement(settings);
   const ga = /^G-[A-Z0-9]{4,16}$/.test(settings.ga_measurement_id || '') ? settings.ga_measurement_id : null;
   return <div className="vitrin">
+    <div className="bb-scroll-progress" aria-hidden="true" />
     <a className="skip-link" href="#icerik">İçeriğe geç</a>
     <div className="v-serit">Girne · Alsancak <span aria-hidden="true">✦</span> <span className="v-serit__ek">Çikolata ve hediye atölyesi</span></div>
     {duyuru && <div className="bb-duyuru" role="region" aria-label="Duyuru"><div className="v-kabuk bb-duyuru__ic"><span>📅 {duyuru.text}</span>{duyuru.link && <a href={duyuru.link}>{duyuru.linkText}</a>}</div></div>}

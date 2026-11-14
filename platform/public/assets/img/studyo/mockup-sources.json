@@ -1,0 +1,36 @@
+{
+  "generated": true,
+  "method": "Built-in image_gen; concept mockups, not photographs of Beyza Blanc products",
+  "assets": [
+    {
+      "id": "kutu",
+      "file": "photo-kutu-v1.webp",
+      "sourceId": "exec-245c73f8-66aa-40d1-901f-422f410f2bc8.png",
+      "prompt": "Square premium product photography mockup, strictly overhead flat lay, a real open rigid ivory chocolate presentation box with warm champagne gold foil edges resting on creamy linen, natural daylight upper left, soft true contact shadows and small paper imperfections, subtle sprig of dried ivory flowers only outside product at lower left. The fully visible hinged lid lies flat in the upper part of the image: rectangle corners at image proportions (0.16,0.10),(0.84,0.10),(0.84,0.39),(0.16,0.39), a completely blank plain ivory paper inner lid with no borders or lettering. The chocolate box tray below occupies x 0.16 to .84 and y .43 to .87. Inside exactly sixteen small premium square madlen chocolates arranged four rows by four columns, each individually wrapped in slightly crinkled gold foil and covered by a plain ivory paper square label with NO writing. Photographically realistic material surfaces, paper fibers, real foil reflection. No ribbon, no bow. No text, no logo, no watermarks anywhere. Camera axis perpendicular to surface so horizontal and vertical edges remain aligned, no illustrated render, no synthetic plastic, no round chocolates, no floating shapes, no UI. 1024x1024 composition. Leave .06 margin around all objects."
+    },
+    {
+      "id": "bar",
+      "file": "photo-bar-v1.webp",
+      "sourceId": "exec-1146cbb6-837a-43fe-b618-c7dab2ab8d04.png",
+      "prompt": "Square premium commercial product photography mockup, strictly overhead flat lay. A single large horizontal rectangular artisanal chocolate bar wrapped in delicately crinkled champagne gold foil on a warm ivory linen backdrop. Real fine paper and foil textures, natural window light from upper left, believable subtle shadows. Bar rectangle from x .12 to .88 and y .29 to .71 in frame. Large completely blank warm ivory paper sleeve center rectangle from x .23 to .77 and y .31 to .69 with perfectly straight front-facing edges, no artwork, no text, no logo. Fine gold foil visible at left and right of sleeve; no exposed chocolate. Small cocoa bean pair near bottom left outside bar and very subtle folded linen upper right, lots of clean negative space. No ribbon, no bow. Luxury minimalist product photo, 1024x1024. Not CGI, not vector, not illustration. All bar and paper edges parallel to camera frame. No printed text or watermark anywhere."
+    },
+    {
+      "id": "tepsi",
+      "file": "photo-tepsi-v1.webp",
+      "sourceId": "exec-8e415f98-76b7-41a2-86c8-296fc832a618.png",
+      "prompt": "Square luxury engagement chocolate tray product photography mockup, strictly overhead flat lay with camera perpendicular to tabletop. A real round champagne-gold mirrored metal tray with delicate scalloped decorative rim, centered at .5,.5, radius .39 of image. On soft ivory linen with small white dried flowers near bottom left OUTSIDE tray. On lower half of tray, exactly twelve individual small gold foil wrapped square madlen chocolates with completely blank ivory labels in three neat rows of four, occupying x .24 to .76 and y .53 to .78. On upper half of tray a plain ivory rectangular thick card, corners at x .26 to .74, y .24 to .46, absolutely blank smooth cream paper without border and no text, perfectly horizontal. Nothing covers this upper card. Real gold metal reflection, fine paper fibers, natural side daylight, true contact shadows, refined tactile texture, photographic rather than illustration or plastic CGI. No ribbon or bow, no text, no logos, no watermark, no cups. 1024x1024."
+    },
+    {
+      "id": "ribbon",
+      "file": "photo-ribbon-v1.webp",
+      "sourceId": "exec-a34b3a26-5e28-45b7-9fd0-1731343f8da3.png",
+      "prompt": "Photorealistic neutral ivory satin ribbon with bow, isolated on transparent background, overhead product photography."
+    },
+    {
+      "id": "empty",
+      "file": "photo-empty-v1.webp",
+      "sourceId": "exec-c02e759c-f73e-4a93-ae0d-471e0c223658.png",
+      "prompt": "Remove only chocolates from generated box photograph; preserve all geometry, materials, lighting, lid and background. Empty paper-lined cavity for quantity-driven compositing."
+    }
+  ]
+}

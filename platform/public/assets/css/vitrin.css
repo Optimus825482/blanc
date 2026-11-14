@@ -6,7 +6,10 @@
   --v-cizgi: #d9cbbd;
   background: var(--v-krem);
   color: var(--v-metin);
+  overflow-x: clip;
 }
+
+.vitrin section[id], .vitrin h2[id] { scroll-margin-top: 1.5rem; }
 
 .vitrin a { color: inherit; }
 .vitrin .skip-link { transition: none; }
@@ -92,6 +95,9 @@
   .v-ust nav { order: 1; width: 100%; border-top: 1px solid var(--v-cizgi); gap: 0 1.3rem; }
   .v-acilis { grid-template-columns: 1fr; gap: .5rem; }
   .v-acilis-metin { padding-block: 1rem; }
+  .v-kartlar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .v-eslesme { grid-template-columns: 1fr; }
+  .v-kurumsal > img { grid-row: 1; }
 }
 
 @media (max-width: 40rem) {
@@ -133,6 +139,15 @@
 @media (min-width: 43rem) and (max-width: 56rem) {
   .v-acilis { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.25rem; }
   .v-acilis h1 { font-size: clamp(2.85rem, 1.2rem + 4vw, 4rem); }
+}
+
+@media (hover: hover) {
+  .v-kart {
+    transition: transform 360ms cubic-bezier(.22, 1, .36, 1), border-color 260ms ease;
+  }
+  .v-kart:hover { transform: translateY(-4px); border-color: var(--v-bordo); }
+  .v-kart img { transition: transform 520ms cubic-bezier(.22, 1, .36, 1); }
+  .v-kart:hover img { transform: scale(1.035); }
 }
 
 @media (max-width: 40rem) {

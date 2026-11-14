@@ -25,6 +25,7 @@ test('ana sayfadan teklif koduna kadar', async ({ page }) => {
   await page.waitForURL(/\/studyo\?tasarim=/);
 
   await page.locator('#isim').fill('Test Ayşe');
+  await page.locator('[data-studio-step="4"]').click();
   // Betikler geç yüklenebilir: onay diyaloğu açılana kadar düğmeye yeniden tıkla.
   await expect(async () => {
     await page.locator('#btn-paylas').click();
