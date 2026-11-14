@@ -13,6 +13,13 @@ export const KOKLER = [
 export const eskiKategori = { 'bebek-hediyelikleri': 'hos-geldin-bebek', 'kisiye-ozel': 'her-zaman', 'kisiye-ozel-cikolata': 'her-zaman' };
 
 const slugOk = (s) => typeof s === 'string' && /^[a-z0-9]+(-[a-z0-9]+)*$/.test(s) && s.length <= 72;
+const normalizeDesignRow = (row) => {
+  if (!row) return row;
+  if (typeof row.image === 'string' && /^\/assets\/img\/urun-[a-z-]+\.svg$/i.test(row.image) && row.slug) {
+    return { ...row, image: `/assets/img/studyo/templates/${row.slug}.webp` };
+  }
+  return row;
+};
 
 // Görseli olmayan özel gün için o güne ait ilk tasarımın görseli kullanılır.
 const occasionSelect = `
@@ -48,7 +55,7 @@ export const getDesigns = cache(async ({ occasion, recipient, product, segment }
     LEFT JOIN bb_segments s ON s.slug = d.segment_slug
     WHERE ${where.join(' AND ')}
     ORDER BY d.featured DESC, d.bestseller DESC, d.position, d.title`, values);
-  return rows;
+  return rows.map(normalizeDesignRow);
 });
 
 export const getDesign = cache(async (slug) => {
@@ -63,7 +70,7 @@ export const getDesign = cache(async (slug) => {
     JOIN bb_occasions o ON o.slug = d.occasion_slug
     LEFT JOIN bb_segments s ON s.slug = d.segment_slug
     WHERE d.published AND d.slug = $1`, [slug]);
-  return rows[0];
+  return normalizeDesignRow(rows[0]);
 });
 
 export const getFaq = cache(async () => (await query('SELECT * FROM bb_faq WHERE published ORDER BY position, id')).rows);

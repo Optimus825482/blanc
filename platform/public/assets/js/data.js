@@ -256,7 +256,7 @@ window.BEYZA_DATA = {
       cokSatan: true,
       ozet: 'Altın varaklı 16’lı madlen kutusu; kapağa isim ve tarih baskısı eklenir.',
       etiketler: ['Çok tercih edilen', 'İsim baskılı', 'Altın detay'],
-      gorsel: 'assets/img/urun-madlen.svg',
+      gorsel: 'assets/img/studyo/templates/altin-isilti-madlen.webp',
     },
     {
       id: 'iyi-ki-dogdun-bar',
@@ -270,7 +270,7 @@ window.BEYZA_DATA = {
       cokSatan: true,
       ozet: 'Fotoğrafın ve kısa mesajın çikolata barının üzerine basıldığı tek kişilik hediye.',
       etiketler: ['Fotoğraf baskılı', 'Hızlı hazır'],
-      gorsel: 'assets/img/urun-bar.svg',
+      gorsel: 'assets/img/studyo/templates/iyi-ki-dogdun-bar.webp',
     },
     /* --- Yeni bebek --- */
     {
@@ -285,7 +285,7 @@ window.BEYZA_DATA = {
       cokSatan: true,
       ozet: 'Bebeğin adı, doğum tarihi ve kilosu beyaz çikolata üzerine yazılır.',
       etiketler: ['Doğum bilgili', 'Pudra tonları'],
-      gorsel: 'assets/img/urun-bebek.svg',
+      gorsel: 'assets/img/studyo/templates/bebek-madlen-kutusu.webp',
     },
     {
       id: 'hos-geldin-bebek-tepsisi',
@@ -298,7 +298,7 @@ window.BEYZA_DATA = {
       segment: 'buyuk',
       ozet: 'Hastane çıkışı ve ilk ziyaretler için tepsi üzeri aranjman.',
       etiketler: ['Tepsi', 'Hastane çıkışı'],
-      gorsel: 'assets/img/urun-tepsi.svg',
+      gorsel: 'assets/img/studyo/templates/hos-geldin-bebek-tepsisi.webp',
     },
     /* --- Söz & nişan --- */
     {
@@ -312,7 +312,7 @@ window.BEYZA_DATA = {
       segment: 'buyuk',
       ozet: 'İki ismin baş harfleri ve tarih, ikram kutularının üzerine işlenir.',
       etiketler: ['Çift isimli', 'İkram', 'Toplu üretim'],
-      gorsel: 'assets/img/urun-madlen.svg',
+      gorsel: 'assets/img/studyo/templates/soz-madlen-kutusu.webp',
     },
     {
       id: 'nisan-tepsisi-zarafet',
@@ -326,7 +326,7 @@ window.BEYZA_DATA = {
       cokSatan: true,
       ozet: 'Altın detaylı tepsi, isim ve tarih yazılı kurdele ile tamamlanır.',
       etiketler: ['Tepsi', 'Altın detay'],
-      gorsel: 'assets/img/urun-tepsi.svg',
+      gorsel: 'assets/img/studyo/templates/nisan-tepsisi-zarafet.webp',
     },
     /* --- Düğün --- */
     {
@@ -340,7 +340,7 @@ window.BEYZA_DATA = {
       segment: 'buyuk',
       ozet: 'Konuklara tek tek verilmek üzere hazırlanan küçük favor kutuları.',
       etiketler: ['Toplu üretim', 'Nikâh şekeri'],
-      gorsel: 'assets/img/urun-kutu.svg',
+      gorsel: 'assets/img/studyo/templates/dugun-favor-kutusu.webp',
     },
     /* --- Evlilik yıl dönümü --- */
     {
@@ -354,7 +354,7 @@ window.BEYZA_DATA = {
       segment: 'klasik',
       ozet: 'Evlilik tarihi ve “birlikte kaç yıl” yazısıyla hazırlanan bordo kutu.',
       etiketler: ['Tarih baskılı', 'İkili sunum'],
-      gorsel: 'assets/img/urun-madlen.svg',
+      gorsel: 'assets/img/studyo/templates/yildonumu-ikili-kutu.webp',
     },
     /* --- Yeni ev --- */
     {
@@ -368,7 +368,7 @@ window.BEYZA_DATA = {
       segment: 'kucuk',
       ozet: '“Yeni evinde mutlulukla” notu ve anahtar formlu çikolatalarla.',
       etiketler: ['Not kartlı', 'Sıcak tonlar'],
-      gorsel: 'assets/img/urun-kutu.svg',
+      gorsel: 'assets/img/studyo/templates/yeni-ev-anahtar-kutusu.webp',
     },
     /* --- Mezuniyet --- */
     {
@@ -382,7 +382,7 @@ window.BEYZA_DATA = {
       segment: 'klasik',
       ozet: 'Bölüm, okul ve tarih yazılı siyah-altın mezuniyet kutusu.',
       etiketler: ['Siyah–altın', 'Tarih baskılı'],
-      gorsel: 'assets/img/urun-madlen.svg',
+      gorsel: 'assets/img/studyo/templates/mezuniyet-kutusu.webp',
     },
     /* --- Teşekkür & tebrik (YENİ) --- */
     {
@@ -397,7 +397,7 @@ window.BEYZA_DATA = {
       yeni: true,
       ozet: 'Kısa bir teşekkür notu ve tek isim baskısıyla sade, zarif kutu.',
       etiketler: ['Not kartlı', 'İsim baskılı'],
-      gorsel: 'assets/img/urun-madlen.svg',
+      gorsel: 'assets/img/studyo/templates/tesekkur-kutusu.webp',
     },
     {
       id: 'tebrikler-bari',
@@ -410,7 +410,7 @@ window.BEYZA_DATA = {
       segment: 'kucuk',
       ozet: '“Tebrikler” yazılı bar; başarı ve atama kutlamaları için hızlı hediye.',
       etiketler: ['Hızlı hazır', 'Mesaj baskılı'],
-      gorsel: 'assets/img/urun-bar.svg',
+      gorsel: 'assets/img/studyo/templates/tebrikler-bari.webp',
     },
     {
       id: 'tesekkur-tepsisi',
@@ -423,7 +423,7 @@ window.BEYZA_DATA = {
       segment: 'buyuk',
       ozet: 'Bir teşekkürü kalabalığa iletmek için tepsi üzeri aranjman.',
       etiketler: ['Tepsi', 'Kurumsal uygun'],
-      gorsel: 'assets/img/urun-tepsi.svg',
+      gorsel: 'assets/img/studyo/templates/tesekkur-tepsisi.webp',
     },
     /* --- Geçmiş olsun (YENİ) --- */
     {
@@ -438,7 +438,7 @@ window.BEYZA_DATA = {
       yeni: true,
       ozet: 'Sakin tonlarda, nazik bir “geçmiş olsun” notuyla hazırlanan küçük kutu.',
       etiketler: ['Not kartlı', 'Sade tasarım'],
-      gorsel: 'assets/img/urun-bebek.svg',
+      gorsel: 'assets/img/studyo/templates/gecmis-olsun-kutusu.webp',
     },
     {
       id: 'gecmis-olsun-bari',
@@ -451,7 +451,7 @@ window.BEYZA_DATA = {
       segment: 'kucuk',
       ozet: 'Hastane ziyareti ve moral için tek kişilik, notlu çikolata barı.',
       etiketler: ['Hızlı hazır', 'Ziyaret hediyesi'],
-      gorsel: 'assets/img/urun-bar.svg',
+      gorsel: 'assets/img/studyo/templates/gecmis-olsun-bari.webp',
     },
     /* --- Öğretmenler günü (YENİ) --- */
     {
@@ -466,7 +466,7 @@ window.BEYZA_DATA = {
       yeni: true,
       ozet: 'Öğretmenin adı ve sınıf bilgisiyle hazırlanan, çocuk el yazısı notlu kutu.',
       etiketler: ['El yazısı not', 'İsim baskılı'],
-      gorsel: 'assets/img/urun-madlen.svg',
+      gorsel: 'assets/img/studyo/templates/ogretmenime-kutu.webp',
     },
     {
       id: 'ogretmenler-gunu-bari',
@@ -479,7 +479,7 @@ window.BEYZA_DATA = {
       segment: 'kucuk',
       ozet: 'Sınıfın toplu imzaladığı kart ile birlikte sunulan bar.',
       etiketler: ['Toplu imza', 'Hızlı hazır'],
-      gorsel: 'assets/img/urun-bar.svg',
+      gorsel: 'assets/img/studyo/templates/ogretmenler-gunu-bari.webp',
     },
     /* --- Her zaman & sade --- */
     {
@@ -493,7 +493,7 @@ window.BEYZA_DATA = {
       segment: 'klasik',
       ozet: 'Belirli bir özel gün aramayanlar için zamansız, sade kutu.',
       etiketler: ['Zamansız', 'Sade tasarım'],
-      gorsel: 'assets/img/urun-madlen.svg',
+      gorsel: 'assets/img/studyo/templates/sade-imza-kutusu.webp',
     },
     /* --- Sevgililer --- */
     {
@@ -508,7 +508,7 @@ window.BEYZA_DATA = {
       cokSatan: true,
       ozet: 'Kalp dizilimli 9’lu kutu; kapağa kısa bir not yazılır.',
       etiketler: ['Kalp dizilim', 'Not kartlı'],
-      gorsel: 'assets/img/urun-madlen.svg',
+      gorsel: 'assets/img/studyo/templates/kalp-madlen-kalbi.webp',
     },
     /* --- Anneler & babalar --- */
     {
@@ -522,7 +522,7 @@ window.BEYZA_DATA = {
       segment: 'buyuk',
       ozet: 'Çocuğun el yazısı veya fotoğrafının tepsiye işlendiği Anneler Günü tasarımı.',
       etiketler: ['El yazısı', 'Tepsi'],
-      gorsel: 'assets/img/urun-tepsi.svg',
+      gorsel: 'assets/img/studyo/templates/anneler-gunu-tepsisi.webp',
     },
     {
       id: 'babalar-gunu-kutusu',
@@ -536,7 +536,7 @@ window.BEYZA_DATA = {
       yeni: true,
       ozet: 'Baba ve çocuk fotoğrafının kutu kapağına işlendiği bitter ağırlıklı seçki.',
       etiketler: ['Fotoğraf baskılı', 'Bitter ağırlıklı'],
-      gorsel: 'assets/img/urun-kutu.svg',
+      gorsel: 'assets/img/studyo/templates/babalar-gunu-kutusu.webp',
     },
     /* --- Bayram --- */
     {
@@ -551,7 +551,7 @@ window.BEYZA_DATA = {
       cokSatan: true,
       ozet: 'Bayram ziyaretleri için aile adı yazılı yeşil-altın tepsi.',
       etiketler: ['Aile adı', 'Tepsi'],
-      gorsel: 'assets/img/urun-tepsi.svg',
+      gorsel: 'assets/img/studyo/templates/bayram-tepsisi.webp',
     },
     /* --- Kurumsal & iş --- */
     {
@@ -566,7 +566,7 @@ window.BEYZA_DATA = {
       cokSatan: true,
       ozet: 'Şirket logosu ve kurumsal renklerle hazırlanan toplu hediye kutusu.',
       etiketler: ['Logo baskılı', 'Toplu sipariş'],
-      gorsel: 'assets/img/urun-kurumsal.svg',
+      gorsel: 'assets/img/studyo/templates/kurumsal-logo-kutusu.webp',
     },
     {
       id: 'is-yildonumu-kutusu',
@@ -579,7 +579,7 @@ window.BEYZA_DATA = {
       segment: 'buyuk',
       ozet: '“5. yılın kutlu olsun” gibi kişiselleştirilmiş kurumsal teşekkür kutusu.',
       etiketler: ['Kurumsal', 'Yıl bilgili'],
-      gorsel: 'assets/img/urun-kurumsal.svg',
+      gorsel: 'assets/img/studyo/templates/is-yildonumu-kutusu.webp',
     },
     {
       id: 'hos-geldin-ekip-kutusu',
@@ -592,7 +592,7 @@ window.BEYZA_DATA = {
       segment: 'klasik',
       ozet: 'Yeni çalışanın adı ve başlangıç tarihiyle hazırlanan onboarding kutusu.',
       etiketler: ['Onboarding', 'İsim baskılı'],
-      gorsel: 'assets/img/urun-kurumsal.svg',
+      gorsel: 'assets/img/studyo/templates/hos-geldin-ekip-kutusu.webp',
     },
     {
       id: 'terfi-tebrik-kutusu',
@@ -605,7 +605,7 @@ window.BEYZA_DATA = {
       segment: 'kucuk',
       ozet: 'Yeni unvan ve isim yazılı, takım tarafından imzalanmış kartla.',
       etiketler: ['Takım kartı', 'Altın detay'],
-      gorsel: 'assets/img/urun-kurumsal.svg',
+      gorsel: 'assets/img/studyo/templates/terfi-tebrik-kutusu.webp',
     },
     /* --- Açılış & tören (YENİ) --- */
     {
@@ -620,7 +620,7 @@ window.BEYZA_DATA = {
       yeni: true,
       ozet: 'İş yeri açılışları ve törenlerde ikram için işletme adı yazılı tepsi.',
       etiketler: ['İşletme adı', 'Tören'],
-      gorsel: 'assets/img/urun-tepsi.svg',
+      gorsel: 'assets/img/studyo/templates/acilis-tepsisi.webp',
     },
     {
       id: 'acilis-kurumsal-kutusu',
@@ -634,7 +634,7 @@ window.BEYZA_DATA = {
       yeni: true,
       ozet: 'Açılış konuklarına verilmek üzere logo baskılı toplu kutular.',
       etiketler: ['Logo baskılı', 'Toplu üretim'],
-      gorsel: 'assets/img/urun-kurumsal.svg',
+      gorsel: 'assets/img/studyo/templates/acilis-kurumsal-kutusu.webp',
     },
   ],
 
