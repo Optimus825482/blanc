@@ -315,7 +315,24 @@ export async function saveCatalog(data) {
     for (const alan of tanim.fields) {
       if (alan.type === 'image') {
         gorsel = await processImage(data.get('image'));
-        if (gorsel) { sutunlar.push('image'); degerler.push('/media/' + gorsel.id); }
+        if (gorsel) {
+          sutunlar.push('image');
+          degerler.push('/media/' + gorsel.id);
+        } else if (data.get('image_clear') === '1') {
+          sutunlar.push('image');
+          degerler.push('');
+        } else {
+          const preset = data.get('image_preset');
+          if (typeof preset === 'string' && /^\/assets\/img\/studyo\/templates\/[a-z0-9-]+\.webp$/i.test(preset)) {
+            sutunlar.push('image');
+            degerler.push(preset);
+          } else if (yeni && kind === 'design') {
+            const ptSlug = data.get('product_type_slug');
+            const ptRow = typeof ptSlug === 'string' ? (await query('SELECT image FROM bb_product_types WHERE slug=$1', [ptSlug])).rows[0] : null;
+            sutunlar.push('image');
+            degerler.push(ptRow?.image || '/assets/img/studyo/templates/sade-imza-kutusu.webp');
+          }
+        }
         continue;
       }
       sutunlar.push(alan.name);

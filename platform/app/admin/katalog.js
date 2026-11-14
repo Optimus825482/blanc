@@ -1,11 +1,30 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { query } from '../../lib/db';
 import { SABLON_ALANLARI, VERI_ALANLARI, grupAdi, katalog } from '../../lib/katalog';
 import BaskiAlani from './baski-alani';
 import { deleteCatalog, saveCatalog } from './actions';
 import SilDugmesi from './sil-dugmesi';
 
-const onizleme = (yol) => (yol.startsWith('/media/') ? '/admin/media/' + yol.split('/').pop() : yol);
+const onizleme = (yol, item) => {
+  if (!yol) return '';
+  if (yol.startsWith('/media/')) return '/admin/media/' + yol.split('/').pop();
+  if (/^\/assets\/img\/urun-[a-z-]+\.svg$/i.test(yol) && item?.slug) return `/assets/img/studyo/templates/${item.slug}.webp`;
+  return yol;
+};
 const hex6 = (v, varsayilan = '#B08D57') => (typeof v === 'string' && /^#[0-9A-Fa-f]{6}$/.test(v) ? v : varsayilan);
+
+function sablonGorselListesi() {
+  try {
+    const dir = path.join(process.cwd(), 'public', 'assets', 'img', 'studyo', 'templates');
+    return fs.readdirSync(dir)
+      .filter((f) => f.endsWith('.webp'))
+      .sort()
+      .map((f) => ['/assets/img/studyo/templates/' + f, f.replace(/\.webp$/, '')]);
+  } catch {
+    return [];
+  }
+}
 
 // Stüdyo seçeneğinin görünüm alanları: grup başına renk seçici / onay kutusu / liste (JSON yerine).
 function VeriAlanlari({ grup, veri, id }) {
@@ -96,11 +115,18 @@ function Alan({ alan, item, id, secenekler }) {
     }
     case 'image':
       return <>
-        {deger && <img src={onizleme(deger)} alt={item?.alt || ''} width="144" height="144" loading="lazy" />}
-        <label htmlFor={id}>{etiket} {deger ? '(değiştirmek için seçin)' : ''}
+        {deger && <img src={onizleme(deger, item)} alt={item?.alt || ''} width="144" height="144" loading="lazy" />}
+        <label htmlFor={id}>{etiket} {deger ? '(değiştirmek için dosya seçin)' : ''}
           <input id={id} type="file" name="image" accept="image/jpeg,image/png,image/webp" />
         </label>
         <small>JPEG, PNG veya WebP · En fazla 5 MB</small>
+        <label htmlFor={id + '-preset'}>Veya hazır şablon görsellerinden seçin
+          <select id={id + '-preset'} name="image_preset" defaultValue="">
+            <option value="">Mevcut / yüklenen görsel kalsın</option>
+            {(secenekler.template_images || []).map(([v, ad]) => <option key={v} value={v}>{ad}</option>)}
+          </select>
+        </label>
+        {deger && <label className="bb-check"><input type="checkbox" name="image_clear" value="1" /> Görseli kaldır (varsayılana dön)</label>}
       </>;
     default:
       return <label htmlFor={id}>{etiket}<input id={id} name={alan.input || alan.name} defaultValue={deger ?? ''} maxLength={alan.max} required={alan.required} /></label>;
@@ -169,6 +195,7 @@ export default async function KatalogBolumleri({ kinds }) {
     cards: cift(satirlar.studio_option.filter((o) => o.option_group === 'card')),
     fonts: cift(satirlar.studio_option.filter((o) => o.option_group === 'font')),
     frames: cift(satirlar.studio_option.filter((o) => o.option_group === 'frame')),
+    template_images: sablonGorselListesi(),
   };
   return <>
     {!kinds && <h2 id="katalog">Katalog</h2>}
@@ -177,7 +204,7 @@ export default async function KatalogBolumleri({ kinds }) {
       <h2>{tanim.title} <small>({satirlar[kind].length})</small></h2>
       {kind === 'price_rule' && <p className="kucuk">Temel fiyat: ürün tipi + (isteğe bağlı) boyut + adet aralığı için fiyat. Ekstra: seçilen stüdyo ekstrası için ek ücret. Stüdyodaki tahmini fiyat bu kurallardan hesaplanır; kural yoksa tahmin gösterilmez.</p>}
       {satirlar[kind].map((item) => <details key={(item.option_group || '') + (tanim.numericKey ? item.id : item.slug)}>
-        <summary>{tanim.ozet ? tanim.ozet(item) : <>{tanim.group ? grupAdi(item.option_group) + ' · ' : ''}{item.title}{'published' in item ? (item.published ? ' · Yayında' : ' · Taslak') : ''}</>}</summary>
+        <summary>{item.image && <img src={onizleme(item.image, item)} alt="" width="24" height="24" style={{ verticalAlign: 'middle', marginRight: '0.5rem', borderRadius: '4px', objectFit: 'cover' }} />}{tanim.ozet ? tanim.ozet(item) : <>{tanim.group ? grupAdi(item.option_group) + ' · ' : ''}{item.title}{'published' in item ? (item.published ? ' · Yayında' : ' · Taslak') : ''}</>}</summary>
         <Duzenleyici kind={kind} tanim={tanim} item={item} secenekler={secenekler} iliskiler={iliskiler[kind + ':' + item.slug]} />
       </details>)}
       <details><summary>Yeni {tanim.single} ekle</summary><Duzenleyici kind={kind} tanim={tanim} secenekler={secenekler} /></details>
