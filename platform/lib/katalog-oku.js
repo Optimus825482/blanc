@@ -20,17 +20,30 @@ const normalizeDesignRow = (row) => {
   }
   return row;
 };
+const normalizeOccasionRow = (row) => {
+  if (!row) return row;
+  let cardImage = row.card_image;
+  if (typeof cardImage === 'string' && /^\/assets\/img\/urun-[a-z-]+\.svg$/i.test(cardImage) && row.fallback_design_slug) {
+    cardImage = `/assets/img/studyo/templates/${row.fallback_design_slug}.webp`;
+  } else if (row.slug === 'her-zaman' && typeof cardImage === 'string' && cardImage.includes('fotografli-puzzle-cikolata.webp')) {
+    cardImage = '/assets/img/studyo/templates/sade-imza-kutusu.webp';
+  } else if (row.slug === 'anneler-babalar' && typeof cardImage === 'string' && cardImage.includes('musteri-hediye-tasarimi.webp')) {
+    cardImage = '/assets/img/studyo/templates/anneler-gunu-tepsisi.webp';
+  }
+  return cardImage === row.card_image ? row : { ...row, card_image: cardImage };
+};
 
 // Görseli olmayan özel gün için o güne ait ilk tasarımın görseli kullanılır.
 const occasionSelect = `
   SELECT o.*, COALESCE(NULLIF(o.image, ''), d.image, '') AS card_image, COALESCE(NULLIF(o.alt, ''), d.alt, o.title) AS card_alt,
+         d.slug AS fallback_design_slug,
          (SELECT count(*) FROM bb_designs x WHERE x.published AND (x.occasion_slug = o.slug OR x.slug IN (SELECT design_slug FROM bb_design_occasions WHERE occasion_slug = o.slug))) AS design_count
   FROM bb_occasions o
-  LEFT JOIN LATERAL (SELECT image, alt FROM bb_designs WHERE published AND occasion_slug = o.slug AND image <> '' ORDER BY featured DESC, bestseller DESC, position LIMIT 1) d ON true
+  LEFT JOIN LATERAL (SELECT slug, image, alt FROM bb_designs WHERE published AND occasion_slug = o.slug AND image <> '' ORDER BY featured DESC, bestseller DESC, position LIMIT 1) d ON true
   WHERE o.published`;
 
-export const getOccasions = cache(async () => (await query(occasionSelect + ' ORDER BY o.position, o.title')).rows);
-export const getOccasion = cache(async (slug) => slugOk(slug) ? (await query(occasionSelect + ' AND o.slug = $1', [slug])).rows[0] : undefined);
+export const getOccasions = cache(async () => (await query(occasionSelect + ' ORDER BY o.position, o.title')).rows.map(normalizeOccasionRow));
+export const getOccasion = cache(async (slug) => slugOk(slug) ? normalizeOccasionRow((await query(occasionSelect + ' AND o.slug = $1', [slug])).rows[0]) : undefined);
 export const getRecipients = cache(async () => (await query('SELECT * FROM bb_recipients WHERE published ORDER BY position, title')).rows);
 export const getProductTypes = cache(async () => (await query('SELECT * FROM bb_product_types WHERE published ORDER BY position, title')).rows);
 export const getSegments = cache(async () => (await query('SELECT * FROM bb_segments ORDER BY position, title')).rows);
