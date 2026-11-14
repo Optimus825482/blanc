@@ -40,7 +40,7 @@ async function processImage(file) {
 export async function login(data) {
   const password = data.get('password');
   const expected = process.env.ADMIN_PASSWORD;
-  if (typeof password !== 'string' || password.length > 128 || !expected || expected.length < 16) redirect('/admin?durum=giris');
+  if (typeof password !== 'string' || password.length > 128 || !expected || expected.length < 6) redirect('/admin?durum=giris');
   // Giriş sınırı IP başına: 15 dakikada en çok 12 deneme. IP, vekilin eklediği en sağdaki X-Forwarded-For adresi.
   const basliklar = await headers();
   const ip = (basliklar.get('x-forwarded-for') || '').split(',').pop().trim() || basliklar.get('x-real-ip') || 'bilinmiyor';
